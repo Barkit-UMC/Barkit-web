@@ -1,36 +1,194 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Layout from './components/common/Layout'
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/common/Layout';
+
+// Lazy load all page components for better initial loading performance
+// Auth pages
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
+const FindPwPage = lazy(() => import('./pages/auth/FindPwPage'));
+
+// Home pages
+const WalletPage = lazy(() => import('./pages/home/WalletPage'));
+const DetailPage = lazy(() => import('./pages/home/DetailPage'));
+
+// Membership pages
+const BrandSelectPage = lazy(() => import('./pages/membership/BrandSelectPage'));
+const BrandSearchPage = lazy(() => import('./pages/membership/BrandSearchPage'));
+const InputNumberPage = lazy(() => import('./pages/membership/InputNumberPage'));
+const CameraScanPage = lazy(() => import('./pages/membership/CameraScanPage'));
+const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'));
+
+// Map pages
+const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
+const SearchStorePage = lazy(() => import('./pages/map/SearchStorePage'));
+
+// Favorites pages
+const FavoriteListPage = lazy(() => import('./pages/favorites/FavoriteListPage'));
+const AddFavoritePage = lazy(() => import('./pages/favorites/AddFavoritePage'));
+
+// Profile pages
+const MyPage = lazy(() => import('./pages/profile/MyPage'));
+const EditProfilePage = lazy(() => import('./pages/profile/EditProfilePage'));
+
+// Simple loading component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center h-screen">
+    <p className="text-lg text-gray-600">Loading...</p>
+  </div>
+);
+
+// Protected route wrapper - checks if user is authenticated
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  // TODO: Replace with actual auth check (e.g., from context or localStorage)
+  const isAuthenticated = localStorage.getItem('authToken') !== null;
+
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+};
+
+// Root redirect - sends to home if authenticated, login otherwise
+const RootRedirect = () => {
+  // TODO: Replace with actual auth check
+  const isAuthenticated = localStorage.getItem('authToken') !== null;
+
+  return <Navigate to={isAuthenticated ? '/home' : '/login'} replace />;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <Layout>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </Layout>
-  )
+    <BrowserRouter>
+      <Layout>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            {/* Root - redirect based on auth status */}
+            <Route path="/" element={<RootRedirect />} />
+
+            {/* Auth routes - public */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/find-pw" element={<FindPwPage />} />
+
+            {/* Home routes - protected */}
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <WalletPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/barcode/:id"
+              element={
+                <ProtectedRoute>
+                  <DetailPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Membership registration routes - protected */}
+            <Route
+              path="/membership/new"
+              element={
+                <ProtectedRoute>
+                  <BrandSelectPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/search"
+              element={
+                <ProtectedRoute>
+                  <BrandSearchPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/input"
+              element={
+                <ProtectedRoute>
+                  <InputNumberPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/scan"
+              element={
+                <ProtectedRoute>
+                  <CameraScanPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/complete"
+              element={
+                <ProtectedRoute>
+                  <RegCompletePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Map routes - protected */}
+            <Route
+              path="/map"
+              element={
+                <ProtectedRoute>
+                  <MapHomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/map/search"
+              element={
+                <ProtectedRoute>
+                  <SearchStorePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Favorites routes - protected */}
+            <Route
+              path="/favorites"
+              element={
+                <ProtectedRoute>
+                  <FavoriteListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/favorites/add"
+              element={
+                <ProtectedRoute>
+                  <AddFavoritePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Profile routes - protected */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <MyPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit"
+              element={
+                <ProtectedRoute>
+                  <EditProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* 404 fallback - redirect to home or login */}
+            <Route path="*" element={<RootRedirect />} />
+          </Routes>
+        </Suspense>
+      </Layout>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

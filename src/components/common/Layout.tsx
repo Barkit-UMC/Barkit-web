@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 interface LayoutProps {
     children: ReactNode;
+    showBottomNav?: boolean;
 }
 
 export default function Layout({ children }: LayoutProps) {
