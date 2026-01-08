@@ -1,11 +1,10 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import iconHomeOff from '../../assets/icons/bottom/home-off.svg';
 import iconHomeOn from '../../assets/icons/bottom/home-on.svg';
 import iconBarcodeOff from '../../assets/icons/bottom/barcode-off.svg';
 // barcode-on 파일이 없어서 off를 같이 사용합니다. 파일이 있다면 파일명을 수정
-import iconBarcodeOn from '../../assets/icons/bottom/barcode-off.svg'; 
+import iconBarcodeOn from '../../assets/icons/bottom/barcode-off.svg';
 import iconMapOff from '../../assets/icons/bottom/map-off.svg';
 import iconMapOn from '../../assets/icons/bottom/map-on.svg';
 import iconProfileOff from '../../assets/icons/bottom/profile-off.svg';
@@ -28,7 +27,7 @@ export default function BottomNav() {
     const isActive = (path: string) => location.pathname === path;
 
     return (
-        <nav className="absolute bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 safe-area-bottom">
+        <nav className="bg-white border-t border-gray-200">
             <div className="flex justify-around items-center h-16 w-full">
                 {navItems.map((item) => {
                     const active = isActive(item.path);
@@ -36,13 +35,12 @@ export default function BottomNav() {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
-                                active ? 'text-black font-extrabold' : 'text-gray-500'
-                            }`}
+                            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${active ? 'text-black font-extrabold' : 'text-gray-500'
+                                }`}
                         >
                             <div className="w-6 h-6 mb-1">
-                                <img 
-                                    src={active ? item.iconOn : item.iconOff} 
+                                <img
+                                    src={active ? item.iconOn : item.iconOff}
                                     alt={item.label}
                                     className="w-full h-full object-contain"
                                 />
