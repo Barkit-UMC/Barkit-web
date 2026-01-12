@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" important;
 
 /* Mobile-first base styles */
 :root {

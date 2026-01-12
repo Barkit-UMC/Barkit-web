@@ -3,6 +3,7 @@ import call from '../../assets/icons/map/call.svg'
 import navigation from '../../assets/icons/map/navigation.svg'
 import kt from '../../assets/icons/memberships/kt.svg'
 import oliveyoung from '../../assets/icons/memberships/oliveyoung.svg'
+import { useNavigate } from 'react-router-dom';
 
 // 데이터 타입 정의
 interface StoreItem {
@@ -18,12 +19,23 @@ interface SearchResultListProps {
 }
 
 const SearchResultList = ({ results }: SearchResultListProps) => {
+  const navigate = useNavigate(); // 2. 네비게이트 함수 초기화
+
+  // 클릭 핸들러: 상세 페이지로 이동
+  const handleStoreClick = (id: number) => {
+    navigate(`/store/${id}`); // 예: /store/1 경로로 이동
+  };
+
 
   return (
     <div className="flex flex-col !px-6 h-full pb-20 overflow-y-auto">
       {/* 매장 리스트 반복 */}
       {results.map((store) => (
-        <div key={store.id} className="!py-5 border-b border-gray-100 last:border-0">
+        <div 
+            key={store.id} 
+            className="!py-5 border-b border-gray-100 last:border-0"
+            onClick={() => handleStoreClick(store.id)}
+        >
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <div className="flex items-center gap-2">
