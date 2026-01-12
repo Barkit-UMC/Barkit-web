@@ -1,74 +1,94 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/common/Layout';
-import SocialLoginBtn from '../../components/auth/SocialLoginBtn';
-import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+// import Layout from '../../components/common/Layout'; // UI 확인을 위해 잠시 주석 처리
 
-/**
- * [PAGE 2] 로그인 페이지
- */
 export default function LoginPage() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // TODO: 로그인 API 호출
-        console.log('Login:', { email, password });
-        navigate('/wallet');
-    };
-
-    const handleSocialLogin = (provider: 'kakao' | 'naver') => {
-        // TODO: 소셜 로그인 API 호출
-        console.log('Social login:', provider);
-        navigate('/wallet');
-    };
-
     return (
-        <Layout>
-            <div className="flex flex-col min-h-screen p-6">
-                <div className="flex-1 flex flex-col justify-center">
-                    <h1 className="text-3xl font-bold mb-8 text-center">Barkit</h1>
+        // Layout 컴포넌트 없이 전체 화면(min-h-screen)을 잡습니다.
+        <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6">
 
-                    <div className="space-y-4 mb-6">
-                        <Input
-                            type="email"
-                            placeholder="이메일"
-                            value={email}
-                            onChange={setEmail}
+            {/* 1. 로고 영역 - mb-20 (80px) */}
+            <div className="mb-25 w-full flex justify-center">
+                <img
+                    src="/BarKit-logo.svg"
+                    alt="BarKit"
+                    style={{ width: '220px', objectFit: 'contain' }}
+                />
+            </div>
+
+            {/* 2. 입력 폼 영역 - gap-4 (16px) */}
+            <div className="w-full max-w-[400px] flex flex-col gap-4">
+
+                {/* 아이디 입력창 */}
+                <input
+                    type="email"
+                    placeholder="아이디 ( 이메일 주소 )"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-14 bg-gray-100 rounded-xl indent-4 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00BCD4]"
+                />
+
+                {/* 비밀번호 입력창 */}
+                <input
+                    type="password"
+                    placeholder="비밀번호"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full h-14 bg-gray-100 rounded-xl indent-4 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00BCD4]"
+                />
+
+                {/* 로그인 버튼 */}
+                <button
+                    onClick={() => navigate('/wallet')}
+                    className="w-full h-14 mt-4 bg-[#00BCD4] text-white rounded-xl font-bold text-lg hover:bg-[#00ACC1] transition-colors shadow-sm"
+                >
+                    로그인
+                </button>
+
+                {/* 자동로그인 / 회원가입 - mt-2 (8px) */}
+                <div className="flex items-center justify-center gap-32 px-1 ">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-gray-300 accent-[#00BCD4]"
                         />
-                        <Input
-                            type="password"
-                            placeholder="비밀번호"
-                            value={password}
-                            onChange={setPassword}
-                        />
-                    </div>
-
-                    <Button onClick={handleLogin}>로그인</Button>
-
-                    <div className="flex justify-center gap-4 my-6 text-sm text-gray-600">
-                        <button onClick={() => navigate('/signup')}>회원가입</button>
-                        <span>|</span>
-                        <button onClick={() => navigate('/find-password')}>비밀번호 찾기</button>
-                    </div>
-
-                    <div className="relative my-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">또는</span>
-                        </div>
-                    </div>
-
-                    <div className="space-y-3">
-                        <SocialLoginBtn provider="kakao" onClick={() => handleSocialLogin('kakao')} />
-                        <SocialLoginBtn provider="naver" onClick={() => handleSocialLogin('naver')} />
-                    </div>
+                        <span className="text-sm text-gray-500">자동 로그인</span>
+                    </label>
+                    <button
+                        onClick={() => navigate('/signup')}
+                        className="text-sm text-gray-500 hover:text-gray-800 font-medium"
+                    >
+                        회원가입
+                    </button>
                 </div>
             </div>
-        </Layout>
+
+            {/* 4. 소셜 로그인 - mt-6 (24px) */}
+            <div className="w-full max-w-[400px] mt-6">
+                {/* Divider - mb-6 (24px) */}
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="flex-1 h-[1px] bg-gray-200"></div>
+                    <span className="text-md text-gray-400"> 간편로그인 </span>
+                    <div className="flex-1 h-[1px] bg-gray-200"></div>
+                </div>
+
+                {/* 소셜 로그인 버튼 - gap-6 */}
+                <div className="flex justify-center gap-6">
+                    {/* 카카오 버튼 */}
+                    <button onClick={() => console.log('Kakao')} className="w-15 h-15 rounded-full overflow-hidden shadow-sm hover:opacity-90 transition-opacity">
+                        <img src="/kakaotalk-logo.svg" alt="Kakao" className="w-full h-full object-cover" />
+                    </button>
+
+                    {/* 네이버 버튼 */}
+                    <button onClick={() => console.log('Naver')} className="w-15 h-15 rounded-full overflow-hidden shadow-sm hover:opacity-90 transition-opacity">
+                        <img src="/naver-logo.svg" alt="Naver" className="w-full h-full object-cover" />
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
