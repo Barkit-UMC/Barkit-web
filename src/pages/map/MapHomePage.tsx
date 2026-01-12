@@ -67,10 +67,10 @@ export default function MapHomePage() {
                 </div>
 
                 {/* 2. 상단 플로팅 UI (검색창 + 카테고리) */}
-                <div className="absolute top-3 left-3 right-3 z-10 flex flex-col gap-4 px-5 pt-14 pb-4">
+                <div className="absolute top-3 left-0 right-0 z-10 flex flex-col gap-4 px-5 pt-14 pb-4">
                     
                     {/* 검색바 & 필터 버튼 Row */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center !pl-3 !pr-3 gap-3">
                         {/* 검색 입력창 */}
                         <div className="flex-1 h-12 bg-white rounded-xl shadow-md flex items-center px-4 transition-transform active:scale-[0.98]">
                             <img 
@@ -100,7 +100,7 @@ export default function MapHomePage() {
                     </div>
 
                     {/* 카테고리 칩 (가로 스크롤) */}
-                    <div className="flex gap-2 !overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-2 !pl-3 !pr-3 !overflow-x-auto pb-2 scrollbar-hide">
                         {CATEGORIES.map((category) => (
                             <button
                                 key={category}
