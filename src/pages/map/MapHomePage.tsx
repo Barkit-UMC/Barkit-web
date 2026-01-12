@@ -7,11 +7,16 @@ import iconSearch from '../../assets/icons/map/search.svg';
 import iconFilter from '../../assets/icons/map/mapFilter.svg';
 import iconLoc from '../../assets/icons/map/current_loc.svg';
 import iconLocOn from '../../assets/icons/map/current_loc_on.svg';
+import iconMapPin from '../../assets/icons/map/loc.svg'
+import iconMyLoc from '../../assets/icons/map/sort_loc.svg'
+import SortModal from '../../components/map/SortModal';
 
 const search_icon = iconSearch; 
 const filter_icon = iconFilter;
 const loc_icon = iconLoc;
 const loc_icon_on = iconLocOn;
+const mapPinIcon = iconMapPin;
+const myLocIcon = iconMyLoc;
 
 const CATEGORIES = ['전체', '엔터', '쇼핑', '카페', '식당'];
 
@@ -22,6 +27,22 @@ export default function MapHomePage() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
 
     const [isTracking, setIsTracking] = useState(false);
+
+    const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+    const [currentSort, setCurrentSort] = useState('map-center');
+
+    const sortOptions = [
+        { 
+            id: 'map-center', 
+            label: '지도 중심 거리순', 
+            icon: mapPinIcon
+        },
+        { 
+            id: 'my-location', 
+            label: '현재 내 위치 거리순', 
+            icon: myLocIcon  
+        },
+    ];
     
     // TODO: 현재 위치 가져오기 (실제 로직 연결 필요)
     const currentLocation = { lat: 37.5665, lng: 126.9780 };
@@ -68,7 +89,7 @@ export default function MapHomePage() {
                         {/* 필터 버튼 */}
                         <button 
                             className="h-12 w-12 bg-white rounded-xl shadow-md flex items-center justify-center flex-shrink-0 active:bg-gray-50"
-                            onClick={() => {/* TODO: 필터 모달 오픈 */}}
+                            onClick={() => setIsSortModalOpen(true)}
                         >
                             <img 
                                 src={filter_icon} 
@@ -113,6 +134,20 @@ export default function MapHomePage() {
                         className="w-full h-full object-cover"
                     />
                 </button>
+
+                {/* 4. 재사용 정렬 모달 */}
+                {isSortModalOpen && (
+                    <SortModal
+                        title="정렬 기준"
+                        options={sortOptions}
+                        selectedValue={currentSort}
+                        onSelect={(id) => {
+                            setCurrentSort(id);
+                            setIsSortModalOpen(false); // 선택 시 닫기
+                        }}
+                        onClose={() => setIsSortModalOpen(false)}
+                    />
+                )}
             </div>
             <BottomNav />
         </Layout>
