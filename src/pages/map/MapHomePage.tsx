@@ -59,7 +59,7 @@ export default function MapHomePage() {
 
     return (
         <Layout showBottomNav>
-            <div className="relative h-full w-full bg-gray-100">
+            <div className="relative h-full w-full bg-gray-100 overflow-hidden">
                 {/* 1. 지도 배경 */}
                 {/* z-0으로 설정하여 다른 UI들이 위에 뜨도록 함 */}
                 <div className="absolute inset-0 z-0">
