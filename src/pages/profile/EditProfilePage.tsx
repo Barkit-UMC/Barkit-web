@@ -136,6 +136,7 @@ export default function EditProfilePage() {
             </div>
 
             {/* 연동하기 */}
+            <div className="flex-1 border-[4px] border-gray-100"></div>
             <div className="mt-6 flex items-center px-6">
                 <div className="flex-1 border-t border-gray-300"></div>
                 <span className="px-6 text-gray-300 text-sm">
