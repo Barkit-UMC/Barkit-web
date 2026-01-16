@@ -9,7 +9,7 @@ import iconPlusLine from '../../assets/icons/stores/plusLine.svg';
 
 export default function WalletPage() {
   const navigate = useNavigate();
-  const [viewMode, setViewMode] = useState<'stacked' | 'spread' | 'list'>('stacked');
+  const [viewMode, setViewMode] = useState<'stacked' | 'spread'>('stacked');
 
   // 멤버십 (임시)
   const memberships = [
@@ -128,26 +128,35 @@ export default function WalletPage() {
                 </div>
 
                 {/* 매장 즐겨찾기 */}
-                <div className="bg-white rounded-2xl h-[98px] flex items-center justify-center">
-                  <div className="inline-flex gap-4">
-                    {favoriteStores.map((store) => (
-                      <div
-                        key={store.id}
-                        className={`w-[46.38px] h-[46.38px] rounded-lg flex items-center justify-center overflow-hidden ${
-                          store.isPlus ? 'bg-gray-200' : 'bg-white'
-                        }`}
-                      >
-                        {store.isSvg ? (
-                          <img
-                            src={store.icon}
-                            alt="store-icon"
-                            className={store.isPlus ? "w-[24px] h-[24px]" : "w-full h-full object-cover"}
-                          />
-                        ) : (
-                          <span className="leading-none text-2xl">{store.icon}</span>
-                        )}
-                      </div>
-                    ))}
+                <div className="mt-8">
+                  <div className="flex items-center justify-between mb-3 max-w-[309px] mx-auto">
+                    <h2 className="text-lg font-bold">매장 즐겨찾기</h2>
+                    <button className="text-cyan-500 text-sm font-bold">
+                      더보기
+                    </button>
+                  </div>
+
+                  <div className="bg-white rounded-2xl h-[98px] flex items-center justify-center">
+                    <div className="inline-flex gap-4">
+                      {favoriteStores.map((store) => (
+                        <div
+                          key={store.id}
+                          className={`w-[46.38px] h-[46.38px] rounded-lg flex items-center justify-center overflow-hidden ${
+                            store.isPlus ? 'bg-gray-200' : 'bg-white'
+                          }`}
+                        >
+                          {store.isSvg ? (
+                            <img
+                              src={store.icon}
+                              alt="store-icon"
+                              className={store.isPlus ? "w-[24px] h-[24px]" : "w-full h-full object-cover"}
+                            />
+                          ) : (
+                            <span className="leading-none text-2xl">{store.icon}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
