@@ -3,48 +3,43 @@ import React from 'react';
 interface BarcodeCardProps {
     brandName: string;
     brandLogo?: string;
-    barcodeNumber: string;
+    points?: number | null;
+    color: string;
+    barcodeNumber?: string;
     onClick?: () => void;
 }
 
-/**
- * [PAGE 9] 메인 바코드 카드 UI
- * 홈 화면에 표시되는 바코드 카드
- */
 export default function BarcodeCard({
     brandName,
     brandLogo,
-    barcodeNumber,
+    points,
+    color,
     onClick
 }: BarcodeCardProps) {
     return (
         <div
             onClick={onClick}
-            className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow"
+            className={`${color} rounded-2xl p-5 cursor-pointer shadow-md hover:shadow-lg transition-all relative overflow-hidden h-full`}
         >
-            <div className="flex items-center gap-4 mb-4">
+            {/* 우측 상단 로고 영역 */}
+            <div className="absolute top-5 right-5 w-8 h-8 bg-white/90 rounded-lg overflow-hidden">
                 {brandLogo ? (
-                    <img src={brandLogo} alt={brandName} className="w-12 h-12 rounded-lg object-cover" />
+                    <img src={brandLogo} alt="" className="w-full h-full object-cover" />
                 ) : (
-                    <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500 text-xs">로고</span>
-                    </div>
+                    <div className="w-full h-full bg-gray-200" />
                 )}
-                <div>
-                    <h3 className="font-semibold text-lg">{brandName}</h3>
-                    <p className="text-sm text-gray-500">{barcodeNumber}</p>
-                </div>
             </div>
 
-            <div className="bg-gray-100 rounded-lg p-4 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="mb-2 text-xs text-gray-500">바코드를 보려면 탭하세요</div>
-                    <div className="h-16 flex items-center justify-center">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                    </div>
-                </div>
+            {/* 좌측 상단 포인트 */}
+            <div className="absolute top-5 left-5">
+                <p className="text-white text-2xl font-bold">{points?.toLocaleString()}P</p>
+            </div>
+
+            {/* 좌측 하단 브랜드명 */}
+            <div className="absolute bottom-8 left-5">
+                <h3 className="text-white text-xl font-bold">
+                    {brandName}
+                </h3>
             </div>
         </div>
     );
