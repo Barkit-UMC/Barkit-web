@@ -1,6 +1,4 @@
-import React from 'react';
 import Layout from '../../components/common/Layout';
-import BottomNav from '../../components/common/BottomNav';
 import MapContainer from '../../components/map/MapContainer';
 
 /**
@@ -41,7 +39,6 @@ export default function MapHomePage() {
                     </svg>
                 </button>
             </div>
-            <BottomNav />
         </Layout>
     );
 }

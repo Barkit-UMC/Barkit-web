@@ -1,7 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
-import BottomNav from '../../components/common/BottomNav';
 import BarcodeCard from '../../components/barcode/BarcodeCard';
 
 /**
@@ -59,7 +57,6 @@ export default function WalletPage() {
                     </div>
                 )}
             </div>
-            <BottomNav />
         </Layout>
     );
 }

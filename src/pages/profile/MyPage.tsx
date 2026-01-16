@@ -1,7 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
-import BottomNav from '../../components/common/BottomNav';
 
 /**
  * [PAGE 20] 마이페이지 메인
@@ -79,7 +77,6 @@ export default function MyPage() {
                     로그아웃
                 </button>
             </div>
-            <BottomNav />
         </Layout>
     );
 }
