@@ -1,65 +1,174 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
-import BottomNav from '../../components/common/BottomNav';
 import BarcodeCard from '../../components/barcode/BarcodeCard';
+import iconParisBaguette from '../../assets/icons/stores/parisBaguette.svg';
+import iconOliveYoung from '../../assets/icons/stores/oliveYoung.svg';
+import iconStarbucks from '../../assets/icons/stores/starbucks.svg';
+import iconPlusLine from '../../assets/icons/stores/plusLine.svg';
 
-/**
- * [PAGE 9] 홈 (내 바코드 리스트)
- */
 export default function WalletPage() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<'stacked' | 'spread' | 'list'>('stacked');
 
-    // TODO: API에서 사용자의 멤버십 목록 가져오기
-    const memberships = [
-        { id: 1, brandName: '스타벅스', barcodeNumber: '1234567890123' },
-        { id: 2, brandName: 'GS25', barcodeNumber: '9876543210987' },
-        { id: 3, brandName: '올리브영', barcodeNumber: '5555666677778' },
-    ];
+  // 멤버십 (임시)
+  const memberships = [
+    {
+      id: 1,
+      brandName: 'Starbucks',
+      brandLogo: iconStarbucks,
+      points: 5000,
+      color: 'bg-gradient-to-br from-green-600 to-green-700',
+      barcodeNumber: '1234567890123',
+    },
+    {
+      id: 2,
+      brandName: 'KT',
+      brandLogo: undefined,
+      points: 6000,
+      color: 'bg-gradient-to-br from-red-600 to-red-700',
+      barcodeNumber: '9876543210987',
+    },
+    {
+      id: 3,
+      brandName: '브랜드명',
+      brandLogo: undefined,
+      points: 3000,
+      color: 'bg-gradient-to-br from-orange-400 to-orange-500',
+      barcodeNumber: '5555666677778',
+    },
+    {
+      id: 4,
+      brandName: '브랜드명',
+      brandLogo: undefined,
+      points: 8000,
+      color: 'bg-gradient-to-br from-yellow-400 to-yellow-500',
+      barcodeNumber: '1111222233334',
+    },
+  ];
 
-    return (
-        <Layout showBottomNav>
-            <div className="p-6 pb-20">
-                <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-bold">내 멤버십</h1>
-                    <button
-                        onClick={() => navigate('/membership/select')}
-                        className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
-                    >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                    </button>
+  // 즐겨찾기 매장 (임시)
+  const favoriteStores = [
+    { id: 1, icon: iconParisBaguette, isSvg: true, isPlus: false },
+    { id: 2, icon: iconOliveYoung, isSvg: true, isPlus: false },
+    { id: 3, icon: iconStarbucks, isSvg: true, isPlus: false },
+    { id: 4, icon: iconPlusLine, isSvg: true, isPlus: true },
+    { id: 5, icon: iconPlusLine, isSvg: true, isPlus: true },
+  ];
+
+  const handleStackedCardClick = () => {
+    if (viewMode === 'stacked') {
+      setViewMode('spread');
+    } else if (viewMode === 'spread') {
+      setViewMode('stacked');
+    }
+  };
+
+  const handleMoreClick = () => {
+    navigate('/barcode/list');
+  };
+
+  return (
+    <Layout showBottomNav>
+      <div className="bg-[#F9F9F9] min-h-screen">
+        {memberships.length > 0 ? (
+          <>
+            <div className="flex justify-center pt-4">
+              <div className="w-[343px]">
+                {/* 나의 바코드 헤더 */}
+                <div className="flex items-center justify-between mb-4 w-[306px] h-[28px] mx-auto">
+                  <h2 className="text-lg font-bold">나의 바코드</h2>
+                  <button
+                    className="text-cyan-500 text-sm font-bold"
+                    onClick={handleMoreClick}
+                  >
+                    더보기
+                  </button>
                 </div>
 
-                {memberships.length > 0 ? (
-                    <div className="space-y-4">
-                        {memberships.map((membership) => (
-                            <BarcodeCard
-                                key={membership.id}
-                                brandName={membership.brandName}
-                                barcodeNumber={membership.barcodeNumber}
-                                onClick={() => navigate(`/wallet/${membership.id}`)}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-20">
-                        <div className="text-6xl mb-4">📱</div>
-                        <h2 className="text-xl font-semibold mb-2">등록된 멤버십이 없습니다</h2>
-                        <p className="text-gray-600 mb-6">
-                            첫 멤버십을 등록해보세요
-                        </p>
-                        <button
-                            onClick={() => navigate('/membership/select')}
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                            멤버십 등록하기
-                        </button>
-                    </div>
-                )}
+                {/* 겹쳐진 카드들 */}
+                <div
+                  className="relative mb-12 transition-all duration-800"
+                  style={{
+                    height:
+                      viewMode === 'stacked'
+                        ? `${211 + (memberships.length - 1) * 18}px`
+                        : `${211 + (memberships.length - 1) * 70}px`,
+                  }}
+                >
+                  {memberships.map((membership, index) => {
+                    const isStacked = viewMode === 'stacked';
+
+                    return (
+                      <div
+                        key={membership.id}
+                        className="absolute transition-all duration-800 ease-in-out w-[343.01px] h-[211.08px]"
+                        style={{
+                          left: '50%',
+                          transform: `
+                            translateX(-50%)
+                            ${isStacked ? `scale(${1 - index * 0.05})` : 'scale(1)'}
+                          `,
+                          top: isStacked
+                            ? `${(memberships.length - 1 - index) * 18}px`
+                            : `${(memberships.length - 1 - index) * 70}px`,
+                          zIndex: memberships.length - index,
+                        }}
+                      >
+                        <BarcodeCard
+                          brandName={membership.brandName}
+                          brandLogo={membership.brandLogo}
+                          color={membership.color}
+                          points={membership.points}
+                          onClick={handleStackedCardClick}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* 매장 즐겨찾기 */}
+                <div className="bg-white rounded-2xl h-[98px] flex items-center justify-center">
+                  <div className="inline-flex gap-4">
+                    {favoriteStores.map((store) => (
+                      <div
+                        key={store.id}
+                        className={`w-[46.38px] h-[46.38px] rounded-lg flex items-center justify-center overflow-hidden ${
+                          store.isPlus ? 'bg-gray-200' : 'bg-white'
+                        }`}
+                      >
+                        {store.isSvg ? (
+                          <img
+                            src={store.icon}
+                            alt="store-icon"
+                            className={store.isPlus ? "w-[24px] h-[24px]" : "w-full h-full object-cover"}
+                          />
+                        ) : (
+                          <span className="leading-none text-2xl">{store.icon}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 배너 */}
+                <div className="w-full h-24 bg-[#FFB5B5] rounded-2xl flex items-center justify-center mt-8">
+                  배너 영역
+                </div>
+
+                <div className="flex justify-center items-center gap-1 mt-3 w-[35px] h-[7px] mx-auto">
+                  <div className="w-[7px] h-[7px] rounded-full bg-cyan-500"></div>
+                  <div className="w-[7px] h-[7px] rounded-full bg-gray-300"></div>
+                  <div className="w-[7px] h-[7px] rounded-full bg-gray-300"></div>
+                </div>
+
+              </div>
             </div>
-            <BottomNav />
-        </Layout>
-    );
+          </>
+        ) : (
+          <div className="text-center py-20 px-5">...</div>
+        )}
+      </div>
+    </Layout>
+  );
 }
