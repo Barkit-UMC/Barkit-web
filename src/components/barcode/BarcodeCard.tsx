@@ -21,8 +21,8 @@ export default function BarcodeCard({
             onClick={onClick}
             className={`${color} rounded-2xl p-5 cursor-pointer shadow-md hover:shadow-lg transition-all relative overflow-hidden h-full`}
         >
-            {/* 우측 상단 로고 영역 */}
-            <div className="absolute top-5 right-5 w-8 h-8 bg-white/90 rounded-lg overflow-hidden">
+            {/* 우측 상단 로고 */}
+            <div className="absolute top-5 right-5 w-8 h-8 bg-white rounded-lg overflow-hidden">
                 {brandLogo ? (
                     <img src={brandLogo} alt="" className="w-full h-full object-cover" />
                 ) : (
