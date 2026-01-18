@@ -1,76 +1,147 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
-import BarcodeView from '../../components/barcode/BarcodeView';
+import iconOliveYoung from '../../assets/icons/stores/oliveYoung.svg';
+import iconStarbucks from '../../assets/icons/stores/starbucks.svg';
+import iconSetting from '../../assets/icons/detail/setting.svg'
+import barcode from '../../assets/images/barcodes/barcode.svg'
+import ktCardImage from '../../assets/images/cards/ktCard.svg'
+import { useNavigate, useParams } from 'react-router-dom';
+import MembershipSettingSheet from '../../components/detail/MembershipSettingSheet';
+import MembershipDeleteModal from '../../components/detail/MembershipDeleteModal';
 
-/**
- * [PAGE 10] 바코드 상세 보기
- */
 export default function DetailPage() {
-    const { id } = useParams();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    // TODO: API에서 멤버십 상세 정보 가져오기
-    const membership = {
-        id: 1,
-        brandName: '스타벅스',
-        barcodeNumber: '1234567890123',
-        barcodeFormat: 'CODE128' as const,
-        memberName: '홍길동',
-        registeredDate: '2024-01-01'
-    };
+  // 브랜드 정보 (임시)
+  const brandName = 'KT';
+  const membershipNumber = '2917-1019-4044-2547';
 
-    const handleDelete = () => {
-        if (confirm('이 멤버십을 삭제하시겠습니까?')) {
-            // TODO: 삭제 API 호출
-            console.log('Delete membership:', id);
-            navigate('/wallet');
-        }
-    };
+  // 적립/할인 가능한 매장 (임시)
+  const favoriteStores = [
+    { id: 1, icon: iconOliveYoung, isSvg: true },
+    { id: 2, icon: iconStarbucks, isSvg: true },
+    { id: 3, icon: undefined, isSvg: false },
+    { id: 4, icon: undefined, isSvg: false },
+    { id: 5, icon: undefined, isSvg: false },
+  ];
 
-    return (
-        <Layout>
-            <Header
-                title={membership.brandName}
-                rightAction={
-                    <button
-                        onClick={handleDelete}
-                        className="text-red-500 hover:text-red-700"
-                    >
-                        삭제
-                    </button>
-                }
-            />
+  const handleMoreClick = () => {
+    navigate(`/barcode/${id}/benefits`);
+  };
 
-            <div className="p-6">
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white">
-                        <h2 className="text-2xl font-bold mb-2">{membership.brandName}</h2>
-                        <p className="text-blue-100">{membership.memberName}</p>
-                    </div>
+  const handleSettingClick = () => {
+    setIsSettingOpen(true);
+  }
 
-                    <div className="p-6">
-                        <BarcodeView
-                            value={membership.barcodeNumber}
-                            format={membership.barcodeFormat}
-                        />
-                    </div>
+  const handleDeleteMembership = () => {
+    setIsDeleteModalOpen(true);
+  };
 
-                    <div className="px-6 pb-6 space-y-3 text-sm text-gray-600">
-                        <div className="flex justify-between">
-                            <span>등록일</span>
-                            <span>{membership.registeredDate}</span>
-                        </div>
-                    </div>
-                </div>
+  const handleConfirmDelete = () => {
+    // TODO: 멤버십 삭제 API 호출
+    console.log('멤버십 삭제 확정');
+    // 삭제 후 홈으로 이동
+    navigate('/home');
+  };
 
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600 text-center">
-                        💡 화면 밝기를 최대로 올려서 사용하세요
-                    </p>
-                </div>
+  const handleChangeBarcode = () => {
+    // TODO: 바코드 변경 로직
+    console.log('바코드 변경');
+  };
+
+  return (
+    <Layout showBottomNav>
+      <div className="bg-[#F9F9F9] min-h-screen">
+        <Header title={`${brandName} 바코드`} />
+
+        <div className="flex justify-center pt-4">
+          <div className="w-[343px]">
+
+            {/* 설정 아이콘 */}
+            <div className="flex justify-end mb-4 px-1">
+              <button
+                onClick={handleSettingClick}
+                className="cursor-pointer"
+              >
+                <img
+                  src={iconSetting}
+                  alt="설정"
+                  className="w-6 h-6"
+                />
+              </button>
             </div>
-        </Layout>
-    );
+
+            <div className="w-[343px] h-[400.96px] rounded-2xl mb-4">
+              {/* 멤버십 카드 */}
+              <div className="w-full h-[211.08px] bg-gray-200 rounded-xl flex items-center justify-center mb-2">
+                <img src={ktCardImage} alt="멤버십 카드 이미지" className="object-contain"></img>
+              </div>
+
+              {/* 멤버십 바코드 */}
+              <div className="flex flex-col items-center">
+                <div className="mb-2">
+                  <img src={barcode} alt="멤버십 바코드" className="w-[318px] h-[176px] object-contain" />
+                </div>
+              </div>
+            </div>
+
+            {/* 적립/할인 가능한 매장 */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-3 max-w-[309px] mx-auto">
+                <h2 className="text-lg font-semibold">적립/할인 가능한 매장</h2>
+                <button 
+                  onClick={handleMoreClick}
+                  className="text-cyan-500 text-sm font-bold cursor-pointer"
+                >
+                  더보기
+                </button>
+              </div>
+
+              <div className="bg-white rounded-2xl h-[98px] flex items-center justify-center">
+                <div className="inline-flex gap-4">
+                  {favoriteStores.map((store) => (
+                    <div
+                      key={store.id}
+                      className={`w-[46.38px] h-[46.38px] rounded-lg flex items-center justify-center overflow-hidden ${
+                        store.icon ? 'bg-white' : 'bg-gray-200'
+                      }`}
+                    >
+                      {store.icon ? (
+                        <img
+                          src={store.icon}
+                          alt="store-icon"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 설정 Bottom Sheet */}
+      <MembershipSettingSheet
+        isOpen={isSettingOpen}
+        onClose={() => setIsSettingOpen(false)}
+        onDeleteMembership={handleDeleteMembership}
+        onChangeBarcode={handleChangeBarcode}
+      />
+
+      {/* 멤버십 삭제 모달 */}
+      <MembershipDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        brandName={brandName}
+        membershipNumber={membershipNumber}
+      />
+    </Layout>
+  );
 }
