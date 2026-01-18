@@ -1,7 +1,7 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
-import Header from '../../components/common/Header';
+import iconTrashOff from '../../assets/icons/trash/trash-off.svg';
+import iconTrashOn from '../../assets/icons/trash/trash-on.svg';
 
 /**
  * [PAGE 13] 즐겨찾는 매장 목록
@@ -16,53 +16,128 @@ export default function FavoriteListPage() {
     ];
 
     return (
-        <Layout>
-            <Header
-                title="즐겨찾는 매장"
-                rightAction={
-                    <button
-                        onClick={() => navigate('/favorites/add')}
-                        className="text-blue-600 font-medium"
+        <Layout showBottomNav={true}>
+            {/* 상단 헤더 */}
+            <div className="w-full h-[128px] relative flex items-end border-b border-gray-200">
+                {/* 뒤로가기 */}
+                <button
+                    onClick={() => navigate(-1)}
+                    className="absolute left-[16px] pb-4 p-2 rounded-full"
+                    aria-label="뒤로가기"
+                >
+                    <svg
+                        className="w-8 h-8"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                     >
-                        추가
-                    </button>
-                }
-            />
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                        />
+                    </svg>
+                </button>
 
-            <div className="p-6">
-                {favorites.length > 0 ? (
-                    <div className="space-y-3">
-                        {favorites.map((store) => (
-                            <div
-                                key={store.id}
-                                className="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
-                            >
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <h3 className="font-semibold mb-1">{store.name}</h3>
-                                        <p className="text-sm text-gray-600">{store.address}</p>
-                                        <p className="text-xs text-blue-600 mt-1">{store.distance}m</p>
-                                    </div>
-                                    <button
-                                        className="text-yellow-500 text-2xl"
-                                        onClick={() => {/* TODO: 즐겨찾기 해제 */ }}
+                {/* 타이틀 */}
+                <h1 className="w-full text-center text-xl font-semibold pb-4">
+                    매장 즐겨찾기
+                </h1>
+            </div>
+
+            {/* 내용 영역 */}
+            <div className="p-8 bg-gray-50">
+                {/* 안내 헤더 */}
+                <header className="flex items-center justify-between pl-4 pr-4 ">
+                    <h2 className="text-lg font-semibold pb-2">
+                        최대 5개 매장 선택
+                    </h2>
+
+                    {/* 삭제 모드 버튼 (지금은 off 상태) */}
+                    <img
+                        src={iconTrashOff}
+                        alt="즐겨찾기 삭제 아이콘"
+                        className="w-10 h-10"
+                    />
+                </header>
+
+                {/* 매장 아이콘 영역 */}
+                <div
+                    className="
+                        mt-4 w-full h-20 rounded-2xl
+                        bg-white p-4
+                        flex justify-center
+                    "
+                >
+                    <div className="flex flex-row gap-4">
+                        {Array.from({ length: 5 }).map((_, idx) => {
+                            const store = favorites[idx];
+
+                            // 이미 선택된 매장
+                            if (store) {
+                                return (
+                                    <div
+                                        key={store.id}
+                                        className="
+                                            w-12 h-12
+                                            flex items-center justify-center
+                                            border border-gray-200
+                                            rounded-lg
+                                            bg-white
+                                        "
                                     >
-                                        ⭐
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                                        <img
+                                            src={store.icon || ''}
+                                            alt={`${store.name} 아이콘`}
+                                            className="w-8 h-8"
+                                        />
+                                    </div>
+                                );
+                            }
+
+                            // 빈 슬롯 → 플러스 버튼
+                            return (
+                                <button
+                                    key={`empty-${idx}`}
+                                    onClick={() => navigate('/store/add')}
+                                    className="
+                                        w-12 h-12
+                                        flex items-center justify-center
+                                        rounded-lg
+                                        bg-gray-200
+                                        hover:bg-gray-300
+                                    "
+                                    aria-label="매장 추가"
+                                >
+                                    <PlusIcon />
+                                </button>
+                            );
+                        })}
                     </div>
-                ) : (
-                    <div className="text-center py-20">
-                        <div className="text-6xl mb-4">⭐</div>
-                        <h2 className="text-xl font-semibold mb-2">즐겨찾는 매장이 없습니다</h2>
-                        <p className="text-gray-600">
-                            자주 가는 매장을 추가해보세요
-                        </p>
-                    </div>
-                )}
+                </div>
+
+                {/* 즐겨찾기 매장 카드 리스트 */}
             </div>
         </Layout>
+    );
+}
+
+/* 플러스 아이콘 */
+function PlusIcon() {
+    return (
+        <svg
+            className="w-6 h-6 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+            />
+        </svg>
     );
 }

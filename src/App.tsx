@@ -38,9 +38,11 @@ const LoadingFallback = () => (
   </div>
 );
 
+const isDev = import.meta.env.MODE === 'development';
 // Protected route wrapper - checks if user is authenticated
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // TODO: Replace with actual auth check (e.g., from context or localStorage)
+  if (isDev) return <>{children}</>;
   const isAuthenticated = localStorage.getItem('authToken') !== null;
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
@@ -49,6 +51,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 // Root redirect - sends to home if authenticated, login otherwise
 const RootRedirect = () => {
   // TODO: Replace with actual auth check
+  if (isDev) return <Navigate to="/home" replace />;
   const isAuthenticated = localStorage.getItem('authToken') !== null;
 
   return <Navigate to={isAuthenticated ? '/home' : '/login'} replace />;
