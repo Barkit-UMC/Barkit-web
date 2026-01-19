@@ -1,4 +1,8 @@
-import React from 'react';
+import { Status, Wrapper } from '@googlemaps/react-wrapper';
+import React, { useEffect, useRef, useState } from 'react';
+
+const GOOGLE_MAP_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY;
+console.log("내 API 키:", GOOGLE_MAP_KEY);
 
 interface MapContainerProps {
     center?: { lat: number; lng: number };
@@ -8,9 +12,15 @@ interface MapContainerProps {
 
 /**
  * [PAGE 16] 지도 띄우는 컨테이너
- * 카카오맵 또는 네이버맵을 표시하는 컨테이너
- * TODO: 카카오맵 API 통합 필요
+ * 구글 지도
  */
+
+// 로딩 상태에 따른 렌더링 함수
+const render = (status: Status) => {
+    if (status === Status.FAILURE) return <div>지도를 불러오지 못했습니다.</div>;
+    return <div className="flex items-center justify-center h-full">로딩 중...</div>;
+};
+
 export default function MapContainer({
     center = { lat: 37.5665, lng: 126.9780 }, // 서울 기본 좌표
     zoom = 15,
@@ -18,19 +28,57 @@ export default function MapContainer({
 }: MapContainerProps) {
     return (
         <div className="relative w-full h-full">
-            {/* TODO: 카카오맵 또는 네이버맵 API 통합 */}
-            <div
-                id="map"
-                className="w-full h-full bg-gray-200 flex items-center justify-center"
+            <div className="relative w-full h-full">
+            <Wrapper 
+                apiKey={GOOGLE_MAP_KEY} // 여기에 실제 API 키를 넣으세요
+                render={render}
+                libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
             >
-                <div className="text-center text-gray-500">
-                    <svg className="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
-                    <p>지도 API 연동 예정</p>
-                </div>
-            </div>
-            {children}
+                <MapComponent center={center} zoom={zoom}>
+                    {children}
+                </MapComponent>
+            </Wrapper>
         </div>
+        </div>
+    );
+}
+
+function MapComponent({ center, zoom, children }: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const [map, setMap] = useState<google.maps.Map | null>(null);
+
+    useEffect(() => {
+        if (ref.current && !map) {
+            // 지도 초기화
+            const newMap = new window.google.maps.Map(ref.current, {
+                center,
+                zoom,
+                disableDefaultUI: true, // 버튼들을 커스텀 UI(MapHomePage)로 대체하므로 기본 UI는 끔
+                zoomControl: false,
+            });
+            setMap(newMap);
+        }
+    }, [ref, map, center, zoom]);
+
+    // 위치 변경 시 지도 중심 이동
+    useEffect(() => {
+        if (map) {
+            map.panTo(center);
+        }
+    }, [center, map]);
+
+    return (
+        <>
+            <div ref={ref} className="w-full h-full" id="map" />
+            {/* 구글 지도 위에 리액트 컴포넌트(마커 등)를 띄우기 위해 
+              Context를 만들거나, children을 전달합니다. 
+            */}
+            {map && React.Children.map(children, (child) => {
+                if (React.isValidElement(child)) {
+                    // child에 map 객체를 주입하여 마커가 지도를 참조할 수 있게 함
+                    return React.cloneElement(child as React.ReactElement<any>, { map });
+                }
+            })}
+        </>
     );
 }
