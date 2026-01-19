@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import MapContainer from '../../components/map/MapContainer';
 import StoreMarker from '../../components/map/StoreMarker';
@@ -39,54 +39,55 @@ export default function MapHomePage() {
     const [searchText, setSearchText] = useState(''); // 검색어 상태
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
+    const latestCoords = useRef<{lat: number, lng: number} | null>(null);
+
     useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setCurrentLocation({ lat: latitude, lng: longitude });
-                    setIsTracking(true); // 처음부터 내 위치를 잡았으므로 활성화
-                },
-                (error) => {
-                    console.error("위치 정보 실패:", error);
-                    // 실패 시에만 기본값(서울 시청) 설정
-                    setCurrentLocation({ lat: 37.5665, lng: 126.9780 });
-                },
-                { enableHighAccuracy: true }
-            );
-        } else {
-            setCurrentLocation({ lat: 37.5665, lng: 126.9780 });
-        }
-    }, []);
+        if (!navigator.geolocation) return;
+
+        // watchPosition은 위치가 바뀔 때마다 실행되며, 시스템이 이미 좌표를 들고 있게 만듭니다.
+        const watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                const newPos = { lat: latitude, lng: longitude };
+                
+                latestCoords.current = newPos; // Ref에 실시간 좌표 저장
+                
+                // 앱 처음 실행 시에만 지도를 내 위치로 이동
+                if (!currentLocation) {
+                    setCurrentLocation(newPos);
+                    setIsTracking(true);
+                }
+            },
+            (error) => console.error("위치 추적 오류:", error),
+            { 
+                enableHighAccuracy: false, // 속도를 위해 처음엔 false, 필요시 true
+                maximumAge: 1000,          // 1초 이내 캐시된 위치 사용 (매우 빠름)
+                timeout: 5000 
+            }
+        );
+
+        return () => navigator.geolocation.clearWatch(watchId); // 언마운트 시 해제
+    }, [currentLocation]);
 
     // 3. 현재 위치로 이동하는 함수
     const handleMoveToCurrentLocation = () => {
-        if (!navigator.geolocation) {
-            alert('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
-            return;
+        if (latestCoords.current) {
+            // 이미 watchPosition이 잡고 있는 최신 좌표로 즉시 이동
+            setCurrentLocation({ ...latestCoords.current }); 
+            setIsTracking(true);
+        } else {
+            // 아직 좌표가 없다면 새로 요청 (Fallback)
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    setCurrentLocation(newPos);
+                    latestCoords.current = newPos;
+                    setIsTracking(true);
+                },
+                null,
+                { enableHighAccuracy: true, timeout: 2000 }
+            );
         }
-
-        // 로딩 중이거나 이미 트래킹 중이면 잠시 대기할 수도 있음 (선택사항)
-        
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                // 지도 중심 이동
-                setCurrentLocation({ lat: latitude, lng: longitude });
-                // 버튼 활성화
-                setIsTracking(true);
-            },
-            (error) => {
-                console.error(error);
-                alert('위치 정보를 가져올 수 없습니다. 권한을 확인해주세요.');
-                setIsTracking(false);
-            },
-            {
-                enableHighAccuracy: true, // 정확도 우선
-                timeout: 5000,
-                maximumAge: 0
-            }
-        );
     };
 
     // 위치 정보가 올 때까지 '로딩'을 보여주어 지도가 0px로 튀는 것을 방지
