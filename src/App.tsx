@@ -1,6 +1,12 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/common/Layout';
+import ChangePasswdPage from './pages/profile/ChangePasswordPage';
+import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
+import AddToHomePage from './pages/profile/AddToHomePage';
+import LogoutPage from './pages/profile/LogoutPage';
+import UnscribePage from './pages/profile/UnscribePage';
+import LocationPermissionPage from './pages/profile/LocationPermissionPage';
 
 // Lazy load all page components for better initial loading performance
 // Auth pages
@@ -38,9 +44,11 @@ const LoadingFallback = () => (
   </div>
 );
 
+const isDev = import.meta.env.MODE === 'development';
 // Protected route wrapper - checks if user is authenticated
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // TODO: Replace with actual auth check (e.g., from context or localStorage)
+  if (isDev) return <>{children}</>;
   const isAuthenticated = localStorage.getItem('authToken') !== null;
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
@@ -49,6 +57,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 // Root redirect - sends to home if authenticated, login otherwise
 const RootRedirect = () => {
   // TODO: Replace with actual auth check
+  if (isDev) return <Navigate to="/home" replace />;
   const isAuthenticated = localStorage.getItem('authToken') !== null;
 
   return <Navigate to={isAuthenticated ? '/home' : '/login'} replace />;
@@ -174,6 +183,14 @@ function App() {
               }
             />
             <Route
+              path="/profile/pwa"
+              element={
+                <ProtectedRoute>
+                  <AddToHomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/profile/edit"
               element={
                 <ProtectedRoute>
@@ -181,6 +198,47 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/profile/edit/password"
+              element={
+                <ProtectedRoute>
+                  <ChangePasswdPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit/birthday"
+              element={
+                <ProtectedRoute>
+                  <ChangeBirthdayPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/locationpermission"
+              element={
+                <ProtectedRoute>
+                  <LocationPermissionPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/logout"
+              element={
+                <ProtectedRoute>
+                  <LogoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/unscribe"
+              element={
+                <ProtectedRoute>
+                  <UnscribePage />
+                </ProtectedRoute>
+              }
+            />
+            
 
             {/* 404 fallback - redirect to home or login */}
             <Route path="*" element={<RootRedirect />} />
