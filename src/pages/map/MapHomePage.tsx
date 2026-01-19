@@ -214,7 +214,7 @@ export default function MapHomePage() {
 
                 {/* 3. 현재 위치 버튼 (우측 하단) */}
                 <button
-                    className="absolute bottom-24 right-3 rounded-full transition-shadow z-10 w-14 h-14 overflow-hidden"
+                    className="absolute bottom-10 right-3 rounded-full transition-shadow z-10 w-14 h-14 overflow-hidden"
                     onClick={handleMoveToCurrentLocation}
                 >
                     <img
