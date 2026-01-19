@@ -9,6 +9,7 @@ interface MapContainerProps {
     zoom?: number;
     children?: React.ReactNode;
     onDragStart?: () => void; // 지도를 드래그하기 시작할 때 실행될 함수
+    showMyLocation?: boolean;
 }
 
 /**
@@ -26,7 +27,8 @@ export default function MapContainer({
     center = { lat: 37.5665, lng: 126.9780 }, // 서울 기본 좌표
     zoom = 15,
     children,
-    onDragStart
+    onDragStart,
+    showMyLocation = true
 }: MapContainerProps) {
     return (
         <div className="relative w-full h-full">
@@ -36,7 +38,7 @@ export default function MapContainer({
                 render={render}
                 libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
             >
-                <MapComponent center={center} zoom={zoom} onDragStart={onDragStart}>
+                <MapComponent center={center} zoom={zoom} onDragStart={onDragStart} showMyLocation={showMyLocation}>
                     {children}
                 </MapComponent>
             </Wrapper>
@@ -45,7 +47,7 @@ export default function MapContainer({
     );
 }
 
-function MapComponent({ center, zoom, children, onDragStart}: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode, onDragStart?: () => void}) {
+function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode, onDragStart?: () => void, showMyLocation : boolean; }) {
     const ref = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
 
@@ -69,6 +71,14 @@ function MapComponent({ center, zoom, children, onDragStart}: { center: google.m
     // 내 위치가 변할 때마다 마커 표시/업데이트
     useEffect(() => {
         if (map && center) {
+            if (!showMyLocation) {
+                if (myLocationMarker) {
+                    myLocationMarker.setMap(null); // 기존 마커가 있다면 제거
+                    setMyLocationMarker(null);
+                }
+                return; 
+            }
+    
             // 기존 마커가 있으면 위치만 업데이트, 없으면 생성
             if (myLocationMarker) {
                 myLocationMarker.setPosition(center);

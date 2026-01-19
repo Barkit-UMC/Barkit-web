@@ -6,6 +6,7 @@ import kt from '../../assets/icons/memberships/kt.svg';
 import oliveyoung from '../../assets/icons/memberships/oliveyoung.svg';
 import sampleimg from '../../assets/images/map_image_sample.png';
 import Header from '../../components/common/Header';
+import MapContainer from '../../components/map/MapContainer';
 
 export default function MapDetailPage() {
 
@@ -15,6 +16,7 @@ export default function MapDetailPage() {
         category: '드럭스토어',
         distance: '0.55km',
         address: '서울 성동구 연무장7길 13 팩토리얼',
+        location: { lat: 37.5445, lng: 127.0560 },
         images: [
             sampleimg, // 임시 이미지
             sampleimg,
@@ -116,21 +118,24 @@ export default function MapDetailPage() {
                     {/* --- 새로 추가되는 지도 섹션 시작 --- */}
                     <div className="mt-4">
                         {/* 지도 이미지 영역 */}
+                        {/* overflow-hidden과 rounded-2xl을 주어 지도가 둥글게 잘리도록 함 */}
                         <div className="relative w-full h-40 bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                            {/* 실제 지도 API를 쓰기 전까지는 임시 이미지를 넣거나 아래처럼 처리합니다 */}
-                            <img 
-                                src={sampleimg} // 여기에 지도 캡쳐본 또는 지도 API 결과물이 들어갑니다.
-                                alt="지도"
-                                className="w-full h-full object-cover opacity-80"
-                            />
-                            {/* 중앙 마커 아이콘 (이미지로 대체 가능) */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-8 h-8 bg-blue-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                                </div>
-                            </div>
-                            {/* 우측 상단 확대 아이콘 버튼 */}
-                            <button className="absolute top-2 right-2 bg-white p-1.5 rounded-lg shadow-md border border-gray-100">
+                            
+                            {/* 구글 지도 컴포넌트 삽입 */}
+                            <MapContainer 
+                                center={storeData.location} 
+                                zoom={17} // 상세 페이지니까 조금 더 확대
+                                showMyLocation={false}
+                            >
+                                {/* 매장 위치 마커 */}
+                                {/* <MapMarker 
+                                    position={storeData.location} 
+                                    title={storeData.name}
+                                /> */}
+                            </MapContainer>
+
+                            {/* 우측 상단 확대 아이콘 버튼 (z-index를 주어 지도 위에 띄움) */}
+                            <button className="absolute top-2 right-2 bg-white p-1.5 rounded-lg shadow-md border border-gray-100 z-10 hover:bg-gray-50">
                                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                                 </svg>
