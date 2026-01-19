@@ -49,6 +49,9 @@ function MapComponent({ center, zoom, children, onDragStart}: { center: google.m
     const ref = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
 
+    // 내 위치 마커를 저장할 State
+    const [myLocationMarker, setMyLocationMarker] = useState<google.maps.Marker | null>(null);
+
     useEffect(() => {
         if (ref.current && !map) {
             // 지도 초기화
@@ -62,6 +65,33 @@ function MapComponent({ center, zoom, children, onDragStart}: { center: google.m
             setMap(newMap);
         }
     }, [ref, map, center, zoom]);
+
+    // 내 위치가 변할 때마다 마커 표시/업데이트
+    useEffect(() => {
+        if (map && center) {
+            // 기존 마커가 있으면 위치만 업데이트, 없으면 생성
+            if (myLocationMarker) {
+                myLocationMarker.setPosition(center);
+            } else {
+                const marker = new window.google.maps.Marker({
+                    position: center,
+                    map: map,
+                    title: "내 위치",
+                    // 원하는 경우 커스텀 아이콘 설정 가능
+                    icon: {
+                        path: window.google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: "#4285F4",
+                        fillOpacity: 1,
+                        strokeColor: "white",
+                        strokeWeight: 2,
+                    },
+                });
+                setMyLocationMarker(marker);
+            }
+            map.panTo(center); // 위치 변경 시 부드럽게 이동
+        }
+    }, [center, map]);
 
     useEffect(() => {
         if (map && onDragStart) {
