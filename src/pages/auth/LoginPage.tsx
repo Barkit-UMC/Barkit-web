@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import Layout from '../../components/common/Layout'; // UI 확인을 위해 잠시 주석 처리
+import kakaoIcon from '../../assets/icons/sns/kakaotalk.svg';
+import naverIcon from '../../assets/icons/sns/naver.svg';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -8,7 +9,6 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
 
     return (
-        // Layout 컴포넌트 없이 전체 화면(min-h-screen)을 잡습니다.
         <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6">
 
             {/* 1. 로고 영역 - mb-20 (80px) */}
@@ -80,12 +80,12 @@ export default function LoginPage() {
                 <div className="flex justify-center gap-6">
                     {/* 카카오 버튼 */}
                     <button onClick={() => console.log('Kakao')} className="w-15 h-15 rounded-full overflow-hidden shadow-sm hover:opacity-90 transition-opacity">
-                        <img src="/kakaotalk-logo.svg" alt="Kakao" className="w-full h-full object-cover" />
+                        <img src={kakaoIcon} alt="Kakao" className="w-full h-full object-cover" />
                     </button>
 
                     {/* 네이버 버튼 */}
                     <button onClick={() => console.log('Naver')} className="w-15 h-15 rounded-full overflow-hidden shadow-sm hover:opacity-90 transition-opacity">
-                        <img src="/naver-logo.svg" alt="Naver" className="w-full h-full object-cover" />
+                        <img src={naverIcon} alt="Naver" className="w-full h-full object-cover" />
                     </button>
                 </div>
             </div>
