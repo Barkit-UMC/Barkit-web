@@ -12,7 +12,6 @@ interface HeaderProps {
 export default function Header({
   title,
   showBackButton = true,
-  rightAction,
 }: HeaderProps) {
   const navigate = useNavigate();
 
@@ -47,13 +46,6 @@ export default function Header({
           <h1 className="mx-auto text-xl font-semibold">
             {title}
           </h1>
-        )}
-
-        {/* 우측 액션 */}
-        {rightAction && (
-          <div className="absolute right-[16px]">
-            {rightAction}
-          </div>
         )}
       </div>
     </header>
