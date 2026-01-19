@@ -14,7 +14,7 @@ export default function MembershipSearchBar({
     iconSearch
 }: MembershipSearchBarProps) {
     return (
-        <div className="bg-[#F9F9F9] w-[343px] h-[54px] mx-auto flex items-center">
+        <div className="w-[343px] h-[54px] mx-auto flex items-center">
             <div className="relative w-full">
                 <input
                     type="text"

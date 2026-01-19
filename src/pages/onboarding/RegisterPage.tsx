@@ -19,10 +19,14 @@ const BRAND_ICONS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
 /**
  * 멤버십 등록 허브 페이지
  * - 브랜드 선택, 번호 입력, 바코드 추가 섹션
+ * - 브랜드 미선택 시 번호 입력/바코드 섹션 비활성화
  */
 export default function RegisterPage() {
     const navigate = useNavigate();
     const { selectedBrand, cardNumber } = useOnboardingStore();
+
+    // 브랜드 선택 여부
+    const isBrandSelected = !!selectedBrand;
 
     // Format card number for display (mask middle digits)
     const formatDisplayNumber = (num: string) => {
@@ -93,8 +97,11 @@ export default function RegisterPage() {
                 </section>
 
                 {/* Section B: 멤버십 번호 입력 */}
-                <section>
-                    <h2 className="font-bold text-gray-900 mb-3">멤버십 번호 입력</h2>
+                <section className={!isBrandSelected ? 'opacity-50' : ''}>
+                    <h2 className="font-bold text-gray-900 mb-1">멤버십 번호 입력</h2>
+                    {!isBrandSelected && (
+                        <p className="text-xs text-gray-400 mb-3">먼저 브랜드를 선택해주세요</p>
+                    )}
 
                     {/* Number Preview */}
                     <div className="flex items-center gap-2 mb-4">
@@ -110,15 +117,23 @@ export default function RegisterPage() {
 
                     {cardNumber ? (
                         <button
-                            onClick={() => navigate('/onboarding/input')}
-                            className="w-full py-4 rounded-xl bg-[#00C0E8] text-white font-medium"
+                            onClick={() => isBrandSelected && navigate('/onboarding/input')}
+                            disabled={!isBrandSelected}
+                            className={`w-full py-4 rounded-xl font-medium ${isBrandSelected
+                                    ? 'bg-[#00C0E8] text-white'
+                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                }`}
                         >
                             {formatDisplayNumber(cardNumber)} (수정하기)
                         </button>
                     ) : (
                         <button
-                            onClick={() => navigate('/onboarding/input')}
-                            className="w-full py-4 rounded-xl bg-cyan-50 text-[#00C0E8] font-medium hover:bg-cyan-100 transition-colors"
+                            onClick={() => isBrandSelected && navigate('/onboarding/input')}
+                            disabled={!isBrandSelected}
+                            className={`w-full py-4 rounded-xl font-medium transition-colors ${isBrandSelected
+                                    ? 'bg-cyan-50 text-[#00C0E8] hover:bg-cyan-100'
+                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                }`}
                         >
                             입력하기
                         </button>
@@ -126,11 +141,18 @@ export default function RegisterPage() {
                 </section>
 
                 {/* Section C: 사진으로 바코드 추가 */}
-                <section>
-                    <h2 className="font-bold text-gray-900 mb-3">사진으로 바코드 추가</h2>
+                <section className={!isBrandSelected ? 'opacity-50' : ''}>
+                    <h2 className="font-bold text-gray-900 mb-1">사진으로 바코드 추가</h2>
+                    {!isBrandSelected && (
+                        <p className="text-xs text-gray-400 mb-3">먼저 브랜드를 선택해주세요</p>
+                    )}
                     <button
-                        onClick={() => alert('준비 중인 기능입니다.')}
-                        className="w-full py-4 rounded-xl bg-cyan-50 text-[#00C0E8] font-medium hover:bg-cyan-100 transition-colors"
+                        onClick={() => isBrandSelected && alert('준비 중인 기능입니다.')}
+                        disabled={!isBrandSelected}
+                        className={`w-full py-4 rounded-xl font-medium transition-colors ${isBrandSelected
+                                ? 'bg-cyan-50 text-[#00C0E8] hover:bg-cyan-100'
+                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            }`}
                     >
                         추가하기
                     </button>

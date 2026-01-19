@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import BarkitIcon from '../../assets/icons/Barkit_icon_default.svg?react';
-import HyundaiIcon from '../../assets/icons/BrandIcon/hyundai_icon.svg?react';
-import OliveYoungIcon from '../../assets/icons/BrandIcon/oliveyoung_icon.svg?react';
-import HappyPointIcon from '../../assets/icons/BrandIcon/happypoint_icon.svg?react';
-import KTIcon from '../../assets/icons/BrandIcon/kt_icon.svg?react';
+import HyundaiIcon from '../../assets/icons/BrandIcon/hyundai.svg?react';
+import OliveYoungIcon from '../../assets/icons/BrandIcon/oliveyoung.svg?react';
+import HappyPointIcon from '../../assets/icons/BrandIcon/happypoint.svg?react';
+import KTIcon from '../../assets/icons/BrandIcon/kt.svg?react';
 
 export default function IntroPage() {
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function IntroPage() {
             <main className="flex-1 flex flex-col px-6 pb-8">
                 {/* 1. Welcome Section (좌측 정렬 & 상단 배치) */}
                 <div className="mt-12 mb-8">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">
+                    <h1 className="text-2xl font-bold text-gray-900 mt-10 leading-tight">
                         어서오세요!<br />
                         첫 멤버십을 추가해볼까요?
                     </h1>
