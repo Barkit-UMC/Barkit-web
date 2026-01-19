@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Layout from '../../components/common/Layout';
-import BottomNav from '../../components/common/BottomNav';
 import MapContainer from '../../components/map/MapContainer';
 import StoreMarker from '../../components/map/StoreMarker';
 import iconSearch from '../../assets/icons/map/search.svg';
