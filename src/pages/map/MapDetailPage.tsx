@@ -31,6 +31,18 @@ export default function MapDetailPage() {
         description: '[새로운 차원의 경험 공간, 올리브영N 성수]\n\n더 많은 고객님께 뷰티 케어 서비스를 제공하기 위해 12월 8일(월)부터 서비스 운영 시간이 조정됩니다.'
     };
 
+    const handleNavigation = () => {
+        const { lat, lng } = storeData.location;
+        const name = storeData.name;
+        
+        // 카카오맵 길찾기 URL 포맷: https://map.kakao.com/link/to/장소명,위도,경도
+        // 이 링크는 PC/모바일 웹 모두 지원하며, 모바일에서는 카카오맵 앱이 있다면 연결을 시도합니다.
+        const url = `https://map.kakao.com/link/to/${name},${lat},${lng}`;
+        
+        // 새 탭으로 열기
+        window.open(url, '_blank');
+    };
+
     return (
         <Layout showBottomNav={false}>
             <div className="flex flex-col h-full bg-white overflow-y-auto pb-10">
@@ -39,7 +51,11 @@ export default function MapDetailPage() {
                 <Header 
                     showBackButton={true}
                     rightAction={
-                        <button className="p-2 rounded-full transition-transform active:scale-95">
+                        <button 
+                            className="p-2 rounded-full transition-transform active:scale-95"
+                            onClick={handleNavigation}
+                            aria-label = "길찾기"
+                        >
                             <img src={iconShare} alt="공유" className="w-8 h-8" />
                         </button>
                     }
