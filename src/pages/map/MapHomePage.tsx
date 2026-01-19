@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import MapContainer from '../../components/map/MapContainer';
 import StoreMarker from '../../components/map/StoreMarker';
@@ -27,13 +27,37 @@ export default function MapHomePage() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
 
     // 1. 지도 중심 좌표를 State로 관리 (초기값: 서울 시청)
-    const [currentLocation, setCurrentLocation] = useState({ lat: 37.5665, lng: 126.9780 });
+    const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
     
     // 2. 추적 상태 관리
     const [isTracking, setIsTracking] = useState(false);
 
     const [isSortModalOpen, setIsSortModalOpen] = useState(false);
     const [currentSort, setCurrentSort] = useState('map-center');
+
+    
+    const [searchText, setSearchText] = useState(''); // 검색어 상태
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCurrentLocation({ lat: latitude, lng: longitude });
+                    setIsTracking(true); // 처음부터 내 위치를 잡았으므로 활성화
+                },
+                (error) => {
+                    console.error("위치 정보 실패:", error);
+                    // 실패 시에만 기본값(서울 시청) 설정
+                    setCurrentLocation({ lat: 37.5665, lng: 126.9780 });
+                },
+                { enableHighAccuracy: true }
+            );
+        } else {
+            setCurrentLocation({ lat: 37.5665, lng: 126.9780 });
+        }
+    }, []);
 
     // 3. 현재 위치로 이동하는 함수
     const handleMoveToCurrentLocation = () => {
@@ -65,6 +89,17 @@ export default function MapHomePage() {
         );
     };
 
+    // 위치 정보가 올 때까지 '로딩'을 보여주어 지도가 0px로 튀는 것을 방지
+    if (!currentLocation) {
+        return (
+            <Layout showBottomNav>
+                <div className="flex items-center justify-center w-full h-[calc(100dvh-64px)] bg-white text-gray-500">
+                    지도를 불러오는 중...
+                </div>
+            </Layout>
+        );
+    }
+
     const sortOptions = [
         { 
             id: 'map-center', 
@@ -77,9 +112,6 @@ export default function MapHomePage() {
             icon: myLocIcon  
         },
     ];
-
-    const [searchText, setSearchText] = useState(''); // 검색어 상태
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
     const dummyResults = [
         { id: 1, name: '올리브영 성수', category: '드럭스토어', distance: '0.55km', address: '서울 성동구 연무장7길 13 팩토리얼' },
