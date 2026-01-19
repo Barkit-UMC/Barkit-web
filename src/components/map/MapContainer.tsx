@@ -8,6 +8,7 @@ interface MapContainerProps {
     center?: { lat: number; lng: number };
     zoom?: number;
     children?: React.ReactNode;
+    onDragStart?: () => void; // 지도를 드래그하기 시작할 때 실행될 함수
 }
 
 /**
@@ -24,7 +25,8 @@ const render = (status: Status) => {
 export default function MapContainer({
     center = { lat: 37.5665, lng: 126.9780 }, // 서울 기본 좌표
     zoom = 15,
-    children
+    children,
+    onDragStart
 }: MapContainerProps) {
     return (
         <div className="relative w-full h-full">
@@ -34,7 +36,7 @@ export default function MapContainer({
                 render={render}
                 libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
             >
-                <MapComponent center={center} zoom={zoom}>
+                <MapComponent center={center} zoom={zoom} onDragStart={onDragStart}>
                     {children}
                 </MapComponent>
             </Wrapper>
@@ -43,7 +45,7 @@ export default function MapContainer({
     );
 }
 
-function MapComponent({ center, zoom, children }: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode }) {
+function MapComponent({ center, zoom, children, onDragStart}: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode, onDragStart?: () => void}) {
     const ref = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
 
@@ -55,10 +57,25 @@ function MapComponent({ center, zoom, children }: { center: google.maps.LatLngLi
                 zoom,
                 disableDefaultUI: true, // 버튼들을 커스텀 UI(MapHomePage)로 대체하므로 기본 UI는 끔
                 zoomControl: false,
+                gestureHandling: 'greedy', // 모바일에서 터치감 개선
             });
             setMap(newMap);
         }
     }, [ref, map, center, zoom]);
+
+    useEffect(() => {
+        if (map && onDragStart) {
+            // 사용자가 지도를 드래그하기 시작('dragstart')할 때 onDragStart 실행
+            const listener = map.addListener('dragstart', () => {
+                onDragStart();
+            });
+
+            // 클린업: 컴포넌트가 사라지거나 리스너가 바뀌면 이벤트 제거
+            return () => {
+                window.google.maps.event.removeListener(listener);
+            };
+        }
+    }, [map, onDragStart]);
 
     // 위치 변경 시 지도 중심 이동
     useEffect(() => {

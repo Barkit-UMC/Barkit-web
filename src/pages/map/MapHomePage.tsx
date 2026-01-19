@@ -27,10 +27,44 @@ const CATEGORIES = ['전체', '엔터', '쇼핑', '카페', '식당'];
 export default function MapHomePage() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
 
+    // 1. 지도 중심 좌표를 State로 관리 (초기값: 서울 시청)
+    const [currentLocation, setCurrentLocation] = useState({ lat: 37.5665, lng: 126.9780 });
+    
+    // 2. 추적 상태 관리
     const [isTracking, setIsTracking] = useState(false);
 
     const [isSortModalOpen, setIsSortModalOpen] = useState(false);
     const [currentSort, setCurrentSort] = useState('map-center');
+
+    // 3. 현재 위치로 이동하는 함수
+    const handleMoveToCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            alert('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+            return;
+        }
+
+        // 로딩 중이거나 이미 트래킹 중이면 잠시 대기할 수도 있음 (선택사항)
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                // 지도 중심 이동
+                setCurrentLocation({ lat: latitude, lng: longitude });
+                // 버튼 활성화
+                setIsTracking(true);
+            },
+            (error) => {
+                console.error(error);
+                alert('위치 정보를 가져올 수 없습니다. 권한을 확인해주세요.');
+                setIsTracking(false);
+            },
+            {
+                enableHighAccuracy: true, // 정확도 우선
+                timeout: 5000,
+                maximumAge: 0
+            }
+        );
+    };
 
     const sortOptions = [
         { 
@@ -54,25 +88,20 @@ export default function MapHomePage() {
         { id: 2, name: '올리브영 성수2', category: '드럭스토어', distance: '0.82km', address: '서울 성동구 어쩌구 저쩌구' },
     ];
     
-    // TODO: 현재 위치 가져오기 (실제 로직 연결 필요)
-    const currentLocation = { lat: 37.5665, lng: 126.9780 };
-
     return (
         <Layout showBottomNav>
             <div className="relative h-full w-full bg-gray-100 overflow-hidden">
                 {/* 1. 지도 배경 */}
                 {/* z-0으로 설정하여 다른 UI들이 위에 뜨도록 함 */}
                 <div className="absolute inset-0 z-0">
-                    <MapContainer center={currentLocation} zoom={15}>
+                    <MapContainer 
+                        center={currentLocation} 
+                        zoom={15} 
+                        onDragStart={() => {
+                            console.log("지도 드래그 감지됨 -> 추적 종료"); // 콘솔로 확인해보세요
+                            setIsTracking(false); 
+                        }}>
                         {/* TODO: 매장 마커들 표시 */}
-                        <div className="absolute top-1/2 left-1/2">
-                            <StoreMarker 
-                                storeName="스타벅스 서울시청점"
-                                address="서울 중구 세종대로 110"
-                                distance={150}
-                                onClick={() => alert('매장 클릭!')}
-                            />
-                        </div>
                     </MapContainer>
                 </div>
 
@@ -154,16 +183,11 @@ export default function MapHomePage() {
 
                 {/* 3. 현재 위치 버튼 (우측 하단) */}
                 <button
-                    className="absolute bottom-24 right-3 rounded-full transition-shadow z-10 "
-                    onClick={() => {
-                        // 클릭 시 isTracking 상태를 토글
-                        setIsTracking(!isTracking);
-                        // TODO: 현재 위치로 이동 로직
-                    }}
+                    className="absolute bottom-24 right-3 rounded-full transition-shadow z-10 w-14 h-14 overflow-hidden"
+                    onClick={handleMoveToCurrentLocation}
                 >
-                    {/* 다운받은 이미지를 사용하고 CSS 필터로 색상을 변경합니다. */}
                     <img
-                        src={isTracking ? loc_icon_on : loc_icon}
+                        src={isTracking ? iconLocOn : iconLoc}
                         alt="현재위치이동"
                         className="w-full h-full object-cover"
                     />
