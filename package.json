@@ -12,6 +12,7 @@
   "dependencies": {
     "@googlemaps/react-wrapper": "^1.2.0",
     "@tailwindcss/vite": "^4.1.18",
+    "antd-mobile": "^5.42.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.11.0",
@@ -34,6 +35,7 @@
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-svgr": "^4.5.0"
   }
 }
