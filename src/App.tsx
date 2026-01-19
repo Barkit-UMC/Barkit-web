@@ -18,6 +18,7 @@ const RegisterPage = lazy(() => import('./pages/onboarding/RegisterPage'));
 const SearchPage = lazy(() => import('./pages/onboarding/SearchPage'));
 const InputPage = lazy(() => import('./pages/onboarding/InputPage'));
 const CompletePage = lazy(() => import('./pages/onboarding/CompletePage'));
+const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
@@ -87,6 +88,7 @@ function App() {
             <Route path="/onboarding/search" element={<SearchPage />} />
             <Route path="/onboarding/input" element={<InputPage />} />
             <Route path="/onboarding/complete" element={<CompletePage />} />
+            <Route path="/onboarding/failure" element={<FailurePage />} />
 
             {/* Home routes - protected */}
             <Route
