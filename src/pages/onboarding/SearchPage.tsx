@@ -1,110 +1,118 @@
-// src/pages/onboarding/SearchPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
+import MembershipSearchBar from '../../components/common/MembershipSearchBar';
+import searchIcon from '../../assets/icons/search/search.svg';
 
-// Dummy brand data with unique colors
+// Brand icon imports (using _icon versions)
+import HPointIcon from '../../assets/icons/BrandIcon/hyundai_icon.svg?react';
+import KTIcon from '../../assets/icons/BrandIcon/kt_icon.svg?react';
+import OliveYoungIcon from '../../assets/icons/BrandIcon/oliveyoung_icon.svg?react';
+import HappyPointIcon from '../../assets/icons/BrandIcon/happypoint_icon.svg?react';
+
+// Dummy brand data with icons (no background colors)
 const BRANDS = [
-    { id: 1, name: 'h point', icon: 'h', color: 'bg-purple-600' },
-    { id: 2, name: 'KT', icon: 'kt', color: 'bg-red-500' },
-    { id: 3, name: 'LG U+', icon: 'U+', color: 'bg-pink-500' },
-    { id: 4, name: 'Happy Point', icon: '😊', color: 'bg-orange-400' },
-    { id: 5, name: 'SKT', icon: 'T', color: 'bg-orange-500' },
-    { id: 6, name: 'Starbucks', icon: '☆', color: 'bg-green-600' },
-    { id: 7, name: 'CU', icon: 'CU', color: 'bg-purple-500' },
-    { id: 8, name: 'GS25', icon: 'GS', color: 'bg-blue-500' },
+    { id: 1, name: 'h point', icon: HPointIcon },
+    { id: 2, name: 'KT', icon: KTIcon },
+    { id: 3, name: 'LG U+', icon: OliveYoungIcon },
+    { id: 4, name: 'Happy Point', icon: HappyPointIcon },
 ];
 
 /**
- * Step 2: 브랜드 검색/선택 페이지
- * - 검색창 (UI only)
- * - 브랜드 그리드
- * - 선택 시 Store에 저장
+ * 브랜드 검색/선택 페이지
+ * - 클릭 시 즉시 선택 및 Register 페이지로 복귀
  */
 export default function SearchPage() {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
-    const { selectedBrand, setBrand } = useOnboardingStore();
+    const { setBrand } = useOnboardingStore();
 
     // Filter brands by search query
     const filteredBrands = BRANDS.filter((brand) =>
         brand.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Handle brand selection - select and immediately go back
     const handleBrandSelect = (brand: typeof BRANDS[0]) => {
-        if (selectedBrand?.id === brand.id) {
-            setBrand(null); // Deselect if already selected
-        } else {
-            setBrand(brand);
-        }
+        setBrand({
+            id: brand.id,
+            name: brand.name,
+            icon: brand.name.charAt(0),
+            color: '',
+        });
+        navigate('/onboarding/register');
     };
 
     return (
-        <div className="flex-1 flex flex-col px-6 pb-8">
-            {/* Title */}
-            <div className="text-center mb-6">
-                <h1 className="text-lg font-semibold text-gray-900">
-                    멤버십 브랜드 선택
-                </h1>
-                <p className="text-sm text-gray-500 mt-1">
+        <div className="w-[390px] min-h-screen mx-auto bg-white flex flex-col">
+            {/* Header */}
+            <header className="relative flex items-center justify-center h-14 bg-white border-b border-gray-100">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="absolute left-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    aria-label="뒤로가기"
+                >
+                    <ChevronLeft className="w-6 h-6" />
+                </button>
+                <h1 className="text-lg font-bold">멤버십 브랜드 선택</h1>
+            </header>
+
+            {/* Content */}
+            <div className="flex-1 flex flex-col px-6 py-6 overflow-y-auto">
+                {/* Title */}
+                <p className="text-gray-900 font-medium mb-4">
                     원하는 멤버십 브랜드를 선택해주세요
                 </p>
-            </div>
 
-            {/* Search Bar */}
-            <div className="relative mb-6">
-                <input
-                    type="text"
-                    placeholder="멤버십 브랜드 검색하기 (ex. CU/SKT...)"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full py-3 pl-4 pr-12 bg-gray-100 rounded-lg text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00C0E8]"
-                />
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            </div>
-
-            {/* Brand Grid */}
-            <div className="grid grid-cols-4 gap-3 flex-1">
-                {filteredBrands.map((brand) => (
-                    <button
-                        key={brand.id}
-                        onClick={() => handleBrandSelect(brand)}
-                        className={`aspect-square rounded-xl flex flex-col items-center justify-center transition-all ${selectedBrand?.id === brand.id
-                            ? 'ring-2 ring-[#00C0E8] ring-offset-2'
-                            : ''
-                            }`}
-                    >
-                        <div
-                            className={`w-12 h-12 ${brand.color} rounded-xl flex items-center justify-center text-white font-bold text-sm mb-1`}
-                        >
-                            {brand.icon}
-                        </div>
-                        <span className="text-xs text-gray-600 truncate w-full text-center">
-                            {brand.name}
-                        </span>
-                    </button>
-                ))}
-                {/* Empty placeholders for grid alignment */}
-                {Array.from({ length: Math.max(0, 8 - filteredBrands.length) }).map((_, i) => (
-                    <div
-                        key={`empty-${i}`}
-                        className="aspect-square rounded-xl bg-gray-50 border-2 border-dashed border-gray-200"
+                {/* Search Bar (공통 컴포넌트 사용) */}
+                <div className="mb-6">
+                    <MembershipSearchBar
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        placeholder="멤버십 브랜드 검색하기  ex) 스타벅스"
+                        iconSearch={searchIcon}
                     />
-                ))}
-            </div>
+                </div>
 
-            {/* Next Button */}
-            <button
-                onClick={() => navigate('/onboarding/input')}
-                disabled={!selectedBrand}
-                className={`w-full py-4 rounded-full font-bold text-lg transition-colors mt-6 ${selectedBrand
-                    ? 'bg-[#00C0E8] text-white hover:bg-[#00B3D8]'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
-            >
-                다음
-            </button>
+                {/* Brand Grid - 3 columns, 아이콘만 (배경 없음) */}
+                <div className="grid grid-cols-3 gap-4 flex-1">
+                    {filteredBrands.map((brand) => {
+                        const IconComponent = brand.icon;
+                        return (
+                            <button
+                                key={brand.id}
+                                onClick={() => handleBrandSelect(brand)}
+                                className="flex flex-col items-center gap-2 p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                            >
+                                <div className="w-16 h-16 flex items-center justify-center">
+                                    <IconComponent className="w-full h-full" />
+                                </div>
+                                <span className="text-xs text-gray-600">브랜드명</span>
+                            </button>
+                        );
+                    })}
+                    {/* Empty placeholders for grid alignment */}
+                    {Array.from({ length: Math.max(0, 12 - filteredBrands.length) }).map((_, i) => (
+                        <div
+                            key={`empty-${i}`}
+                            className="flex flex-col items-center gap-2 p-2"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-gray-100" />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Bottom Button (disabled, for layout consistency) */}
+                <div className="pt-4">
+                    <button
+                        disabled
+                        className="w-full py-4 rounded-full bg-gray-200 text-gray-400 font-bold text-lg cursor-not-allowed"
+                    >
+                        다음
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

@@ -13,8 +13,8 @@ const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 
 // Onboarding pages
-const OnboardingLayout = lazy(() => import('./pages/onboarding/OnboardingLayout'));
 const IntroPage = lazy(() => import('./pages/onboarding/IntroPage'));
+const RegisterPage = lazy(() => import('./pages/onboarding/RegisterPage'));
 const SearchPage = lazy(() => import('./pages/onboarding/SearchPage'));
 const InputPage = lazy(() => import('./pages/onboarding/InputPage'));
 const CompletePage = lazy(() => import('./pages/onboarding/CompletePage'));
@@ -81,13 +81,12 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
 
-            {/* Onboarding routes - nested under OnboardingLayout */}
-            <Route path="/onboarding" element={<OnboardingLayout />}>
-              <Route path="intro" element={<IntroPage />} />
-              <Route path="search" element={<SearchPage />} />
-              <Route path="input" element={<InputPage />} />
-              <Route path="complete" element={<CompletePage />} />
-            </Route>
+            {/* Onboarding routes - standalone (no shared layout) */}
+            <Route path="/onboarding/intro" element={<IntroPage />} />
+            <Route path="/onboarding/register" element={<RegisterPage />} />
+            <Route path="/onboarding/search" element={<SearchPage />} />
+            <Route path="/onboarding/input" element={<InputPage />} />
+            <Route path="/onboarding/complete" element={<CompletePage />} />
 
             {/* Home routes - protected */}
             <Route
