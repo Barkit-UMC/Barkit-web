@@ -22,7 +22,8 @@ export default function FavoriteListPage() {
     const [deleteMode, setDeleteMode] = useState(false);
 
     return (
-        <Layout showBottomNav={true} header={<Header title="매장 즐겨찾기" />}>
+        <Layout showBottomNav={true} >
+            <Header title="즐겨찾는 매장" />
             {/* 내용 영역 */}
             <div className="pt-[160px] p-8 bg-gray-50 flex-1 overflow-y-auto">
                 {/* 안내 헤더 */}
