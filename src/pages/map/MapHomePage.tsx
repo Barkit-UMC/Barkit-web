@@ -81,7 +81,6 @@ export default function MapHomePage() {
     const [searchText, setSearchText] = useState(''); // 검색어 상태
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
-    // 예시 데이터
     const dummyResults = [
         { id: 1, name: '올리브영 성수', category: '드럭스토어', distance: '0.55km', address: '서울 성동구 연무장7길 13 팩토리얼' },
         { id: 2, name: '올리브영 성수2', category: '드럭스토어', distance: '0.82km', address: '서울 성동구 어쩌구 저쩌구' },
