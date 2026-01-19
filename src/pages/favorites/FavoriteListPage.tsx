@@ -2,6 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import iconTrashOff from '../../assets/icons/trash/trash-off.svg';
 import iconTrashOn from '../../assets/icons/trash/trash-on.svg';
+import { Plus, Store } from 'lucide-react';
+import { useState } from 'react';
+import StoreCard from '../../components/favorites/StoreCard';
+import Header from '../../components/common/Header';
 
 /**
  * [PAGE 13] 즐겨찾는 매장 목록
@@ -15,51 +19,31 @@ export default function FavoriteListPage() {
         { id: 2, name: 'GS25 역삼점', address: '서울 강남구 역삼동', distance: 180 },
     ];
 
+    const [deleteMode, setDeleteMode] = useState(false);
+
     return (
-        <Layout showBottomNav={true}>
-            {/* 상단 헤더 */}
-            <div className="w-full h-[128px] relative flex items-end border-b border-gray-200">
-                {/* 뒤로가기 */}
-                <button
-                    onClick={() => navigate(-1)}
-                    className="absolute left-[16px] pb-4 p-2 rounded-full"
-                    aria-label="뒤로가기"
-                >
-                    <svg
-                        className="w-8 h-8"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 19l-7-7 7-7"
-                        />
-                    </svg>
-                </button>
-
-                {/* 타이틀 */}
-                <h1 className="w-full text-center text-xl font-semibold pb-4">
-                    매장 즐겨찾기
-                </h1>
-            </div>
-
+        <Layout showBottomNav={true} header={<Header title="매장 즐겨찾기" />}>
             {/* 내용 영역 */}
-            <div className="p-8 bg-gray-50">
+            <div className="pt-[160px] p-8 bg-gray-50 flex-1 overflow-y-auto">
                 {/* 안내 헤더 */}
                 <header className="flex items-center justify-between pl-4 pr-4 ">
                     <h2 className="text-lg font-semibold pb-2">
                         최대 5개 매장 선택
                     </h2>
 
-                    {/* 삭제 모드 버튼 (지금은 off 상태) */}
-                    <img
-                        src={iconTrashOff}
-                        alt="즐겨찾기 삭제 아이콘"
-                        className="w-10 h-10"
-                    />
+                    {/* 삭제 모드 버튼 - 컬러체인지 자연스럽게 수정 ㄱㄱ */}
+                    <button
+                        onClick={() => setDeleteMode(!deleteMode)}
+                        aria-label="즐겨찾기 삭제 모드 전환"
+                        className="rounded-full"
+                    >
+                        <img
+                            src={deleteMode ? iconTrashOn : iconTrashOff}
+                            alt="삭제 모드 아이콘"
+                            className="w-10 h-10"
+                        />
+                    </button>
+                    
                 </header>
 
                 {/* 매장 아이콘 영역 */}
@@ -102,15 +86,17 @@ export default function FavoriteListPage() {
                                     key={`empty-${idx}`}
                                     onClick={() => navigate('/store/add')}
                                     className="
+                                        group
                                         w-12 h-12
                                         flex items-center justify-center
                                         rounded-lg
                                         bg-gray-200
-                                        hover:bg-gray-300
+                                        hover:bg-gray-300 cursor-pointer
                                     "
                                     aria-label="매장 추가"
                                 >
-                                    <PlusIcon />
+                                    <Plus className="w-6 h-6 text-gray-300 group-hover:text-gray-400" />
+
                                 </button>
                             );
                         })}
@@ -118,26 +104,23 @@ export default function FavoriteListPage() {
                 </div>
 
                 {/* 즐겨찾기 매장 카드 리스트 */}
+                <div className="mt-6 space-y-3 mb-20">
+                    {favorites.map((store) => (
+                        <StoreCard
+                            key={store.id}
+                            store={store}
+                            deleteMode={deleteMode}
+                        />
+                    ))}
+                    {favorites.map((store) => (
+                        <StoreCard
+                            key={store.id}
+                            store={store}
+                            deleteMode={deleteMode}
+                        />
+                    ))}
+                </div>
             </div>
         </Layout>
-    );
-}
-
-/* 플러스 아이콘 */
-function PlusIcon() {
-    return (
-        <svg
-            className="w-6 h-6 text-gray-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-            />
-        </svg>
     );
 }
