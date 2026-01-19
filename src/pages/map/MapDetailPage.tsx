@@ -9,8 +9,6 @@ import Header from '../../components/common/Header';
 import MapContainer from '../../components/map/MapContainer';
 
 export default function MapDetailPage() {
-
-    // 실제로는 id를 이용해 API에서 데이터를 가져와야 합니다.
     const storeData = {
         name: '올리브영 성수',
         category: '드럭스토어',

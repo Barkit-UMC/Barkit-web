@@ -9,10 +9,6 @@ interface LayoutProps {
 
 export default function Layout({ children, header, showBottomNav = false }: LayoutProps) {
     return (
-
-        <main className="h-full overflow-y-auto scrollbar-hide bg-white">
-            {children}
-        </main>
         <div className="app">
             {header && (
                 <div className="app-header">

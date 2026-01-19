@@ -81,7 +81,6 @@ export default function MapHomePage() {
     const [searchText, setSearchText] = useState(''); // 검색어 상태
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
-    // 예시 데이터
     const dummyResults = [
         { id: 1, name: '올리브영 성수', category: '드럭스토어', distance: '0.55km', address: '서울 성동구 연무장7길 13 팩토리얼' },
         { id: 2, name: '올리브영 성수2', category: '드럭스토어', distance: '0.82km', address: '서울 성동구 어쩌구 저쩌구' },
@@ -89,7 +88,7 @@ export default function MapHomePage() {
     
     return (
         <Layout showBottomNav>
-            <div className="relative h-full w-full bg-gray-100 overflow-hidden">
+            <div className="relative flex-1 w-full h-full min-h-[calc(100dvh-64px)] bg-gray-100 overflow-hidden">
                 {/* 1. 지도 배경 */}
                 {/* z-0으로 설정하여 다른 UI들이 위에 뜨도록 함 */}
                 <div className="absolute inset-0 z-0">

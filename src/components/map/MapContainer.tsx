@@ -33,16 +33,16 @@ export default function MapContainer({
     return (
         <div className="relative w-full h-full">
             <div className="relative w-full h-full">
-            <Wrapper 
-                apiKey={GOOGLE_MAP_KEY} // 여기에 실제 API 키를 넣으세요
-                render={render}
-                libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
-            >
-                <MapComponent center={center} zoom={zoom} onDragStart={onDragStart} showMyLocation={showMyLocation}>
-                    {children}
-                </MapComponent>
-            </Wrapper>
-        </div>
+                <Wrapper 
+                    apiKey={GOOGLE_MAP_KEY} // 여기에 실제 API 키를 넣으세요
+                    render={render}
+                    libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
+                >
+                    <MapComponent center={center} zoom={zoom} onDragStart={onDragStart} showMyLocation={showMyLocation}>
+                        {children}
+                    </MapComponent>
+                </Wrapper>
+            </div>
         </div>
     );
 }
@@ -125,10 +125,15 @@ function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { 
     }, [center, map]);
 
     return (
-        <>
-            <div ref={ref} className="w-full h-full" id="map" />
+
+        <div style={{ display: 'contents' }}> {/* 또는 Fragment 사용 */}
+            <div
+                ref={ref} 
+                style={{ width: '100%', height: '100%', minHeight: '100%' }} 
+                id="map" 
+            />
             {/* 구글 지도 위에 리액트 컴포넌트(마커 등)를 띄우기 위해 
-              Context를 만들거나, children을 전달합니다. 
+                Context를 만들거나, children을 전달합니다. 
             */}
             {map && React.Children.map(children, (child) => {
                 if (React.isValidElement(child)) {
@@ -136,6 +141,6 @@ function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { 
                     return React.cloneElement(child as React.ReactElement<any>, { map });
                 }
             })}
-        </>
+        </div>
     );
 }
