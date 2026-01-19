@@ -26,7 +26,7 @@ const SortModal = ({ title, options, selectedValue, onSelect, onClose }: SortMod
         
         {/* 헤더 영역 */}
         <div className="flex justify-between items-center px-5 py-4 border-b border-gray-100">
-          <h2 className="!mt-4 !ml-4 !mb-4 text-lg font-bold text-gray-800">{title}</h2>
+          <h2 className="mt-2 ml-2 mb-2 text-lg font-bold text-gray-800">{title}</h2>
           <button 
             onClick={onClose}
             className="!mr-4 text-gray-400 hover:text-gray-600 transition-colors"
@@ -46,7 +46,7 @@ const SortModal = ({ title, options, selectedValue, onSelect, onClose }: SortMod
               <button
                 key={option.id}
                 onClick={() => onSelect(option.id)}
-                className={`!ml-4 h-16 w-full flex items-center gap-3 px-4 py-4 rounded-xl transition-all
+                className={`ml-2 h-14 w-full flex items-center gap-3 px-4 py-4 rounded-xl transition-all
                   ${isSelected ? 'text-cyan-500' : 'text-gray-400 hover:bg-gray-50'}
                 `}
               >
