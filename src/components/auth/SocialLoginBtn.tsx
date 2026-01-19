@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SocialLoginBtnProps {
     provider: 'kakao' | 'naver';
     onClick: () => void;
@@ -7,33 +5,31 @@ interface SocialLoginBtnProps {
 
 /**
  * [PAGE 2] 카카오/네이버 로그인 버튼
- * 소셜 로그인 버튼 컴포넌트
+ * 소셜 로그인 버튼 컴포넌트 - 원형 아이콘 버튼
  */
 export default function SocialLoginBtn({ provider, onClick }: SocialLoginBtnProps) {
     const config = {
         kakao: {
             bg: 'bg-[#FEE500]',
-            text: 'text-[#000000]',
-            label: '카카오로 시작하기',
-            icon: '💬'
+            logoSrc: '/kakaotalk-logo.svg',
+            alt: '카카오톡 로그인'
         },
         naver: {
             bg: 'bg-[#03C75A]',
-            text: 'text-white',
-            label: '네이버로 시작하기',
-            icon: 'N'
+            logoSrc: '/naver-logo.svg',
+            alt: '네이버 로그인'
         }
     };
 
-    const { bg, text, label, icon } = config[provider];
+    const { bg, logoSrc, alt } = config[provider];
 
     return (
         <button
             onClick={onClick}
-            className={`w-full py-4 rounded-lg font-semibold flex items-center justify-center gap-2 ${bg} ${text} transition-opacity hover:opacity-90`}
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${bg} transition-transform hover:scale-110 shadow-md`}
+            aria-label={alt}
         >
-            <span className="text-xl">{icon}</span>
-            <span>{label}</span>
+            <img src={logoSrc} alt={alt} className="w-10 h-10" />
         </button>
     );
 }

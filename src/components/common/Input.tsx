@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface InputProps {
     type?: 'text' | 'password' | 'email' | 'tel' | 'number';
     placeholder?: string;

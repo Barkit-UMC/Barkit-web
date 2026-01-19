@@ -91,15 +91,13 @@ body {
 }
 
 /* Hide scrollbar utilities */
-@layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Touch optimization */
@@ -115,4 +113,18 @@ a {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+/* Floating animation keyframes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

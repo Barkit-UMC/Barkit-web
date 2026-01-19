@@ -8,11 +8,16 @@ import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
 import LocationPermissionPage from './pages/profile/LocationPermissionPage';
 
-// Lazy load all page components for better initial loading performance
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
-const FindPwPage = lazy(() => import('./pages/auth/FindPwPage'));
+
+// Onboarding pages
+const IntroPage = lazy(() => import('./pages/onboarding/IntroPage'));
+const RegisterPage = lazy(() => import('./pages/onboarding/RegisterPage'));
+const SearchPage = lazy(() => import('./pages/onboarding/SearchPage'));
+const InputPage = lazy(() => import('./pages/onboarding/InputPage'));
+const CompletePage = lazy(() => import('./pages/onboarding/CompletePage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
@@ -75,7 +80,13 @@ function App() {
             {/* Auth routes - public */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/find-pw" element={<FindPwPage />} />
+
+            {/* Onboarding routes - standalone (no shared layout) */}
+            <Route path="/onboarding/intro" element={<IntroPage />} />
+            <Route path="/onboarding/register" element={<RegisterPage />} />
+            <Route path="/onboarding/search" element={<SearchPage />} />
+            <Route path="/onboarding/input" element={<InputPage />} />
+            <Route path="/onboarding/complete" element={<CompletePage />} />
 
             {/* Home routes - protected */}
             <Route
@@ -238,7 +249,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
 
             {/* 404 fallback - redirect to home or login */}
             <Route path="*" element={<RootRedirect />} />

@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface MembershipSearchBarProps {
     searchQuery: string;
     setSearchQuery: (value: string) => void;
@@ -28,7 +26,7 @@ export default function MembershipSearchBar({
                                focus:outline-none focus:ring-0 focus:border-[#00C0E8]
                                text-[14px] placeholder:text-[14px] placeholder:text-gray-300"
                 />
-                <button 
+                <button
                     onClick={onSearchClick}
                     className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center"
                 >
