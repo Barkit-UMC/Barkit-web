@@ -60,7 +60,7 @@ export default function MapDetailPage() {
                 />
 
                 {/* 2. 매장 기본 정보 */}
-                <div className="px-6 py-4">
+                <div className="px-6 py-4 pt-40">
                     <div className="flex items-center gap-2">
                         <h1 className="text-2xl font-bold text-gray-900">{storeData.name}</h1>
                         <span className="text-gray-300 text-lg">{storeData.category}</span>
