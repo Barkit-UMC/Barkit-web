@@ -33,7 +33,7 @@ const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'))
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
-const SearchStorePage = lazy(() => import('./pages/map/SearchStorePage'));
+const MapDetailPage = lazy(() => import('./pages/map/MapDetailPage'));
 
 // Favorites pages
 const FavoriteListPage = lazy(() => import('./pages/favorites/FavoriteListPage'));
@@ -154,17 +154,17 @@ function App() {
             <Route
               path="/map"
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <MapHomePage />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route
-              path="/map/search"
+              path="/map/:id"
               element={
-                <ProtectedRoute>
-                  <SearchStorePage />
-                </ProtectedRoute>
+                // <ProtectedRoute>
+                  <MapDetailPage />
+                // </ProtectedRoute>
               }
             />
 
