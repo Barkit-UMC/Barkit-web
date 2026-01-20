@@ -19,14 +19,6 @@ export default function FavoriteListPage() {
         <Layout>
             <Header
                 title="즐겨찾는 매장"
-                rightAction={
-                    <button
-                        onClick={() => navigate('/favorites/add')}
-                        className="text-blue-600 font-medium"
-                    >
-                        추가
-                    </button>
-                }
             />
 
             <div className="p-6">
