@@ -11,6 +11,8 @@ const FindPwPage = lazy(() => import('./pages/auth/FindPwPage'));
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
 const DetailPage = lazy(() => import('./pages/home/DetailPage'));
+const BarcodeListPage = lazy(() => import('./pages/home/BarcodeListPage'))
+const BenefitStoreListPage = lazy(() => import('./pages/home/BeniefitStoreListPage'))
 
 // Membership pages
 const BrandSelectPage = lazy(() => import('./pages/membership/BrandSelectPage'));
@@ -78,10 +80,26 @@ function App() {
               }
             />
             <Route
+              path="/barcode/list"
+              element={
+                <ProtectedRoute>
+                  <BarcodeListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/barcode/:id"
               element={
                 <ProtectedRoute>
                   <DetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/barcode/:id/benefits"
+              element={
+                <ProtectedRoute>
+                  <BenefitStoreListPage />
                 </ProtectedRoute>
               }
             />
