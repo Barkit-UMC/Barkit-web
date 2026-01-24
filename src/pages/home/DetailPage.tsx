@@ -131,7 +131,6 @@ export default function DetailPage() {
         isOpen={isSettingOpen}
         onClose={() => setIsSettingOpen(false)}
         onDeleteMembership={handleDeleteMembership}
-        onChangeBarcode={handleChangeBarcode}
       />
 
       {/* 멤버십 삭제 모달 */}
