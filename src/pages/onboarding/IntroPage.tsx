@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import BarkitIcon from '../../assets/icons/Barkit_icon_default.svg?react';
-import HyundaiIcon from '../../assets/icons/BrandIcon/hyundai.svg?react';
-import OliveYoungIcon from '../../assets/icons/BrandIcon/oliveyoung.svg?react';
-import HappyPointIcon from '../../assets/icons/BrandIcon/happypoint.svg?react';
+import HyundaiIcon from '../../assets/icons/BrandIcon/cjone.svg?react';
+import OliveYoungIcon from '../../assets/icons/BrandIcon/skt.svg?react';
+import HappyPointIcon from '../../assets/icons/BrandIcon/uplus.svg?react';
 import KTIcon from '../../assets/icons/BrandIcon/kt.svg?react';
 
 export default function IntroPage() {
@@ -25,17 +25,17 @@ export default function IntroPage() {
             {/* Content */}
             <main className="flex-1 flex flex-col px-6 pb-8">
                 {/* 1. Welcome Section (좌측 정렬 & 상단 배치) */}
-                <div className="mt-12 mb-8">
+                <div className="mt-20 mb-8">
                     <h1 className="text-2xl font-bold text-gray-900 mt-10 leading-tight">
                         어서오세요!<br />
-                        첫 멤버십을 추가해볼까요?
+                        첫 멤버십을 등록해볼까요?
                     </h1>
                 </div>
 
                 {/* 2. Illustration with Floating Icons */}
-                <div className="flex-1 relative flex items-center justify-center -mt-10">
+                <div className="flex-1 relative flex items-center justify-center -mt-5">
                     {/* Main Character (Barkit) - Center */}
-                    <div className="relative z-10 w-40 h-40 flex items-center justify-center animate-float">
+                    <div className="relative z-10 w-45 h-45 flex items-center justify-center animate-float">
                         <BarkitIcon className="w-full h-full" />
                     </div>
 
@@ -76,7 +76,7 @@ export default function IntroPage() {
                 {/* 3. Next Button -> Register 페이지로 이동 */}
                 <div className="w-full pb-4">
                     <button
-                        onClick={() => navigate('/onboarding/register')}
+                        onClick={() => navigate('/onboarding/search')}
                         className="w-full py-4 rounded-full bg-[#00C0E8] text-white font-bold text-lg hover:bg-[#00B3D8] transition-colors shadow-lg"
                         aria-label="다음 단계로 이동"
                     >

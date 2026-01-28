@@ -14,7 +14,7 @@ const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 
 // Onboarding pages
 const IntroPage = lazy(() => import('./pages/onboarding/IntroPage'));
-const RegisterPage = lazy(() => import('./pages/onboarding/RegisterPage'));
+const SelectMethodPage = lazy(() => import('./pages/onboarding/SelectMethodPage'));
 const SearchPage = lazy(() => import('./pages/onboarding/SearchPage'));
 const InputPage = lazy(() => import('./pages/onboarding/InputPage'));
 const CompletePage = lazy(() => import('./pages/onboarding/CompletePage'));
@@ -84,7 +84,7 @@ function App() {
 
             {/* Onboarding routes - standalone (no shared layout) */}
             <Route path="/onboarding/intro" element={<IntroPage />} />
-            <Route path="/onboarding/register" element={<RegisterPage />} />
+            <Route path="/onboarding/select-method" element={<SelectMethodPage />} />
             <Route path="/onboarding/search" element={<SearchPage />} />
             <Route path="/onboarding/input" element={<InputPage />} />
             <Route path="/onboarding/complete" element={<CompletePage />} />
@@ -155,7 +155,7 @@ function App() {
               path="/map"
               element={
                 // <ProtectedRoute>
-                  <MapHomePage />
+                <MapHomePage />
                 // </ProtectedRoute>
               }
             />
@@ -163,7 +163,7 @@ function App() {
               path="/map/:id"
               element={
                 // <ProtectedRoute>
-                  <MapDetailPage />
+                <MapDetailPage />
                 // </ProtectedRoute>
               }
             />

@@ -7,12 +7,13 @@ export default function LoginPage() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [autoLogin, setAutoLogin] = useState(false);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6">
 
             {/* 1. 로고 영역 - mb-20 (80px) */}
-            <div className="mb-25 w-full flex justify-center">
+            <div className="mb-20 w-full flex justify-center">
                 <img
                     src="/BarKit-logo.svg"
                     alt="BarKit"
@@ -29,7 +30,7 @@ export default function LoginPage() {
                     placeholder="아이디 ( 이메일 주소 )"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-14 bg-gray-100 rounded-xl indent-4 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00BCD4]"
+                    className="w-full h-14 bg-gray-100 rounded-3xl indent-4 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00BCD4]"
                 />
 
                 {/* 비밀번호 입력창 */}
@@ -38,24 +39,38 @@ export default function LoginPage() {
                     placeholder="비밀번호"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-14 bg-gray-100 rounded-xl indent-4 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00BCD4]"
+                    className="w-full h-14 bg-gray-100 rounded-3xl indent-4 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00BCD4]"
                 />
 
                 {/* 로그인 버튼 */}
                 <button
                     onClick={() => navigate('/wallet')}
-                    className="w-full h-14 mt-4 bg-[#00BCD4] text-white rounded-xl font-bold text-lg hover:bg-[#00ACC1] transition-colors shadow-sm"
+                    className="w-full h-14 mt-4 bg-[#00BCD4] text-white rounded-3xl font-bold text-lg hover:bg-[#00ACC1] transition-colors shadow-sm"
                 >
                     로그인
                 </button>
 
                 {/* 자동로그인 / 회원가입 - mt-2 (8px) */}
                 <div className="flex items-center justify-center gap-32 px-1 ">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-gray-300 accent-[#00BCD4]"
-                        />
+                    <label
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => setAutoLogin(!autoLogin)}
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M5 13L9 17L19 7"
+                                stroke={autoLogin ? "#16D346" : "#D8D8D8"}
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
                         <span className="text-sm text-gray-500">자동 로그인</span>
                     </label>
                     <button
@@ -68,7 +83,7 @@ export default function LoginPage() {
             </div>
 
             {/* 4. 소셜 로그인 - mt-6 (24px) */}
-            <div className="w-full max-w-[400px] mt-6">
+            <div className="w-full max-w-[400px] mt-10">
                 {/* Divider - mb-6 (24px) */}
                 <div className="flex items-center gap-4 mb-6">
                     <div className="flex-1 h-[1px] bg-gray-200"></div>

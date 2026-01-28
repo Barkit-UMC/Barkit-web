@@ -17,17 +17,17 @@ export default function Header({
   const navigate = useNavigate();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white w-full h-[128px] border-b border-gray-200">
-      <div className="relative flex items-end h-full px-4 pb-4">
+    <header className="fixed top-0 left-1/2 -translate-x-1/2 z-40 bg-white w-[390px] h-[64px] border-b border-gray-200">
+      <div className="relative flex items-center justify-center h-full px-4">
         {/* 뒤로가기 */}
         {showBackButton && (
           <button
             onClick={() => navigate(-1)}
-            className="absolute left-[16px] pl-2 rounded-full"
+            className="absolute left-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
             aria-label="뒤로가기"
           >
             <svg
-              className="w-8 h-8"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -44,12 +44,12 @@ export default function Header({
 
         {/* 타이틀 */}
         {title && (
-          <h1 className="mx-auto text-xl font-semibold">
+          <h1 className="text-lg font-semibold">
             {title}
           </h1>
         )}
         {/* 우측 액션 */}
-        <div className="absolute right-4 bottom-2">
+        <div className="absolute right-4">
           {rightAction}
         </div>
       </div>
