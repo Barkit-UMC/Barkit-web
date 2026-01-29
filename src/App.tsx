@@ -23,6 +23,7 @@ const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
 const DetailPage = lazy(() => import('./pages/home/DetailPage'));
+const MembershipSearchPage = lazy(() => import('./pages/home/MembershipSearchPage'));
 
 // Membership pages
 const BrandSelectPage = lazy(() => import('./pages/membership/BrandSelectPage'));
@@ -104,6 +105,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute>
+                  <MembershipSearchPage />
                 </ProtectedRoute>
               }
             />

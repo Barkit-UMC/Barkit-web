@@ -68,7 +68,7 @@ export default function WalletPage() {
                 <div className="px-6 pb-24">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xl font-semibold">멤버십 리스트</p>
-                        <button className="">
+                        <button onClick={() => navigate('/search')}>
                             <img 
                                 src={search} 
                                 alt="검색" 
