@@ -1,12 +1,8 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import BarcodeView from '../../components/barcode/BarcodeView';
 
-/**
- * [PAGE 10] 바코드 상세 보기
- */
 export default function DetailPage() {
     const { id } = useParams();
     const navigate = useNavigate();
