@@ -1,16 +1,16 @@
-import searchIcon from '../../assets/icons/search/search_white.png';
+import searchIcon from '../../assets/icons/search/search_white.svg';
 
 interface MembershipSearchBarProps {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
-  placeholder?: string;
+  placeholder: string;
   onSearchClick: () => void;
 }
 
 export default function MembershipSearchBar({
   searchQuery,
   setSearchQuery,
-  placeholder = "KT",
+  placeholder,
   onSearchClick,
 }: MembershipSearchBarProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
