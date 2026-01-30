@@ -2,7 +2,7 @@ import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import MembershipSearchBar from '../../components/common/MembershipSearchBar';
 import LoadingDots from '../../components/common/LoadingDots';
-import SearchIcon from '../../assets/icons/search.svg';
+import SearchIcon from '../../assets/icons/search/search_white.png';
 import CjoneIcon from '../../assets/icons/memberships/cjone.svg'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
