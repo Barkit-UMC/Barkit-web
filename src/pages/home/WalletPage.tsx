@@ -37,7 +37,7 @@ export default function WalletPage() {
                                 key={membership.id}
                                 brandName={membership.brandName}
                                 barcodeNumber={membership.barcodeNumber}
-                                onClick={() => navigate(`/wallet/${membership.id}`)}
+                                onClick={() => navigate(`/membership/${membership.id}`)}
                             />
                         ))}
                     </div>
