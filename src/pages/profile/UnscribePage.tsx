@@ -37,7 +37,7 @@ export default function UnscribePage() {
                 </h1>
             </div> 
             <ConfirmModal
-                message="정말로 회원탈퇴 하시겠습니까?"
+                message="정말 회원 탈퇴를 진행하시겠습니까?"
                 alert="* 이 작업은 되돌릴 수 없습니다"
                 onCancel={() => navigate(-1)}
                 onConfirm={() => navigate("/login")}

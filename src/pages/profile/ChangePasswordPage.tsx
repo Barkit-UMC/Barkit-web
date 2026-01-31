@@ -84,10 +84,10 @@ export default function ChangePasswordPage() {
       : 'focus-within:border-[#00C0E8] border-gray-300';
 
   const handleSubmit = () => {
-    if (!isValid) return;
+    //if (!isValid) return;
 
     console.log('비밀번호 변경 완료');
-    // navigate('/my');
+    navigate('/profile/edit', { state: {toast: 'password'} });
   };
 
   return (
@@ -182,7 +182,7 @@ export default function ChangePasswordPage() {
             )}`}
           />
           {touched.confirmPw && errors.confirmPw && (
-            <p className="mt-1 text-right text-[12px] text-red-500">
+            <p className="mt-1 text-right text-[12px] text-[#ff2d55]">
               {errors.confirmPw}
             </p>
           )}
@@ -192,7 +192,7 @@ export default function ChangePasswordPage() {
       {/* 완료 버튼 */}
       <button
         onClick={handleSubmit}
-        disabled={!isValid}
+        //disabled={!isValid}
         className={`
           fixed bottom-10
           left-1/2 -translate-x-1/2
@@ -203,12 +203,12 @@ export default function ChangePasswordPage() {
           transition-colors
           ${
             isValid
-              ? 'bg-[#00C0E8] text-white cursor-pointer'
+              ? 'bg-[#00C0E8] text-white cursor-pointer hover:bg-[#00B3D8]'
               : 'bg-gray-300 text-white cursor-not-allowed'
           }
         `}
       >
-        비밀번호 변경완료
+        완료하기
       </button>
     </Layout>
   );

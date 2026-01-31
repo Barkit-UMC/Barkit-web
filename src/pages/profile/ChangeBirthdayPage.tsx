@@ -10,6 +10,7 @@ export default function ChangeBirthdayPage() {
     const [birthday, setBirthday] = useState<Date | null>(
         new Date(2003, 4, 19)
     );
+    const [isModified, setIsModified] = useState(false); // 수정 여부
 
     return (
         <ConfigProvider locale={koKR}>
@@ -17,7 +18,7 @@ export default function ChangeBirthdayPage() {
                 {/* 헤더 */}
                 <div className="w-full h-[128px] relative flex items-end border-b border-gray-200">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate(`/profile/edit`, { state: { toast: isModified ? 'birthday' : null } })}
                         className="absolute left-[16px] pb-4 p-2"
                     >
                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +62,7 @@ export default function ChangeBirthdayPage() {
                         </svg>
                     </button>
                 </div>
-
+                
                 {/* DatePicker */}
                 <DatePicker
                     visible={open}
@@ -72,6 +73,7 @@ export default function ChangeBirthdayPage() {
                     mouseWheel={true}
                     onConfirm={(date) => {
                         setBirthday(date);
+                        setIsModified(true);
                         setOpen(false);
                     }}
                     onClose={() => setOpen(false)}

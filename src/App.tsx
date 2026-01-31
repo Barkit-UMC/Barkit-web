@@ -6,7 +6,6 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
-import LocationPermissionPage from './pages/profile/LocationPermissionPage';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -222,14 +221,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ChangeBirthdayPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/locationpermission"
-              element={
-                <ProtectedRoute>
-                  <LocationPermissionPage />
                 </ProtectedRoute>
               }
             />
