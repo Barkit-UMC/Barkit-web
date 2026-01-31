@@ -22,7 +22,6 @@ const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
-const DetailPage = lazy(() => import('./pages/home/DetailPage'));
 
 // Membership pages
 const BrandSelectPage = lazy(() => import('./pages/membership/BrandSelectPage'));
@@ -30,6 +29,7 @@ const BrandSearchPage = lazy(() => import('./pages/membership/BrandSearchPage'))
 const InputNumberPage = lazy(() => import('./pages/membership/InputNumberPage'));
 const CameraScanPage = lazy(() => import('./pages/membership/CameraScanPage'));
 const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'));
+const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -99,14 +99,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/barcode/:id"
-              element={
-                <ProtectedRoute>
-                  <DetailPage />
-                </ProtectedRoute>
-              }
-            />
 
             {/* Membership registration routes - protected */}
             <Route
@@ -146,6 +138,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <RegCompletePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id"
+              element={
+                <ProtectedRoute>
+                  <MembershipDetailPage />
                 </ProtectedRoute>
               }
             />
