@@ -1,42 +1,43 @@
+import searchIcon from '../../assets/icons/search/search_white.svg';
+
 interface MembershipSearchBarProps {
-    searchQuery: string;
-    setSearchQuery: (value: string) => void;
-    placeholder?: string;
-    onSearchClick?: () => void;
-    iconSearch: string;
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  placeholder: string;
+  onSearchClick: () => void;
 }
 
 export default function MembershipSearchBar({
-    searchQuery,
-    setSearchQuery,
-    placeholder = "멤버십 브랜드 검색하기 ex) 스타벅스",
-    onSearchClick,
-    iconSearch
+  searchQuery,
+  setSearchQuery,
+  placeholder,
+  onSearchClick,
 }: MembershipSearchBarProps) {
-    return (
-        <div className="w-[343px] h-[54px] mx-auto flex items-center">
-            <div className="relative w-full">
-                <input
-                    type="text"
-                    placeholder={placeholder}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-12 px-4 pr-12 rounded-full
-                               bg-[#AAE8F5]/10 border-1 border-[#00C0E8]
-                               focus:outline-none focus:ring-0 focus:border-[#00C0E8]
-                               text-[14px] placeholder:text-[14px] placeholder:text-gray-300"
-                />
-                <button
-                    onClick={onSearchClick}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center"
-                >
-                    <img
-                        src={iconSearch}
-                        alt="검색"
-                        className="w-6 h-6"
-                    />
-                </button>
-            </div>
-        </div>
-    );
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSearchClick();
+    }
+  };
+
+  return (
+    <div className="w-[345px] h-[56px] mx-auto">
+      <div className="flex w-full h-full border border-[#00C0E8] rounded-[10px] overflow-hidden bg-[#AAE8F5]/10">
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="flex-1 px-4 text-[14px] placeholder:text-gray-300 bg-transparent focus:outline-none"
+        />
+
+        <button
+          onClick={onSearchClick}
+          className="w-[69px] h-full flex items-center justify-center bg-[#00C0E8]"
+        >
+          <img src={searchIcon} alt="검색" className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  );
 }
