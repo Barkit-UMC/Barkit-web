@@ -22,7 +22,6 @@ const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
-const DetailPage = lazy(() => import('./pages/home/DetailPage'));
 
 // Membership pages
 const BrandSelectPage = lazy(() => import('./pages/membership/BrandSelectPage'));

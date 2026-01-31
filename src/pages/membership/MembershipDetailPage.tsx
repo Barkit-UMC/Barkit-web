@@ -4,6 +4,7 @@ import Layout from "../../components/common/Layout";
 import iconSetting from '../../assets/icons/memberships/iconSetting.svg';
 import iconEdit from '../../assets/icons/memberships/iconEdit.svg';
 import iconPlus from '../../assets/icons/memberships/iconPlus.svg';
+import MembershipCard from "../../components/membership/MembershipCard";
 
 // 임시 데이터 (실제로는 API나 Props에서 가져옵니다)
 const DUMMY_DATA = {
@@ -42,15 +43,13 @@ export default function MembershipDetailPage() {
                 />
 
                 <div className="pt-20 overflow-y-auto scrollbar-hide">
-                    <div className="px-6 py-4">
-                        <div className="bg-[#2D161B] rounded-t-xl p-4 flex items-center gap-3">
-                            <div className="w-8 h-8 bg-gradient-to-tr from-purple-400 to-pink-500 rounded-full" />
-                            <span className="text-white font-medium">{data.name}</span>
-                        </div>
-                        <div className="bg-white border-x border-b rounded-b-xl p-8 flex flex-col items-center shadow-sm">
-                            {/* 실제 바코드 라이브러리 등을 넣는 자리 */}
-                            <div className="w-full h-24 bg-[url('/barcode-placeholder.png')] bg-contain bg-no-repeat bg-center" />
-                        </div>
+                    {/* 1. 멤버십 카드 컴포넌트로 교체된 영역 */}
+                    <div className="px-6">
+                        <MembershipCard 
+                            brandName={data.name}
+                            barcodeNumber={data.barcode}
+                            // brandLogo={data.logo} // 로고 데이터가 있다면 전달
+                        />
                     </div>
 
                     <div className="px-6 mt-8">
