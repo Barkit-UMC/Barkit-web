@@ -22,11 +22,11 @@ export default function MembershipSettingBottomSheet({
 
     if (!isOpen) return null;
 
-    const handleToggleFeatured = () => {
+    const handleToggleFavorite = () => {
         const newValue = !isFavorite;
         setIsFavorite(newValue);
         setShowToast(true);
-        setTimeout(() => setShowToast(false), 3000);
+        setTimeout(() => setShowToast(false), 1000);
         onSetFavorite?.(newValue);
     };
 
@@ -50,7 +50,7 @@ export default function MembershipSettingBottomSheet({
 
                         {/* 온오프 버튼 */}
                         <div
-                            onClick={handleToggleFeatured}
+                            onClick={handleToggleFavorite}
                             className={`
                                 w-[46px] h-[26px] rounded-full
                                 cursor-pointer transition-colors duration-300
@@ -90,7 +90,7 @@ export default function MembershipSettingBottomSheet({
                     {/* 취소 버튼 */}
                     <button
                         onClick={onClose}
-                        className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px] text-[#00C0E8] text-[16px] font-semibold mt-6"
+                        className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px] text-gray-300 text-[16px] font-semibold mt-6"
                     >
                         취소
                     </button>

@@ -6,10 +6,14 @@ interface FavoriteMembershipToastProps {
 }
 
 export default function FavoriteMembershipToast({ show, isFavorite }: FavoriteMembershipToastProps) {
-    if (!show) return null;
-
     return (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50">
+        <div
+            className={`
+                fixed bottom-24 left-1/2 -translate-x-1/2 z-50
+                transition-all duration-300 ease-in-out
+                ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}
+            `}
+        >
             <div className="flex items-center justify-center gap-[10px] rounded-[10px] w-[343px] h-[65px] bg-[#006F98]">
                 <div className="flex-shrink-0 flex items-center justify-center w-[20px] h-[20px]">
                     <Icon 
