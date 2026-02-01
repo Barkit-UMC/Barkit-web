@@ -1,58 +1,59 @@
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
-import MembershipCard from '../../components/membership/MembershipCard';
 import MembershipTitle from '../../components/membership/MembershipTitle';
-import search from '../../assets/icons/search.svg'
-import CjoneIcon from '../../assets/icons/memberships/cjone.svg'
-import KtIcon from '../../assets/icons/memberships/kt.svg'
-import SktIcon from '../../assets/icons/memberships/skt.svg'
-import UplusIcon from '../../assets/icons/memberships/uplus.svg'
-import SsgIcon from '../../assets/icons/memberships/ssg.svg'
-import LpointIcon from '../../assets/icons/memberships/lpoint.svg'
-import OkcashbagIcon from '../../assets/icons/memberships/okcashbag.svg'
-import HappypointIcon from '../../assets/icons/memberships/happypoint.svg'
-import NaverIcon from '../../assets/icons/memberships/naver.svg'
-import KakaopayIcon from '../../assets/icons/memberships/kakaopay.svg'
+import searchIcon from '../../assets/icons/search_main.svg'
+import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
+import ktIcon from '../../assets/icons/memberships/kt.svg'
+import sktIcon from '../../assets/icons/memberships/skt.svg'
+import uplusIcon from '../../assets/icons/memberships/uplus.svg'
+import ssgIcon from '../../assets/icons/memberships/ssg.svg'
+import lpointIcon from '../../assets/icons/memberships/lpoint.svg'
+import okcashbagIcon from '../../assets/icons/memberships/okcashbag.svg'
+import happypointIcon from '../../assets/icons/memberships/happypoint.svg'
+import naverIcon from '../../assets/icons/memberships/naver.svg'
+import kakaopayIcon from '../../assets/icons/memberships/kakaopay.svg'
+import FavoriteMembershipCard from '../../components/membership/FavoriteMembershipCard';
+import MembershipSettingBottomSheet from '../../components/favorite/MembershipSettingsBottomSheet';
+import { useState } from 'react';
 
 export default function WalletPage() {
     const navigate = useNavigate();
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(true); // 임시: 기본 열림
 
     // TODO: API에서 사용자의 멤버십 목록 가져오기
     const featuredMembership = {
         id: 1,
         brandName: 'CJ ONE',
-        brandLogo: CjoneIcon,
+        brandLogo: cjoneIcon,
         brandColor: '#1a1a2e',
-        barcodeNumber: '1234567890123456',
     };
 
     const membershipList = [
-        { id: 2, brandName: 'CJ ONE', brandLogo: CjoneIcon, brandColor: '#1a1a2e' },
-        { id: 3, brandName: 'KT', brandLogo: KtIcon, brandColor: '#16423C' },
-        { id: 4, brandName: 'SKT', brandLogo: SktIcon, brandColor: '#8B4513' },
-        { id: 5, brandName: 'LG+', brandLogo: UplusIcon, brandColor: '#8B1538' },
-        { id: 6, brandName: '신세계 SSG', brandLogo: SsgIcon, brandColor: '#2F5233' },
-        { id: 7, brandName: 'L.POINT', brandLogo: LpointIcon, brandColor: '#4A5568' },
-        { id: 8, brandName: 'OK 캐쉬백', brandLogo: OkcashbagIcon, brandColor: '#8B1538' },
-        { id: 9, brandName: '해피포인트', brandLogo: HappypointIcon, brandColor: '#1e3a8a' },
-        { id: 10, brandName: '네이버', brandLogo: NaverIcon, brandColor: '#059669' },
-        { id: 11, brandName: '카카오페이', brandLogo: KakaopayIcon, brandColor: '#854d0e' },
+        { id: 2, brandName: 'CJ ONE', brandLogo: cjoneIcon, brandColor: '#1a1a2e' },
+        { id: 3, brandName: 'KT', brandLogo: ktIcon, brandColor: '#16423C' },
+        { id: 4, brandName: 'SKT', brandLogo: sktIcon, brandColor: '#8B4513' },
+        { id: 5, brandName: 'LG+', brandLogo: uplusIcon, brandColor: '#8B1538' },
+        { id: 6, brandName: '신세계 SSG', brandLogo: ssgIcon, brandColor: '#2F5233' },
+        { id: 7, brandName: 'L.POINT', brandLogo: lpointIcon, brandColor: '#4A5568' },
+        { id: 8, brandName: 'OK 캐쉬백', brandLogo: okcashbagIcon, brandColor: '#8B1538' },
+        { id: 9, brandName: '해피포인트', brandLogo: happypointIcon, brandColor: '#1e3a8a' },
+        { id: 10, brandName: '네이버', brandLogo: naverIcon, brandColor: '#059669' },
+        { id: 11, brandName: '카카오페이', brandLogo: kakaopayIcon, brandColor: '#854d0e' },
     ];
 
     return (
         <Layout showBottomNav>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gray-50 pb-24">
                 {/* 대표 멤버십 섹션 */}
                 <div className="px-6 py-6">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xl font-semibold">대표 멤버십</p>
                     </div>
 
-                    <MembershipCard
+                    <FavoriteMembershipCard
                         brandName={featuredMembership.brandName}
                         brandLogo={featuredMembership.brandLogo}
                         brandColor={featuredMembership.brandColor}
-                        barcodeNumber={featuredMembership.barcodeNumber}
                         onClick={() => navigate(`/wallet/${featuredMembership.id}`)}
                     />
                     
@@ -65,12 +66,12 @@ export default function WalletPage() {
                 </div>
 
                 {/* 멤버십 리스트 섹션 */}
-                <div className="px-6 pb-24">
+                <div className="px-6">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xl font-semibold">멤버십 리스트</p>
                         <button onClick={() => navigate('/search')}>
                             <img 
-                                src={search} 
+                                src={searchIcon} 
                                 alt="검색" 
                                 className="w-6 h-6"
                             />
@@ -108,6 +109,11 @@ export default function WalletPage() {
                     )}
                 </div>
             </div>
+
+            <MembershipSettingBottomSheet
+                isOpen={isBottomSheetOpen}
+                onClose={() => setIsBottomSheetOpen(false)}
+            />
         </Layout>
     );
 }

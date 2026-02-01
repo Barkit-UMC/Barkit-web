@@ -1,10 +1,9 @@
 import ChevronRightIcon from '../../assets/icons/chevron-right.svg'
 
-interface MembershipCardProps {
+interface FavoriteMembershipCardProps {
     brandName: string;
     brandLogo?: string;
     brandColor?: string;
-    barcodeNumber: string;
     onClick?: () => void;
 }
 
@@ -12,13 +11,12 @@ interface MembershipCardProps {
  * 대표 멤버십 바코드 카드 컴포넌트
  * 상단에 큰 바코드를 표시하는 카드
  */
-export default function MembershipCard({
+export default function FavoriteMembershipCard({
     brandName,
     brandLogo,
     brandColor = '#1F2937', // 기본값: gray-900
-    barcodeNumber,
     onClick
-}: MembershipCardProps) {
+}: FavoriteMembershipCardProps) {
     return (
         <div 
             className="flex flex-col cursor-pointer w-[345px] h-[208px] rounded-[10px] overflow-hidden"
@@ -30,7 +28,7 @@ export default function MembershipCard({
                 <div className="w-[319px] h-11 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         {brandLogo ? (
-                            <img src={brandLogo} alt={brandName} className="w-11 h-11" />
+                            <img src={brandLogo} alt={brandName} className="w-11 h-11 rounded-lg border border-gray-400" />
                         ) : (
                             <div className="w-11 h-11 rounded-lg bg-white/20 flex items-center justify-center">
                                 <span className="text-white text-lg font-bold">
