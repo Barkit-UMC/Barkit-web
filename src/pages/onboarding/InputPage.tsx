@@ -1,22 +1,78 @@
 // src/pages/onboarding/InputPage.tsx
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
+import Header from '../../components/common/Header';
+import Button from '../../components/common/Button';
 
 /**
  * Step 3: 멤버십 번호 입력 페이지
- * - 선택된 브랜드 정보 표시
- * - 카드 번호 입력 (numeric keyboard)
- * - 로딩 후 완료 페이지로 이동
+ * - 4개의 개별 입력 박스로 16자리 멤버십 번호 입력
+ * - 자동 포커스 이동 (4자리 입력 완료 시 다음 박스로)
+ * - Backspace 시 이전 박스로 이동
+ * - 붙여넣기 지원
  */
 export default function InputPage() {
     const navigate = useNavigate();
-    const { selectedBrand, cardNumber, setCardNumber } = useOnboardingStore();
+    const { setCardNumber } = useOnboardingStore();
     const [isLoading, setIsLoading] = useState(false);
 
+    // 4개의 입력 값 상태
+    const [values, setValues] = useState<string[]>(['', '', '', '']);
+
+    // 입력 필드 refs
+    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    // 전체 카드번호 계산
+    const fullCardNumber = values.join('');
+    const isComplete = fullCardNumber.length === 16;
+
+    // 전역 스토어 업데이트
+    useEffect(() => {
+        setCardNumber(fullCardNumber);
+    }, [fullCardNumber, setCardNumber]);
+
+    const handleChange = (index: number, value: string) => {
+        // 숫자만 허용
+        const digits = value.replace(/\D/g, '').slice(0, 4);
+
+        const newValues = [...values];
+        newValues[index] = digits;
+        setValues(newValues);
+
+        // 4자리 입력 완료 시 다음 입력으로 자동 포커스
+        if (digits.length === 4 && index < 3) {
+            inputRefs.current[index + 1]?.focus();
+        }
+    };
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+        // Backspace 처리: 현재 입력이 비어있고 Backspace 누르면 이전 입력으로 이동
+        if (e.key === 'Backspace' && values[index] === '' && index > 0) {
+            e.preventDefault();
+            inputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 16);
+
+        if (pastedData.length > 0) {
+            const newValues = ['', '', '', ''];
+            for (let i = 0; i < 4; i++) {
+                newValues[i] = pastedData.slice(i * 4, (i + 1) * 4);
+            }
+            setValues(newValues);
+
+            // 마지막 입력된 박스로 포커스 이동
+            const lastFilledIndex = Math.min(Math.floor((pastedData.length - 1) / 4), 3);
+            inputRefs.current[lastFilledIndex]?.focus();
+        }
+    };
+
     const handleComplete = () => {
-        if (!cardNumber.trim()) return;
+        if (!isComplete) return;
 
         setIsLoading(true);
         // Mock API call
@@ -26,78 +82,47 @@ export default function InputPage() {
         }, 1500);
     };
 
-    // Format card number with dashes (1234-5678-9123-4567)
-    const formatCardNumber = (value: string) => {
-        const digits = value.replace(/\D/g, '').slice(0, 16);
-        const groups = digits.match(/.{1,4}/g);
-        return groups ? groups.join('-') : digits;
-    };
-
-    const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rawValue = e.target.value.replace(/\D/g, '');
-        setCardNumber(rawValue);
-    };
-
     return (
-        <div className="flex-1 flex flex-col px-6 pb-8">
-            {/* Title */}
-            <div className="text-center mb-8">
-                <h1 className="text-lg font-semibold text-gray-900">
-                    멤버십 등록
-                </h1>
-            </div>
+        <div className="min-h-screen bg-[#F5F5F5] flex flex-col">
+            {/* Header */}
+            <Header title="멤버십 번호 입력" showBackButton={true} />
 
-            {/* Selected Brand Display */}
-            {selectedBrand && (
-                <div className="flex items-center justify-center gap-3 mb-8">
-                    <div
-                        className={`w-12 h-12 ${selectedBrand.color} rounded-xl flex items-center justify-center text-white font-bold`}
-                    >
-                        {selectedBrand.icon}
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col pt-[80px] px-6 pb-24">
+                {/* Input Boxes Container */}
+                <div className="bg-white rounded-2xl p-6 mt-4 shadow-sm">
+                    <div className="flex justify-center gap-3">
+                        {values.map((value, index) => (
+                            <input
+                                key={index}
+                                ref={(el) => { inputRefs.current[index] = el; }}
+                                type="tel"
+                                inputMode="numeric"
+                                value={value}
+                                onChange={(e) => handleChange(index, e.target.value)}
+                                onKeyDown={(e) => handleKeyDown(index, e)}
+                                onPaste={handlePaste}
+                                placeholder="0000"
+                                maxLength={4}
+                                className="w-[72px] h-11 bg-[#F4F4F4] border-0 rounded-lg text-center text-lg font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                            />
+                        ))}
                     </div>
-                    <span className="text-lg font-medium text-gray-900">
-                        {selectedBrand.name}
-                    </span>
                 </div>
-            )}
-
-            {/* Card Number Input */}
-            <div className="mb-8">
-                <p className="text-center text-gray-600 mb-4">
-                    멤버십 번호를 입력해주세요
-                </p>
-                <input
-                    type="tel"
-                    inputMode="numeric"
-                    placeholder="1234-5678-9123-4567"
-                    value={formatCardNumber(cardNumber)}
-                    onChange={handleCardNumberChange}
-                    className="w-full py-4 px-4 bg-gray-100 rounded-xl text-center text-xl font-mono tracking-wider placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00C0E8]"
-                    maxLength={19} // 16 digits + 3 dashes
-                />
             </div>
 
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Complete Button */}
-            <button
-                onClick={handleComplete}
-                disabled={!cardNumber.trim() || isLoading}
-                className={`w-full py-4 rounded-full font-bold text-lg transition-colors flex items-center justify-center gap-2 ${cardNumber.trim() && !isLoading
-                        ? 'bg-[#00C0E8] text-white hover:bg-[#00B3D8]'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
-            >
-                {isLoading ? (
-                    <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        등록 중...
-                    </>
-                ) : (
-                    '완료하기'
-                )}
-            </button>
+            {/* Fixed Bottom Button */}
+            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] p-6 bg-[#F5F5F5]">
+                <Button
+                    onClick={handleComplete}
+                    disabled={!isComplete}
+                    isLoading={isLoading}
+                    loadingText="등록 중..."
+                    variant="cyan"
+                >
+                    완료하기
+                </Button>
+            </div>
         </div>
     );
 }
