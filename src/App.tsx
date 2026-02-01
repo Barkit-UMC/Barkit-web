@@ -6,7 +6,6 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
-import LocationPermissionPage from './pages/profile/LocationPermissionPage';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -22,7 +21,6 @@ const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
-const DetailPage = lazy(() => import('./pages/home/DetailPage'));
 const MembershipSearchPage = lazy(() => import('./pages/home/MembershipSearchPage'));
 
 // Membership pages
@@ -31,6 +29,7 @@ const BrandSearchPage = lazy(() => import('./pages/membership/BrandSearchPage'))
 const InputNumberPage = lazy(() => import('./pages/membership/InputNumberPage'));
 const CameraScanPage = lazy(() => import('./pages/membership/CameraScanPage'));
 const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'));
+const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -100,14 +99,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/barcode/:id"
-              element={
-                <ProtectedRoute>
-                  <DetailPage />
-                </ProtectedRoute>
-              }
-            />
+
             <Route
               path="/search"
               element={
@@ -155,6 +147,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <RegCompletePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id"
+              element={
+                <ProtectedRoute>
+                  <MembershipDetailPage />
                 </ProtectedRoute>
               }
             />
@@ -233,14 +233,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ChangeBirthdayPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/locationpermission"
-              element={
-                <ProtectedRoute>
-                  <LocationPermissionPage />
                 </ProtectedRoute>
               }
             />

@@ -1,14 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
 
-import iconHomeOff from '../../assets/icons/bottom/home-off.svg';
-import iconHomeOn from '../../assets/icons/bottom/home-on.svg';
 import iconBarcodeOff from '../../assets/icons/bottom/barcode-off.svg';
-// barcode-on 파일이 없어서 off를 같이 사용합니다. 파일이 있다면 파일명을 수정
-import iconBarcodeOn from '../../assets/icons/bottom/barcode-off.svg';
+import iconBarcodeOn from '../../assets/icons/bottom/barcode-on.svg';
 import iconMapOff from '../../assets/icons/bottom/map-off.svg';
 import iconMapOn from '../../assets/icons/bottom/map-on.svg';
 import iconProfileOff from '../../assets/icons/bottom/profile-off.svg';
 import iconProfileOn from '../../assets/icons/bottom/profile-on.svg';
+import iconAddOff from '../../assets/icons/bottom/add-off.svg';
+import iconAddOn from '../../assets/icons/bottom/add-on.svg';
 
 /**
  * [PAGE 9] 하단 탭바 (홈/지도/전체)
@@ -18,8 +17,8 @@ export default function BottomNav() {
     const location = useLocation();
 
     const navItems = [
-        { path: '/wallet', label: '홈', iconOff: iconHomeOff, iconOn: iconHomeOn },
-        { path: '/add', label: '추가', iconOff: iconBarcodeOff, iconOn: iconBarcodeOn },
+        { path: '/home', label: '홈', iconOff: iconBarcodeOff, iconOn: iconBarcodeOn },
+        { path: '/membership/new', label: '추가', iconOff: iconAddOff, iconOn: iconAddOn },
         { path: '/map', label: '지도', iconOff: iconMapOff, iconOn: iconMapOn },
         { path: '/profile', label: '프로필', iconOff: iconProfileOff, iconOn: iconProfileOn }
     ];

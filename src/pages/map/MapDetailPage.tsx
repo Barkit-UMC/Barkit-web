@@ -48,6 +48,7 @@ export default function MapDetailPage() {
                {/* 2. 공통 Header 사용 */}
                 <Header 
                     showBackButton={true}
+                    title={storeData.name}
                     rightAction={
                         <button 
                             className="p-2 rounded-full transition-transform active:scale-95"

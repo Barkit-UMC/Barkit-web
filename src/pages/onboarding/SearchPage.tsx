@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/common/Header';
+import Button from '../../components/common/Button';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
-import searchIcon from '../../assets/icons/search/search.svg';
+import searchIcon from '../../assets/icons/search/search_main.svg';
 
 // Brand icon imports
 import CJOneIcon from '../../assets/icons/BrandIcon/cjone_icon.svg?react';
@@ -201,16 +202,13 @@ export default function SearchPage() {
 
             {/* Bottom Button - 하단 고정 */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
-                <button
+                <Button
                     onClick={handleNext}
                     disabled={!isButtonActive}
-                    className={`w-full py-3 rounded-full font-bold text-lg transition-all duration-200 ${isButtonActive
-                        ? 'bg-[#00C7E2] text-white hover:bg-[#00B0C8] shadow-lg'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        }`}
+                    variant="cyan"
                 >
                     다음
-                </button>
+                </Button>
             </div>
         </div>
     );
