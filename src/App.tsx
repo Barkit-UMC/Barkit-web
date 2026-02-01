@@ -30,6 +30,8 @@ const InputNumberPage = lazy(() => import('./pages/membership/InputNumberPage'))
 const CameraScanPage = lazy(() => import('./pages/membership/CameraScanPage'));
 const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'));
 const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
+const DeleteCompletePage = lazy(() => import('./pages/membership/DeleteCompletePage'));
+const DeleteFailurePage = lazy(() => import('./pages/membership/DeleteFailurePage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -155,6 +157,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MembershipDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/delete/complete"
+              element={
+                <ProtectedRoute>
+                  <DeleteCompletePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/delete/failure"
+              element={
+                <ProtectedRoute>
+                  <DeleteFailurePage />
                 </ProtectedRoute>
               }
             />
