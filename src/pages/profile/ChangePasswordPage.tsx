@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
+import Header from '../../components/common/Header';
 
 /**
  * [PAGE] 비밀번호 변경 페이지
@@ -93,23 +94,10 @@ export default function ChangePasswordPage() {
   return (
     <Layout>
       {/* 헤더 */}
-      <div className="w-full h-[128px] relative flex items-end border-b border-gray-200">
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute left-[16px] pb-4 p-2 rounded-full hover:cursor-pointer"
-        >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-
-        <h1 className="w-full text-center text-[20px] font-semibold pb-4">
-          비밀번호 변경
-        </h1>
-      </div>
+      <Header title="비밀번호 변경" />
 
       {/* 입력 영역 */}
-      <div className="mt-[38px] flex flex-col space-y-[38px]">
+      <div className="mt-24 flex flex-col space-y-[38px]">
         {/* 현재 비밀번호 */}
         <div className="px-[25px]">
           <input

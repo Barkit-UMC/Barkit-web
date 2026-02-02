@@ -47,16 +47,11 @@ export default function MyPage() {
 
   return (
     <Layout showBottomNav>
-
-      {/* 2. 공통 Header 사용 */}
-      <Header 
-        showBackButton={false}
-        title='프로필'
-      />
+      <Header title="프로필" showBackButton={false}  />
 
 <main className="flex-1 pt-[60px] overflow-y-auto scrollbar-hide pb-20">
       {/* 메뉴 리스트 */}
-      <div className="mt-4">
+      <div className="mt-20">
         {menuItems.map((item) => (
           <button
             key={item.id}

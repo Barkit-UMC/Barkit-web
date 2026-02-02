@@ -1,5 +1,17 @@
 import { useState, useCallback } from 'react';
-import { readBarcodesFromImageFile, type ReaderOptions } from 'zxing-wasm/reader';
+import { readBarcodesFromImageFile, type ReaderOptions, setZXingModuleOverrides } from 'zxing-wasm/reader';
+
+// WASM 파일을 로컬 public 폴더에서 불러오도록 설정
+// 이렇게 하면 CDN 접근이 안 되는 환경에서도 동작함
+setZXingModuleOverrides({
+    locateFile: (path: string, prefix: string) => {
+        // public 폴더의 WASM 파일 경로 반환
+        if (path.endsWith('.wasm')) {
+            return `/zxing_reader.wasm`;
+        }
+        return prefix + path;
+    }
+});
 
 interface UseBarcodesScannerResult {
     /** 스캔된 바코드 값 */
