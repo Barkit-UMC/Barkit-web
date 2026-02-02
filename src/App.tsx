@@ -36,6 +36,7 @@ const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDet
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
 const MapDetailPage = lazy(() => import('./pages/map/MapDetailPage'));
+const MapMembershipDetailPage = lazy(() => import('./pages/map/MapMembershipDetailPage'));
 
 // Favorites pages
 const FavoriteListPage = lazy(() => import('./pages/favorites/FavoriteListPage'));
@@ -168,6 +169,14 @@ function App() {
                   // <ProtectedRoute>
                   <MapDetailPage />
                   // </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/map/membership/:id"
+                element={
+                  <ProtectedRoute>
+                    <MapMembershipDetailPage />
+                  </ProtectedRoute>
                 }
               />
 
