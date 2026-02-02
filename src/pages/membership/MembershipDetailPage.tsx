@@ -1,10 +1,11 @@
 import Header from "../../components/common/Header";
 import Layout from "../../components/common/Layout";
-
 import iconSetting from '../../assets/icons/memberships/iconSetting.svg';
 import iconEdit from '../../assets/icons/memberships/iconEdit.svg';
 import iconPlus from '../../assets/icons/memberships/iconPlus.svg';
 import MembershipCard from "../../components/membership/MembershipCard";
+import { useState } from "react";
+import MembershipSettingBottomSheet from "../../components/membership/MembershipSettingsBottomSheet";
 
 // 임시 데이터 (실제로는 API나 Props에서 가져옵니다)
 const DUMMY_DATA = {
@@ -22,10 +23,11 @@ const DUMMY_DATA = {
 
 export default function MembershipDetailPage() {
     const data = DUMMY_DATA; // 데이터 소스
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
     return (
-        <Layout showBottomNav={true}>
-            <div className="flex flex-col h-full bg-white overflow-y-auto">
+        <Layout showBottomNav={!isBottomSheetOpen}>
+            <div className="flex flex-col h-full bg-white overflow-y-auto pb-10">
                 
                {/* 공통 Header 사용 */}
                 <Header 
@@ -34,7 +36,7 @@ export default function MembershipDetailPage() {
                     rightAction={
                         <button 
                             className="p-2 rounded-full transition-transform active:scale-95"
-                            // onClick={}
+                            onClick={() => setIsBottomSheetOpen(true)}
                             aria-label = "설정"
                         >
                             <img src={iconSetting} alt="설정" className="w-6 h-6" />
@@ -83,6 +85,12 @@ export default function MembershipDetailPage() {
                     )}
                 </div>
             </div>
+
+            {/* 바텀시트 */}
+            <MembershipSettingBottomSheet
+                isOpen={isBottomSheetOpen}
+                onClose={() => setIsBottomSheetOpen(false)}
+            />
         </Layout>
     );
 }
