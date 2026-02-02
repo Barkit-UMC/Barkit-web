@@ -6,6 +6,7 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
+import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 
 // Auth pages
@@ -105,8 +106,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-            
-             <Route
+
+              <Route
                 path="/search"
                 element={
                   <ProtectedRoute>
@@ -235,63 +236,63 @@ function App() {
                 }
               />
 
-            {/* Profile routes - protected */}
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <MyPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/pwa"
-              element={
-                <ProtectedRoute>
-                  <AddToHomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/edit"
-              element={
-                <ProtectedRoute>
-                  <EditProfilePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/edit/password"
-              element={
-                <ProtectedRoute>
-                  <ChangePasswdPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/edit/birthday"
-              element={
-                <ProtectedRoute>
-                  <ChangeBirthdayPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/logout"
-              element={
-                <ProtectedRoute>
-                  <LogoutPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/unscribe"
-              element={
-                <ProtectedRoute>
-                  <UnscribePage />
-                </ProtectedRoute>
-              }
-            />
+              {/* Profile routes - protected */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <MyPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/pwa"
+                element={
+                  <ProtectedRoute>
+                    <AddToHomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/edit/password"
+                element={
+                  <ProtectedRoute>
+                    <ChangePasswdPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/edit/birthday"
+                element={
+                  <ProtectedRoute>
+                    <ChangeBirthdayPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/logout"
+                element={
+                  <ProtectedRoute>
+                    <LogoutPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/unscribe"
+                element={
+                  <ProtectedRoute>
+                    <UnscribePage />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* 404 fallback - redirect to home or login */}
               <Route path="*" element={<RootRedirect />} />
