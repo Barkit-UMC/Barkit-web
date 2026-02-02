@@ -1,11 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import ErrorView from '../../components/common/ErrorView';
 
-/**
- * 멤버십 등록 실패 페이지
- * - ErrorView 공통 컴포넌트 사용
- * - 다시 시도 / 홈으로 버튼 제공
- */
 export default function FailurePage() {
     const navigate = useNavigate();
 
