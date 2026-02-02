@@ -57,7 +57,7 @@ export default function MembershipSettingBottomSheet({
     return (
         <>
             {/* 배경 오버레이 */}
-            {!showDeleteModal && (
+            {!showDeleteModal && !showToast && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-40"
                     onClick={onClose}
@@ -65,7 +65,7 @@ export default function MembershipSettingBottomSheet({
             )}
 
             {/* 바텀시트 */}
-            {!showDeleteModal && (
+            {!showDeleteModal && !showToast && (
                 <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[393px] h-[346px] bg-white rounded-t-[24px] z-50 pb-8">
                     <div className="p-6 space-y-4">
                         {/* 대표 멤버십 설정하기 */}
@@ -99,7 +99,7 @@ export default function MembershipSettingBottomSheet({
                         {/* 바코드 변경하기 */}
                         <button
                             onClick={() => {
-                                navigate('/membership/input'); // 추후 수정
+                                navigate('/membership/input');
                                 onClose();  
                             }}
                             className="flex items-center gap-3 w-full py-3"
