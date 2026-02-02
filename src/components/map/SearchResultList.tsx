@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import call from '../../assets/icons/map/call.svg'
 import navigation from '../../assets/icons/map/navigation.svg'
 import kt from '../../assets/icons/memberships/kt.svg'
-import oliveyoung from '../../assets/icons/memberships/oliveyoung.svg'
+import oliveyoung from '../../assets/icons/memberships/cjone.svg'
 import { useNavigate } from 'react-router-dom';
 
 // 데이터 타입 정의
@@ -23,7 +23,7 @@ const SearchResultList = ({ results }: SearchResultListProps) => {
 
   // 클릭 핸들러: 상세 페이지로 이동
   const handleStoreClick = (id: number) => {
-    navigate(`/store/${id}`); // 예: /store/1 경로로 이동
+    navigate(`/map/${id}`); // 예: /store/1 경로로 이동
   };
 
 
