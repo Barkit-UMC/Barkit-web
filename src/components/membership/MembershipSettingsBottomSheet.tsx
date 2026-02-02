@@ -37,7 +37,8 @@ export default function MembershipSettingBottomSheet({
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    // 바텀시트와 토스트 중 하나라도 표시되어야 함
+    if (!isOpen && !showToast) return null;
 
     const handleToggleFavorite = () => {
         const newValue = !isFavorite;
@@ -45,6 +46,7 @@ export default function MembershipSettingBottomSheet({
         setShowToast(true);
         setTimeout(() => setShowToast(false), 1000);
         onSetFavorite?.(newValue);
+        onClose(); // 바텀시트 닫기
     };
 
     const handleDeleteConfirm = () => {
@@ -57,7 +59,7 @@ export default function MembershipSettingBottomSheet({
     return (
         <>
             {/* 배경 오버레이 */}
-            {!showDeleteModal && !showToast && (
+            {!showDeleteModal && isOpen && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-40"
                     onClick={onClose}
@@ -65,7 +67,7 @@ export default function MembershipSettingBottomSheet({
             )}
 
             {/* 바텀시트 */}
-            {!showDeleteModal && !showToast && (
+            {!showDeleteModal && isOpen && (
                 <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[393px] h-[346px] bg-white rounded-t-[24px] z-50 pb-8">
                     <div className="p-6 space-y-4">
                         {/* 대표 멤버십 설정하기 */}
