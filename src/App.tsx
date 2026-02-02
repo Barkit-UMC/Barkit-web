@@ -94,6 +94,7 @@ function App() {
             <Route path="/onboarding/input" element={<InputPage />} />
             <Route path="/onboarding/complete" element={<CompletePage />} />
             <Route path="/onboarding/failure" element={<FailurePage />} />
+            <Route path="/onboarding/add-barcode-photo" element={<AddBarcodePhotoPage />} />
 
             {/* Home routes - protected */}
             <Route
