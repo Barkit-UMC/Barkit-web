@@ -71,7 +71,6 @@ export default function MapDetailPage() {
                {/* 2. 공통 Header 사용 */}
                 <Header 
                     showBackButton={true}
-                    title={storeData.name}
                     rightAction={
                         <button 
                             className="p-2 rounded-full transition-transform active:scale-95"
@@ -97,7 +96,7 @@ export default function MapDetailPage() {
                 </div>
 
                 {/* 3. 이미지 갤러리 (가로 스크롤) */}
-                <div className="flex gap-3 overflow-x-auto px-6 scrollbar-hide h-48 min-h-[12rem]">
+                <div className="flex gap-3 overflow-x-auto px-6 scrollbar-hide h-48 min-h-[12rem] mb-2">
                     {storeData.images.map((img, idx) => (
                         <img 
                             key={idx} 
@@ -112,7 +111,7 @@ export default function MapDetailPage() {
 
                 {/* 4. 멤버십 섹션 (수정된 부분) */}
                 <div className="px-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">적용 가능 보유 멤버십</h2>
+                    <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">보유 멤버십</h2>
                     <div className="flex gap-3">
                         {storeData.memberships.length > 0 ? (
                             storeData.memberships.map((membership) => (
@@ -137,18 +136,45 @@ export default function MapDetailPage() {
                 </div>
 
                 <hr className="my-4 border-gray-100 border-[6px]" />
+                
+                <div className="px-6">
+                    <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">전체 멤버십</h2>
+                    <div className="flex gap-3">
+                        {storeData.memberships.length > 0 ? (
+                            storeData.memberships.map((membership) => (
+                                <button
+                                    key={membership.id}
+                                    // 클릭 이벤트 추가 필요 ***
+                                    className="relative transition-transform active:scale-90"
+                                    aria-label={`${membership.name} 상세보기`}
+                                >
+                                    <img 
+                                        src={membership.icon} 
+                                        alt={membership.name} 
+                                        className="w-14 h-14 rounded-xl shadow-sm border border-gray-50 object-cover" 
+                                    />
+                                    {/* 시각적 피드백을 위해 필요시 뱃지 등을 추가할 수 있습니다 */}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="text-gray-400 text-sm">적용 가능한 멤버십이 없습니다.</p>
+                        )}
+                    </div>
+                </div>
+
+                <hr className="my-4 border-gray-100 border-[6px]" />
 
                 {/* 5. 상세 정보 리스트 */}
-                <div className="px-6 space-y-4">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">기본 정보</h2>
+                <div className="px-6 space-y-3">
+                    <h2 className="text-xl font-bold text-black mb-3">기본 정보</h2>
                     
                     <div className="flex gap-4">
-                        <span className="w-20 text-gray-500 font-medium">영업시간</span>
+                        <span className="w-20 text-black font-medium">영업시간</span>
                         <span className="flex-1 text-gray-800"><span className="text-cyan-500 mr-2">영업 중</span>{storeData.hours}</span>
                     </div>
 
                     <div className="flex gap-4">
-                        <span className="w-20 text-gray-500 font-medium">전화번호</span>
+                        <span className="w-20 text-black font-medium">전화번호</span>
                         <div className="flex-1 flex items-center gap-2 text-gray-800">
                             {storeData.phone}
                             <button 
@@ -161,17 +187,17 @@ export default function MapDetailPage() {
                     </div>
 
                     <div className="flex gap-4">
-                        <span className="w-20 text-gray-500 font-medium">홈페이지</span>
+                        <span className="w-20 text-black font-medium">홈페이지</span>
                         <span className="flex-1 text-gray-400 underline truncate">{storeData.website}</span>
                     </div>
 
                     <div className="flex gap-4">
-                        <span className="w-20 text-gray-500 font-medium">편의시설</span>
+                        <span className="w-20 text-black font-medium">편의시설</span>
                         <span className="flex-1 text-gray-800">{storeData.facilities}</span>
                     </div>
 
                     <div className="flex gap-4">
-                        <span className="w-20 text-gray-500 font-medium">주소</span>
+                        <span className="w-20 text-black font-medium">주소</span>
                         <span className="flex-1 text-gray-800">{storeData.address}</span>
                     </div>
 
@@ -204,29 +230,17 @@ export default function MapDetailPage() {
 
                         {/* 경로 안내 문구 */}
                         <div className="mt-4 space-y-4">
-                            <p className="text-gray-600 text-[15px]">
+                            <p className="text-gray-800 text-[15px]">
                                 성수역 4번 출구에서 79m 도보 3분에 위치합니다.
                             </p>
                             
                             <div className="space-y-1">
-                                <p className="text-gray-500 text-[15px] font-medium">- 주차장 안내</p>
-                                <p className="text-gray-600 text-[15px]">
+                                <p className="text-gray-800 text-[15px] font-medium">- 주차장 안내</p>
+                                <p className="text-gray-800 text-[15px]">
                                     건물 내 지하 주차장을 이용하실 수 있습니다.
                                 </p>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <hr className="my-8 border-gray-100 border-[6px]" />
-
-                {/* 6. 장소 소개 */}
-                <div className="px-6 pb-10">
-                    <h2 className="text-xl font-bold text-gray-900 mb-4">장소 소개</h2>
-                    <div className="bg-gray-50 p-5 rounded-2xl">
-                        <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
-                            {storeData.description}
-                        </p>
                     </div>
                 </div>
             </div>
