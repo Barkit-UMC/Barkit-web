@@ -6,7 +6,12 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
+<<<<<<< HEAD
 import BenefitStorePage from './pages/home/BenefitStorePage';
+=======
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
+>>>>>>> 30a6a26cc07556eebe4ba44b45a4279b5b15f140
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -22,6 +27,7 @@ const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
+const MembershipSearchPage = lazy(() => import('./pages/home/MembershipSearchPage'));
 
 // Membership pages
 const BrandSelectPage = lazy(() => import('./pages/membership/BrandSelectPage'));
@@ -30,10 +36,13 @@ const InputNumberPage = lazy(() => import('./pages/membership/InputNumberPage'))
 const CameraScanPage = lazy(() => import('./pages/membership/CameraScanPage'));
 const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'));
 const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
+const DeleteCompletePage = lazy(() => import('./pages/membership/DeleteCompletePage'));
+const DeleteFailurePage = lazy(() => import('./pages/membership/DeleteFailurePage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
 const MapDetailPage = lazy(() => import('./pages/map/MapDetailPage'));
+const MapMembershipDetailPage = lazy(() => import('./pages/map/MapMembershipDetailPage'));
 
 // Favorites pages
 const FavoriteListPage = lazy(() => import('./pages/favorites/FavoriteListPage'));
@@ -72,34 +81,45 @@ const RootRedirect = () => {
 function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Root - redirect based on auth status */}
-            <Route path="/" element={<RootRedirect />} />
+      <ThemeProvider theme={theme}>
+        <Layout>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              {/* Root - redirect based on auth status */}
+              <Route path="/" element={<RootRedirect />} />
 
-            {/* Auth routes - public */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+              {/* Auth routes - public */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
 
-            {/* Onboarding routes - standalone (no shared layout) */}
-            <Route path="/onboarding/intro" element={<IntroPage />} />
-            <Route path="/onboarding/select-method" element={<SelectMethodPage />} />
-            <Route path="/onboarding/search" element={<SearchPage />} />
-            <Route path="/onboarding/input" element={<InputPage />} />
-            <Route path="/onboarding/complete" element={<CompletePage />} />
-            <Route path="/onboarding/failure" element={<FailurePage />} />
+              {/* Onboarding routes - standalone (no shared layout) */}
+              <Route path="/onboarding/intro" element={<IntroPage />} />
+              <Route path="/onboarding/select-method" element={<SelectMethodPage />} />
+              <Route path="/onboarding/search" element={<SearchPage />} />
+              <Route path="/onboarding/input" element={<InputPage />} />
+              <Route path="/onboarding/complete" element={<CompletePage />} />
+              <Route path="/onboarding/failure" element={<FailurePage />} />
 
-            {/* Home routes - protected */}
-            <Route
-              path="/home"
-              element={
-                <ProtectedRoute>
-                  <WalletPage />
-                </ProtectedRoute>
-              }
-            />
+              {/* Home routes - protected */}
+              <Route
+                path="/home"
+                element={
+                  <ProtectedRoute>
+                    <WalletPage />
+                  </ProtectedRoute>
+                }
+              />
+            
+             <Route
+                path="/search"
+                element={
+                  <ProtectedRoute>
+                    <MembershipSearchPage />
+                  </ProtectedRoute>
+                }
+              />
 
+<<<<<<< HEAD
             {/* Membership registration routes - protected */}
             <Route
               path="/membership/new"
@@ -157,42 +177,117 @@ function App() {
                 </ProtectedRoute>
               }
             />
+=======
+              {/* Membership registration routes - protected */}
+              <Route
+                path="/membership/new"
+                element={
+                  <ProtectedRoute>
+                    <BrandSelectPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/search"
+                element={
+                  <ProtectedRoute>
+                    <BrandSearchPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/input"
+                element={
+                  <ProtectedRoute>
+                    <InputNumberPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/scan"
+                element={
+                  <ProtectedRoute>
+                    <CameraScanPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/complete"
+                element={
+                  <ProtectedRoute>
+                    <RegCompletePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/:id"
+                element={
+                  <ProtectedRoute>
+                    <MembershipDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/:id/delete/complete"
+                element={
+                  <ProtectedRoute>
+                    <DeleteCompletePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/membership/:id/delete/failure"
+                element={
+                  <ProtectedRoute>
+                    <DeleteFailurePage />
+                  </ProtectedRoute>
+                }
+              />
+>>>>>>> 30a6a26cc07556eebe4ba44b45a4279b5b15f140
 
-            {/* Map routes - protected */}
-            <Route
-              path="/map"
-              element={
-                // <ProtectedRoute>
-                <MapHomePage />
-                // </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/map/:id"
-              element={
-                // <ProtectedRoute>
-                <MapDetailPage />
-                // </ProtectedRoute>
-              }
-            />
+              {/* Map routes - protected */}
+              <Route
+                path="/map"
+                element={
+                  // <ProtectedRoute>
+                  <MapHomePage />
+                  // </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/map/:id"
+                element={
+                  // <ProtectedRoute>
+                  <MapDetailPage />
+                  // </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/map/membership/:id"
+                element={
+                  <ProtectedRoute>
+                    <MapMembershipDetailPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Favorites routes - protected */}
-            <Route
-              path="/favorites"
-              element={
-                <ProtectedRoute>
-                  <FavoriteListPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/favorites/add"
-              element={
-                <ProtectedRoute>
-                  <AddFavoritePage />
-                </ProtectedRoute>
-              }
-            />
+              {/* Favorites routes - protected */}
+              <Route
+                path="/favorites"
+                element={
+                  <ProtectedRoute>
+                    <FavoriteListPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/favorites/add"
+                element={
+                  <ProtectedRoute>
+                    <AddFavoritePage />
+                  </ProtectedRoute>
+                }
+              />
 
             {/* Profile routes - protected */}
             <Route
@@ -252,12 +347,12 @@ function App() {
               }
             />
 
-
-            {/* 404 fallback - redirect to home or login */}
-            <Route path="*" element={<RootRedirect />} />
-          </Routes>
-        </Suspense>
-      </Layout>
+              {/* 404 fallback - redirect to home or login */}
+              <Route path="*" element={<RootRedirect />} />
+            </Routes>
+          </Suspense>
+        </Layout>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

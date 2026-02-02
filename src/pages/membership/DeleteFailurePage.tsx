@@ -1,17 +1,12 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ErrorView from '../../components/common/ErrorView';
 
-/**
- * 멤버십 등록 실패 페이지
- * - ErrorView 공통 컴포넌트 사용
- * - 다시 시도 / 홈으로 버튼 제공
- */
-export default function FailurePage() {
+export default function DeleteFailurePage() {
     const navigate = useNavigate();
+    const { id } = useParams<{ id: string }>();
 
     const handleRetry = () => {
-        // 맴버십 등록 페이지로 다시 이동
-        navigate('/onboarding/select-method');
+        navigate(`/membership/${id}`)
     };
 
     const handleGoHome = () => {
@@ -23,13 +18,13 @@ export default function FailurePage() {
             title={
                 <>
                     아차!<br />
-                    멤버십 등록에 실패했어요.<br />
+                    멤버십 삭제에 실패했어요.<br />
                     다시 해볼까요?
                 </>
             }
-            primaryButtonText="다시 시도하기"
+            primaryButtonText="다시하기"
             onPrimaryClick={handleRetry}
-            secondaryButtonText="홈으로"
+            secondaryButtonText="취소"
             onSecondaryClick={handleGoHome}
         />
     );

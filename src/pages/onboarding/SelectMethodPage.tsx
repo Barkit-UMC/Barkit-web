@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ScanBarcode } from 'lucide-react';
 import Header from '../../components/common/Header';
+import Button from '../../components/common/Button';
 
 type MethodType = 'number' | 'barcode' | null;
 
@@ -81,16 +82,13 @@ export default function SelectMethodPage() {
 
             {/* Bottom Button */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
-                <button
+                <Button
                     onClick={handleNext}
                     disabled={!selectedMethod}
-                    className={`w-full py-3 rounded-full font-bold text-lg transition-all duration-200 ${selectedMethod
-                        ? 'bg-[#00C0E8] text-white hover:bg-[#00B0D8] shadow-lg'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        }`}
+                    variant="cyan"
                 >
                     다음
-                </button>
+                </Button>
             </div>
         </div>
     );

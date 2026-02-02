@@ -8,7 +8,7 @@ import iconLoc from '../../assets/icons/map/current_loc.svg';
 import iconLocOn from '../../assets/icons/map/current_loc_on.svg';
 import iconMapPin from '../../assets/icons/map/loc.svg'
 import iconMyLoc from '../../assets/icons/map/sort_loc.svg'
-import SortModal from '../../components/map/SortModal';
+import SortBottomSheet from '../../components/common/BottomSheet';
 import SearchResultList from '../../components/map/SearchResultList';
 
 const search_icon = iconSearch; 
@@ -205,7 +205,7 @@ export default function MapHomePage() {
                 >
                     {/* 바텀시트 핸들러 (노란색 바) */}
                     <div className="flex justify-center !pt-3 !pb-3" onClick={() => setIsBottomSheetOpen(false)}>
-                        <div className="w-14 h-3 bg-yellow-400 rounded-full" />
+                        <div className="w-14 h-3 bg-gray-200 rounded-full" />
                     </div>
 
                     {/* 분리한 리스트 컴포넌트 삽입 */}
@@ -226,14 +226,10 @@ export default function MapHomePage() {
 
                 {/* 4. 재사용 정렬 모달 */}
                 {isSortModalOpen && (
-                    <SortModal
-                        title="정렬 기준"
+                    <SortBottomSheet
                         options={sortOptions}
                         selectedValue={currentSort}
-                        onSelect={(id) => {
-                            setCurrentSort(id);
-                            setIsSortModalOpen(false); // 선택 시 닫기
-                        }}
+                        onSelect={(id) => setCurrentSort(id)}
                         onClose={() => setIsSortModalOpen(false)}
                     />
                 )}
