@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import MembershipTitle from '../../components/membership/MembershipTitle';
-import searchIcon from '../../assets/icons/search_main.svg'
+import searchIcon from '../../assets/icons/search/search_gray.svg'
 import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
 import ktIcon from '../../assets/icons/memberships/kt.svg'
 import sktIcon from '../../assets/icons/memberships/skt.svg'
@@ -13,20 +13,29 @@ import happypointIcon from '../../assets/icons/memberships/happypoint.svg'
 import naverIcon from '../../assets/icons/memberships/naver.svg'
 import kakaopayIcon from '../../assets/icons/memberships/kakaopay.svg'
 import FavoriteMembershipCard from '../../components/membership/FavoriteMembershipCard';
-import MembershipSettingBottomSheet from '../../components/favorite/MembershipSettingsBottomSheet';
-import { useState } from 'react';
+import emptyFavoriteImage from '../../assets/images/empty_favorite.svg';
+
+interface FavoriteMembership {
+    id: number;
+    brandName: string;
+    brandLogo: string;
+    brandColor: string;
+}
 
 export default function WalletPage() {
     const navigate = useNavigate();
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(true); // 임시: 기본 열림
 
     // TODO: API에서 사용자의 멤버십 목록 가져오기
-    const featuredMembership = {
+    // const favoriteMemberships: FavoriteMembership[] = []; // 멤버십 미추가된 상태
+
+    const favoriteMemberships: FavoriteMembership[] = [
+    {
         id: 1,
         brandName: 'CJ ONE',
         brandLogo: cjoneIcon,
         brandColor: '#1a1a2e',
-    };
+    },
+];
 
     const membershipList = [
         { id: 2, brandName: 'CJ ONE', brandLogo: cjoneIcon, brandColor: '#1a1a2e' },
@@ -43,25 +52,37 @@ export default function WalletPage() {
 
     return (
         <Layout showBottomNav>
-            <div className="min-h-screen bg-gray-50 pb-24">
+            <div className="min-h-screen bg-gray-50">
                 {/* 대표 멤버십 섹션 */}
                 <div className="px-6 py-6">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mt-4 mb-4">
                         <p className="text-xl font-semibold">대표 멤버십</p>
                     </div>
 
-                    <FavoriteMembershipCard
-                        brandName={featuredMembership.brandName}
-                        brandLogo={featuredMembership.brandLogo}
-                        brandColor={featuredMembership.brandColor}
-                        onClick={() => navigate(`/wallet/${featuredMembership.id}`)}
-                    />
-                    
+                    {favoriteMemberships.length > 0 ? (
+                        <FavoriteMembershipCard
+                            brandName={favoriteMemberships[0].brandName}
+                            brandLogo={favoriteMemberships[0].brandLogo}
+                            brandColor={favoriteMemberships[0].brandColor}
+                            onClick={() => navigate(`/membership/${favoriteMemberships[0].id}`)}
+                        />
+                    ) : (
+                        <img 
+                            src={emptyFavoriteImage} 
+                            alt="대표 멤버십 미설정" 
+                            className="w-full object-contain rounded-[10px]"
+                            style={{ width: '345px', height: '208px' }}
+                        />
+                    )}
+
                     {/* 페이지 인디케이터 */}
                     <div className="flex justify-center gap-2 mt-4">
-                        <div className="w-2 h-2 rounded-full bg-blue-500" />
-                        <div className="w-2 h-2 rounded-full bg-gray-300" />
-                        <div className="w-2 h-2 rounded-full bg-gray-300" />
+                        {[...Array(3)].map((_, index) => (
+                            <div 
+                                key={index}
+                                className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-[#00C0E8]' : 'bg-gray-200'}`}
+                            />
+                        ))}
                     </div>
                 </div>
 
@@ -86,7 +107,7 @@ export default function WalletPage() {
                                     brandName={membership.brandName}
                                     brandLogo={membership.brandLogo}
                                     brandColor={membership.brandColor}
-                                    onClick={() => navigate(`/wallet/${membership.id}`)}
+                                    onClick={() => navigate(`/membership/${membership.id}`)}
                                 />
                             ))}
                         </div>
@@ -109,11 +130,6 @@ export default function WalletPage() {
                     )}
                 </div>
             </div>
-
-            <MembershipSettingBottomSheet
-                isOpen={isBottomSheetOpen}
-                onClose={() => setIsBottomSheetOpen(false)}
-            />
         </Layout>
     );
 }

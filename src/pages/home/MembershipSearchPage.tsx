@@ -46,7 +46,7 @@ export default function MembershipSearchPage() {
     };
 
     const handleShowBarcode = () => {
-        navigate(`/membership/${foundMembership.id}/barcode`);
+        navigate(`/membership/${foundMembership.id}`);
     };
 
     const handleGoHome = () => {
@@ -71,7 +71,7 @@ export default function MembershipSearchPage() {
                             searchQuery={searchQuery}
                             setSearchQuery={handleSearchQueryChange}
                             onSearchClick={handleSearch}
-                            placeholder='kt'
+                            placeholder='KT'
                         />
                     </div>
                     
