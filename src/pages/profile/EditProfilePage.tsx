@@ -7,7 +7,7 @@ import CommonToast from '../../components/profile/CommonToast';
 import Header from '../../components/common/Header';
 
 type LocationState = {
-  toast?: 'password' | 'birthday';
+  toast?: 'password';
 };
 
 /**
@@ -23,13 +23,13 @@ export default function EditProfilePage() {
   const [phone] = useState('010-1234-5678');
 
     // 토스트 상태 (보일 때만 값 존재)
-  const [toast, setToast] = useState<'password' | 'birthday' | null>(null);
+  const [toast, setToast] = useState<'password' | null>(null);
 
   useEffect(() => {
     const state = location.state as LocationState | null;
 
-    if (state?.toast) {
-      setToast(state.toast);
+    if (state?.toast === 'password') {
+      setToast('password');
 
       // state 제거 (뒤로가기 / 새로고침 중복 방지)
       navigate(location.pathname, { replace: true });
@@ -82,15 +82,21 @@ export default function EditProfilePage() {
 
       {/* 연동 */}
       <div className="flex-1 border-[4px] border-gray-100" />
+      
+      <div className="px-[25px] pt-6 flex items-center gap-3">
+        <span className="border-b border-gray-300 flex-1" />
+        <h2 className="text-[16px] font-medium text-gray-300">연동하기</h2>
+        <span className="border-b border-gray-300 flex-1" />
+      </div>
       <div className="mt-6 mb-12 flex justify-center">
         <img src={iconKakao} className="w-[60px] h-[60px] mx-4" />
         <img src={iconNaver} className="w-[60px] h-[60px] mx-4" />
       </div>
 
-      {/* 토스트 */}
+      {/* 비밀번호 변경 토스트 */}
       {toast && (
         <CommonToast
-          type={toast}
+          type="password"
           onClose={() => setToast(null)}
         />
       )}
