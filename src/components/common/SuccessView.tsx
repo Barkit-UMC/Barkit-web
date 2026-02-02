@@ -55,7 +55,7 @@ export default function SuccessView({
     }, []);
 
     return (
-        <div className="w-[390px] min-h-screen mx-auto bg-white flex flex-col">
+        <div className="flex h-full mx-auto bg-white flex flex-col">
             {/* Floating Animation Style */}
             <style>{`
                 @keyframes float {

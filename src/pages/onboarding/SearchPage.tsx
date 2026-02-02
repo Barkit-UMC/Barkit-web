@@ -153,7 +153,7 @@ export default function SearchPage() {
     const isButtonActive = selectedBrandId !== null;
 
     return (
-        <div className="w-[390px] h-screen mx-auto bg-white flex flex-col relative">
+        <div className="flex h-screen mx-auto bg-white flex flex-col relative">
             {/* Header - 공통 컴포넌트 활용 */}
             <Header title="멤버십 브랜드 등록" showBackButton />
 
