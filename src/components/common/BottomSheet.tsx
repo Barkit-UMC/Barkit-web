@@ -15,7 +15,7 @@ interface SortModalProps {
 
 const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModalProps) => {
   return (
-    <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/40">
+    <div className="absolute inset-0 z-[9999] flex items-end justify-center bg-black/40">
       {/* 배경 터치 시 닫기 */}
       <div className="absolute inset-0" onClick={onClose} />
 
