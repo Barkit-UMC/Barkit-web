@@ -74,16 +74,16 @@ export default function ErrorView({
             `}</style>
 
             {/* Content */}
-            <main className="flex-1 flex flex-col items-start justify-center px-6 pb-8">
+            <main className="flex-1 flex flex-col items-start justify-center px-6 pt-32 pb-4">
                 {/* Title */}
-                <div className="w-full text-left mb-12">
-                    <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+                <div className="w-full text-left mb-40">
+                    <h1 className="text-[28px] font-semibold text-gray-900 leading-tight">
                         {title}
                     </h1>
                 </div>
 
                 {/* Illustration Area */}
-                <div className="relative w-40 h-40 self-center mb-12">
+                <div className="relative w-40 h-40 self-center mb-20">
                     {/* Character */}
                     <BarkitWonderIcon className="w-full h-full drop-shadow-lg animate-tilt" />
                     {/* Question Mark - positioned top-right with boing animation */}
@@ -94,18 +94,17 @@ export default function ErrorView({
             </main>
 
             {/* Bottom Buttons */}
-            <div className="px-6 pb-8">
+            <div className="px-6 pb-12 space-y-[10px]">
                 <Button
                     onClick={onPrimaryClick}
-                    variant="cyan"
+                    variant="primary"
                 >
                     {primaryButtonText}
                 </Button>
                 {secondaryButtonText && onSecondaryClick && (
                     <Button
                         onClick={onSecondaryClick}
-                        variant="cyan-secondary"
-                        className="mt-3"
+                        variant="secondary"
                     >
                         {secondaryButtonText}
                     </Button>

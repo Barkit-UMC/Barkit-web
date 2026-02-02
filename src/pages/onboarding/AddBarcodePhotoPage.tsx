@@ -61,7 +61,7 @@ export default function AddBarcodePhotoPage() {
     };
 
     return (
-        <div className="w-[390px] h-screen mx-auto bg-[#f5f5f5] flex flex-col relative">
+        <div className="flex h-full mx-auto bg-[#f5f5f5] flex flex-col relative">
             <Header title="바코드 사진 추가" showBackButton />
 
             {/* Hidden File Inputs */}

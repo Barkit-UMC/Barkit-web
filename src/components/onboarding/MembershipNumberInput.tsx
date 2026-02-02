@@ -73,7 +73,7 @@ const MembershipNumberInput = forwardRef<MembershipNumberInputRef, MembershipNum
 
         return (
             <div className={`bg-white rounded-xl p-10 ${className}`}>
-                <div className="flex justify-center gap-3">
+                <div className="flex justify-center gap-4">
                     {values.map((value, index) => (
                         <input
                             key={index}
@@ -86,7 +86,7 @@ const MembershipNumberInput = forwardRef<MembershipNumberInputRef, MembershipNum
                             onPaste={handlePaste}
                             placeholder="0000"
                             maxLength={4}
-                            className="w-[72px] h-8 bg-[#F4F4F4] border-0 rounded-lg text-center text-lg font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                            className="flex-1 min-w-0 h-8 bg-[#F4F4F4] border-0 rounded-lg text-center text-lg font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                         />
                     ))}
                 </div>
