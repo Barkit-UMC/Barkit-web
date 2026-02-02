@@ -4,6 +4,7 @@ interface HeaderProps {
   title?: string;
   showBackButton?: boolean;
   rightAction?: React.ReactNode;
+  path?: string;
 }
 
 /**
@@ -13,6 +14,7 @@ export default function Header({
   title,
   showBackButton = true,
   rightAction,
+  path,
 }: HeaderProps) {
   const navigate = useNavigate();
 
@@ -22,12 +24,12 @@ export default function Header({
         {/* 뒤로가기 */}
         {showBackButton && (
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => path ? navigate(path) : navigate(-1)}
             className="absolute left-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
             aria-label="뒤로가기"
           >
             <svg
-              className="w-6 h-6"
+              className="w-8 h-8"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -44,7 +46,7 @@ export default function Header({
 
         {/* 타이틀 */}
         {title && (
-          <h1 className="text-lg font-semibold">
+          <h1 className="text-xl font-semibold">
             {title}
           </h1>
         )}
