@@ -52,7 +52,7 @@ const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModa
                 />
 
                 {/* 텍스트: text-base(16px)를 기본으로 하고 굵기 조절 */}
-                <span className={`text-[18px] font-bold tracking-tight transition-colors ${
+                <span className={`text-[18px] font-medium tracking-tight transition-colors ${
                   isSelected ? 'text-[#00C0E8]' : 'text-gray-400'
                 }`}>
                   {option.label}
@@ -65,7 +65,7 @@ const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModa
         {/* 취소 버튼: 터치 영역 확보 및 배경색 조정 */}
         <button
           onClick={onClose}
-          className="w-full bg-cyan-50 py-4 rounded-2xl text-[#00C0E8] text-[18px] font-bold active:scale-[0.98] transition-all"
+          className="w-full bg-cyan-50 py-4 rounded-2xl text-[#00C0E8] text-[18px] font-medium active:scale-[0.98] transition-all"
         >
           취소
         </button>
