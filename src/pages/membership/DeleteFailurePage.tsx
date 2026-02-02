@@ -22,10 +22,10 @@ export default function DeleteFailurePage() {
                     다시 해볼까요?
                 </>
             }
-            primaryButtonText="다시하기"
-            onPrimaryClick={handleRetry}
-            secondaryButtonText="취소"
-            onSecondaryClick={handleGoHome}
+            primaryButtonText="취소"
+            onPrimaryClick={handleGoHome}
+            secondaryButtonText="다시하기"
+            onSecondaryClick={handleRetry}
         />
     );
 }

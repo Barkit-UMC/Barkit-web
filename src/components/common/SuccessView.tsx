@@ -69,22 +69,22 @@ export default function SuccessView({
             `}</style>
 
             {/* Content */}
-            <main className="flex-1 flex flex-col items-start justify-center px-6 pb-8">
+            <main className="flex-1 flex flex-col items-start justify-center px-6 pt-32 pb-4">
                 {/* Title */}
-                <div className="w-full text-left mb-12">
-                    <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+                <div className="w-full text-left mb-40">
+                    <h1 className="text-[28px] font-semibold text-gray-900 leading-tight">
                         {title}
                     </h1>
                 </div>
 
                 {/* Character with floating animation */}
-                <div className="w-40 h-40 flex items-center justify-center animate-float-slow mb-12 self-center">
+                <div className="w-52 h-52 flex items-center justify-center animate-float-slow mb-30 self-center">
                     <BarkitSmileIcon className="w-full h-full drop-shadow-lg" />
                 </div>
             </main>
 
             {/* Bottom Button */}
-            <div className="px-6 pb-8">
+            <div className="px-6 pb-12">
                 <Button
                     onClick={onButtonClick}
                     variant="cyan"
