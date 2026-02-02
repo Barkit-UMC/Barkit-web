@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 interface ButtonProps {
     children: React.ReactNode;
     onClick?: () => void;
-    variant?: 'primary' | 'secondary' | 'cyan';
+    variant?: 'primary' | 'secondary' | 'cyan' | 'cyan-secondary';
     disabled?: boolean;
     isLoading?: boolean;
     loadingText?: string;
@@ -31,7 +31,8 @@ export default function Button({
     const variantStyles = {
         primary: 'rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed',
         secondary: 'rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300',
-        cyan: 'rounded-full bg-[#00C0E8] text-white hover:bg-[#00B0D8] shadow-lg disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none active:scale-[0.98]'
+        cyan: 'rounded-full bg-[#00C0E8] text-white hover:bg-[#00B0D8] shadow-lg disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none active:scale-[0.98]',
+        'cyan-secondary': 'rounded-xl bg-cyan-50 text-[#00C0E8] hover:bg-cyan-100'
     };
 
     const isDisabled = disabled || isLoading;

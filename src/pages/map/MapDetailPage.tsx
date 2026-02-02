@@ -9,11 +9,18 @@ import Header from '../../components/common/Header';
 import MapContainer from '../../components/map/MapContainer';
 
 export default function MapDetailPage() {
+    const navigate = useNavigate();
+
     const storeData = {
         name: '올리브영 성수',
         category: '드럭스토어',
         distance: '0.55km',
         address: '서울 성동구 연무장7길 13 팩토리얼',
+        memberships: [
+            { id: 'kt', name: 'KT 멤버십', icon: kt },
+            { id: 'oliveyoung', name: '올리브영 멤버십', icon: oliveyoung },
+            // 데이터가 더 있다면 여기에 추가되는 만큼 화면에 보입니다.
+        ],
         location: { lat: 37.5445, lng: 127.0560 },
         images: [
             sampleimg, // 임시 이미지
@@ -41,9 +48,25 @@ export default function MapDetailPage() {
         window.open(url, '_blank');
     };
 
+    const handleMembershipClick = (membershipId: string) => {
+        // 멤버십 상세 페이지로 이동 (ID를 경로 파라미터로 전달)
+        navigate(`/map/membership/${membershipId}`);
+    };
+
+    // 복사 함수 추가
+    const handleCopyPhone = (text: string) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                alert('전화번호가 클립보드에 복사되었습니다.');
+            })
+            .catch((err) => {
+                console.error('복사 실패:', err);
+            });
+    };
+
     return (
         <Layout showBottomNav={false}>
-            <div className="flex flex-col h-full bg-white overflow-y-auto pb-10">
+            <div className="flex flex-col h-full bg-white overflow-y-auto scrollbar-hide pb-10">
                 
                {/* 2. 공통 Header 사용 */}
                 <Header 
@@ -61,7 +84,7 @@ export default function MapDetailPage() {
                 />
 
                 {/* 2. 매장 기본 정보 */}
-                <div className="px-6 py-4 pt-40">
+                <div className="px-6 py-4 pt-20">
                     <div className="flex items-center gap-2">
                         <h1 className="text-2xl font-bold text-gray-900">{storeData.name}</h1>
                         <span className="text-gray-300 text-lg">{storeData.category}</span>
@@ -85,18 +108,35 @@ export default function MapDetailPage() {
                     ))}
                 </div>
 
-                <hr className="my-8 border-gray-100 border-[6px]" />
+                <hr className="my-4 border-gray-100 border-[6px]" />
 
-                {/* 4. 멤버십 섹션 */}
+                {/* 4. 멤버십 섹션 (수정된 부분) */}
                 <div className="px-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-4">적용 가능 보유 멤버십</h2>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">적용 가능 보유 멤버십</h2>
                     <div className="flex gap-3">
-                        <img src={kt} alt="KT" className="w-12 h-12 rounded-xl shadow-sm" />
-                        <img src={oliveyoung} alt="Olive" className="w-12 h-12 rounded-xl shadow-sm" />
+                        {storeData.memberships.length > 0 ? (
+                            storeData.memberships.map((membership) => (
+                                <button
+                                    key={membership.id}
+                                    onClick={() => handleMembershipClick(membership.id)}
+                                    className="relative transition-transform active:scale-90"
+                                    aria-label={`${membership.name} 상세보기`}
+                                >
+                                    <img 
+                                        src={membership.icon} 
+                                        alt={membership.name} 
+                                        className="w-14 h-14 rounded-xl shadow-sm border border-gray-50 object-cover" 
+                                    />
+                                    {/* 시각적 피드백을 위해 필요시 뱃지 등을 추가할 수 있습니다 */}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="text-gray-400 text-sm">적용 가능한 멤버십이 없습니다.</p>
+                        )}
                     </div>
                 </div>
 
-                <hr className="my-8 border-gray-100 border-[1px]" />
+                <hr className="my-4 border-gray-100 border-[6px]" />
 
                 {/* 5. 상세 정보 리스트 */}
                 <div className="px-6 space-y-4">
@@ -111,7 +151,12 @@ export default function MapDetailPage() {
                         <span className="w-20 text-gray-500 font-medium">전화번호</span>
                         <div className="flex-1 flex items-center gap-2 text-gray-800">
                             {storeData.phone}
-                            <button className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-400">복사</button>
+                            <button 
+                                className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-400"
+                                onClick={() => handleCopyPhone(storeData.phone)}
+                            >
+                                복사
+                            </button>
                         </div>
                     </div>
 

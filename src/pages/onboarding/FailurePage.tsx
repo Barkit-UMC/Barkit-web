@@ -10,8 +10,8 @@ export default function FailurePage() {
     const navigate = useNavigate();
 
     const handleRetry = () => {
-        // 등록 페이지로 다시 이동
-        navigate('/onboarding/register');
+        // 맴버십 등록 페이지로 다시 이동
+        navigate('/onboarding/select-method');
     };
 
     const handleGoHome = () => {
