@@ -115,6 +115,16 @@ function App() {
                 }
               />
 
+              {/* 멤버십 등록 - protected */}
+              <Route
+                path="/membership/add"
+                element={
+                  <ProtectedRoute>
+                    <SearchPage />
+                  </ProtectedRoute>
+                }
+              />
+
               {/* Membership registration routes - protected */}
               <Route
                 path="/membership/new"

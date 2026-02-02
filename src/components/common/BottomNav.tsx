@@ -18,7 +18,7 @@ export default function BottomNav() {
 
     const navItems = [
         { path: '/home', label: '홈', iconOff: iconBarcodeOff, iconOn: iconBarcodeOn },
-        { path: '/membership/new', label: '추가', iconOff: iconAddOff, iconOn: iconAddOn },
+        { path: '/membership/add', label: '추가', iconOff: iconAddOff, iconOn: iconAddOn },
         { path: '/map', label: '지도', iconOff: iconMapOff, iconOn: iconMapOn },
         { path: '/profile', label: '프로필', iconOff: iconProfileOff, iconOn: iconProfileOn }
     ];
