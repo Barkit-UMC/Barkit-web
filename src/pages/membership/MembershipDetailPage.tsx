@@ -27,7 +27,7 @@ export default function MembershipDetailPage() {
 
     return (
         <Layout showBottomNav={!isBottomSheetOpen}>
-            <div className="flex flex-col h-full bg-white overflow-y-auto pb-10">
+            <div className="flex flex-col h-full bg-white overflow-y-auto scollbar-hide">
                 
                {/* 공통 Header 사용 */}
                 <Header 
