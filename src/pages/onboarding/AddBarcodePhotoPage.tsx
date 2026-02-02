@@ -13,7 +13,7 @@ export default function AddBarcodePhotoPage() {
     const [showActionSheet, setShowActionSheet] = useState(true);
 
     // 바코드 스캐너 훅
-    const { scannedData, isScanning, error, scanFromFile, reset } = useBarcodeScanner();
+    const { scannedValue, isScanning, error, scanFromFile, reset } = useBarcodeScanner();
 
     // 파일 input ref
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +56,7 @@ export default function AddBarcodePhotoPage() {
 
     // 완료하기 버튼
     const handleComplete = () => {
-        // TODO: scannedData.rawValue를 서버에 저장하거나 다음 페이지로 전달
+        // TODO: scannedValue를 서버에 저장하거나 다음 페이지로 전달
         navigate('/onboarding/complete');
     };
 
@@ -107,10 +107,10 @@ export default function AddBarcodePhotoPage() {
                                     </div>
                                     <span className="text-red-500 text-sm">{error}</span>
                                 </div>
-                            ) : scannedData ? (
+                            ) : scannedValue ? (
                                 /* 스캔 성공: react-barcode로 바코드 렌더링 */
                                 <Barcode
-                                    value={scannedData.rawValue}
+                                    value={scannedValue}
                                     format="CODE128"
                                     width={2}
                                     height={80}
@@ -134,9 +134,9 @@ export default function AddBarcodePhotoPage() {
                     {/* 멤버십 번호 */}
                     <div className="flex items-center justify-between py-3 border-b border-gray-200">
                         <span className="text-base font-semibold text-gray-900">멤버십 번호</span>
-                        {step === 'preview' && scannedData ? (
+                        {step === 'preview' && scannedValue ? (
                             <span className="text-base text-[#00C7E2] font-medium">
-                                {scannedData.rawValue}
+                                {scannedValue}
                             </span>
                         ) : step === 'preview' ? (
                             <span className="text-base text-gray-400">수동 입력 필요</span>
@@ -161,7 +161,7 @@ export default function AddBarcodePhotoPage() {
                     {/* 완료하기 버튼 */}
                     <button
                         onClick={handleComplete}
-                        disabled={!scannedData || isScanning}
+                        disabled={!scannedValue || isScanning}
                         className="w-full py-4 rounded-full bg-[#00C7E2] text-white font-semibold text-base shadow-lg transition-all hover:bg-[#00B7D2] active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none"
                     >
                         완료하기
