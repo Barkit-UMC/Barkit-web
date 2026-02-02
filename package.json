@@ -13,15 +13,18 @@
     "@googlemaps/react-wrapper": "^1.2.0",
     "@iconify/react": "^6.0.2",
     "@tailwindcss/vite": "^4.1.18",
+    "all": "^0.0.0",
     "antd-mobile": "^5.42.3",
     "canvas-confetti": "^1.9.4",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
+    "react-barcode": "^1.6.1",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.11.0",
     "styled-components": "^6.3.8",
     "vite-plugin-pwa": "^1.2.0",
-    "zustand": "^5.0.10"
+    "zustand": "^5.0.10",
+    "zxing-wasm": "^2.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
