@@ -6,7 +6,6 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
-import LocationPermissionPage from './pages/profile/LocationPermissionPage';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 
