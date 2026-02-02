@@ -53,6 +53,17 @@ export default function MapDetailPage() {
         navigate(`/map/membership/${membershipId}`);
     };
 
+    // 복사 함수 추가
+    const handleCopyPhone = (text: string) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                alert('전화번호가 클립보드에 복사되었습니다.');
+            })
+            .catch((err) => {
+                console.error('복사 실패:', err);
+            });
+    };
+
     return (
         <Layout showBottomNav={false}>
             <div className="flex flex-col h-full bg-white overflow-y-auto scrollbar-hide pb-10">
@@ -140,7 +151,12 @@ export default function MapDetailPage() {
                         <span className="w-20 text-gray-500 font-medium">전화번호</span>
                         <div className="flex-1 flex items-center gap-2 text-gray-800">
                             {storeData.phone}
-                            <button className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-400">복사</button>
+                            <button 
+                                className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-400"
+                                onClick={() => handleCopyPhone(storeData.phone)}
+                            >
+                                복사
+                            </button>
                         </div>
                     </div>
 
