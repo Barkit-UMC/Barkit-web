@@ -6,7 +6,6 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
-import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 
 // Auth pages
@@ -20,6 +19,7 @@ const SearchPage = lazy(() => import('./pages/onboarding/SearchPage'));
 const InputPage = lazy(() => import('./pages/onboarding/InputPage'));
 const CompletePage = lazy(() => import('./pages/onboarding/CompletePage'));
 const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
+const AddBarcodePhotoPage = lazy(() => import('./pages/onboarding/AddBarcodePhotoPage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));

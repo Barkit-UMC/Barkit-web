@@ -21,7 +21,7 @@ export default function SelectMethodPage() {
         if (selectedMethod === 'number') {
             navigate('/onboarding/input');
         } else if (selectedMethod === 'barcode') {
-            alert('차후 개발 예정입니다.');
+            navigate('/onboarding/add-barcode-photo');
         }
     };
 
