@@ -13,9 +13,10 @@ interface ButtonProps {
 
 /**
  * 공통으로 사용되는 버튼 컴포넌트
- * - primary: 파란색 기본 버튼 (rounded-lg)
- * - secondary: 회색 보조 버튼 (rounded-lg)
- * - cyan: 온보딩용 시안 버튼 (rounded-full)
+ * - primary: 00C0E8 5% 배경, 00C0E8 텍스트
+ * - secondary: 00C0E8 배경, white 텍스트
+ * - cyan: 온보딩용 시안 버튼
+ * - cyan-secondary: 추가 보조 버튼
  */
 export default function Button({
     children,
@@ -29,10 +30,10 @@ export default function Button({
     const baseStyles = 'w-full py-4 font-semibold transition-all flex items-center justify-center gap-2';
 
     const variantStyles = {
-        primary: 'rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed',
-        secondary: 'rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300',
-        cyan: 'rounded-full bg-[#00C0E8] text-white hover:bg-[#00B0D8] shadow-lg disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none active:scale-[0.98]',
-        'cyan-secondary': 'rounded-xl bg-cyan-50 text-[#00C0E8] hover:bg-cyan-100'
+        primary: 'w-[345px] h-[56px] rounded-[28px] bg-[#00C0E8]/5 text-[#00C0E8] text-[16px] font-semibold hover:bg-[#00C0E8]/10',
+        secondary: 'w-[345px] h-[56px] rounded-[28px] bg-[#00C0E8] text-white text-[16px] font-semibold hover:bg-[#00B0D8] active:scale-[0.98]',
+        cyan: 'w-[345px] h-[56px] rounded-[28px] bg-[#00C0E8] text-white text-[16px] font-semibold hover:bg-[#00B0D8] active:scale-[0.98]',
+        'cyan-secondary': 'w-[345px] h-[56px] rounded-xl bg-cyan-50 text-[#00C0E8] hover:bg-cyan-100'
     };
 
     const isDisabled = disabled || isLoading;
