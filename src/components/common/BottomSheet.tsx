@@ -1,42 +1,61 @@
 import React from 'react';
-import { MapPin, Target, X } from 'lucide-react'; // 아이콘 라이브러리 예시
 
-const BottomSheet = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+interface SortOption {
+  id: string;
+  label: string;
+  icon: string;
+}
 
+interface SortModalProps {
+  options: SortOption[];
+  selectedValue: string;
+  onSelect: (id: string) => void;
+  onClose: () => void;
+}
+
+const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModalProps) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
-      {/* 배경 클릭 시 닫기 */}
+    <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/40">
+      {/* 배경 터치 시 닫기 */}
       <div className="absolute inset-0" onClick={onClose} />
-      
-      {/* 바텀시트 본체 */}
-      <div className="relative w-full max-w-md animate-slide-up rounded-t-[32px] bg-white p-6 pb-10 shadow-xl">
-        
-        {/* 리스트 구역 */}
-        <div className="flex flex-col gap-4">
-          
-          {/* 1. 지도 중심 거리순 */}
-          <button className="flex items-center gap-4 py-3 px-2 active:bg-gray-50 rounded-xl transition-colors">
-            <div className="text-cyan-500">
-              <MapPin size={24} fill="currentColor" fillOpacity={0.2} />
-            </div>
-            <span className="text-lg font-semibold text-cyan-500">지도 중심 거리순</span>
-          </button>
 
-          {/* 2. 현재 내 위치 거리순 */}
-          <button className="flex items-center gap-4 py-3 px-2 active:bg-gray-50 rounded-xl transition-colors">
-            <div className="text-gray-400">
-              <Target size={24} />
-            </div>
-            <span className="text-lg font-medium text-gray-400">현재 내 위치 거리순</span>
-          </button>
-          
+      {/* 바텀시트 컨테이너: 사진처럼 하단 바닥에 딱 붙는 구조 */}
+      <div className="relative w-full max-w-md bg-white rounded-t-[40px] pt-12 pb-8 px-6 shadow-2xl">
+        
+        {/* 옵션 리스트 영역 */}
+        <div className="flex flex-col mb-8">
+          {options.map((option) => {
+            const isSelected = selectedValue === option.id;
+
+            return (
+              <button
+                key={option.id}
+                onClick={() => {
+                  onSelect(option.id);
+                  onClose();
+                }}
+                className="w-full flex items-center gap-4 py-5 transition-all active:opacity-60"
+              >
+                {/* 아이콘*/}
+                <img
+                  src={option.icon}
+                  alt={option.label}
+                  className={`w-7 h-7 object-contain ${isSelected ? '#00C0E8' : 'grayscale opacity-30'}`}
+                />
+
+                {/* 텍스트: 정렬 및 폰트 크기 조정 */}
+                <span className={`text-[22px] font-medium tracking-tight ${isSelected ? 'text-[#00C0E8]' : 'text-gray-300'}`}>
+                  {option.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* 하단 취소 버튼 */}
-        <button 
+        {/* 취소 버튼: 박스 안에 포함된 둥근 버튼 스타일 */}
+        <button
           onClick={onClose}
-          className="mt-6 w-full py-4 bg-gray-100 rounded-3xl text-cyan-500 font-bold text-lg hover:bg-gray-200 transition-colors"
+          className="w-full bg-[#f2fcfe] py-5 rounded-full text-[#00C0E8] font-medium text-xl"
         >
           취소
         </button>
@@ -45,4 +64,4 @@ const BottomSheet = ({ isOpen, onClose }) => {
   );
 };
 
-export default BottomSheet;
+export default SortBottomSheet;
