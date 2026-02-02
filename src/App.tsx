@@ -18,6 +18,7 @@ const SearchPage = lazy(() => import('./pages/onboarding/SearchPage'));
 const InputPage = lazy(() => import('./pages/onboarding/InputPage'));
 const CompletePage = lazy(() => import('./pages/onboarding/CompletePage'));
 const FailurePage = lazy(() => import('./pages/onboarding/FailurePage'));
+const AddBarcodePhotoPage = lazy(() => import('./pages/onboarding/AddBarcodePhotoPage'));
 
 // Home pages
 const WalletPage = lazy(() => import('./pages/home/WalletPage'));
@@ -88,6 +89,7 @@ function App() {
             <Route path="/onboarding/input" element={<InputPage />} />
             <Route path="/onboarding/complete" element={<CompletePage />} />
             <Route path="/onboarding/failure" element={<FailurePage />} />
+            <Route path="/onboarding/add-barcode-photo" element={<AddBarcodePhotoPage />} />
 
             {/* Home routes - protected */}
             <Route
