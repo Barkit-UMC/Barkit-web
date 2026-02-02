@@ -6,12 +6,7 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
-<<<<<<< HEAD
-import BenefitStorePage from './pages/home/BenefitStorePage';
-=======
-import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
->>>>>>> 30a6a26cc07556eebe4ba44b45a4279b5b15f140
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -38,6 +33,7 @@ const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'))
 const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
 const DeleteCompletePage = lazy(() => import('./pages/membership/DeleteCompletePage'));
 const DeleteFailurePage = lazy(() => import('./pages/membership/DeleteFailurePage'));
+const BenefitStorePage = lazy(() => import('./pages/membership/BenefitStorePage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -81,7 +77,6 @@ const RootRedirect = () => {
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
         <Layout>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
@@ -119,65 +114,6 @@ function App() {
                 }
               />
 
-<<<<<<< HEAD
-            {/* Membership registration routes - protected */}
-            <Route
-              path="/membership/new"
-              element={
-                <ProtectedRoute>
-                  <BrandSelectPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/membership/search"
-              element={
-                <ProtectedRoute>
-                  <BrandSearchPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/membership/input"
-              element={
-                <ProtectedRoute>
-                  <InputNumberPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/membership/scan"
-              element={
-                <ProtectedRoute>
-                  <CameraScanPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/membership/complete"
-              element={
-                <ProtectedRoute>
-                  <RegCompletePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/membership/:id"
-              element={
-                <ProtectedRoute>
-                  <MembershipDetailPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/membership/:id/benefits"
-              element={
-                <ProtectedRoute>
-                  <BenefitStorePage />
-                </ProtectedRoute>
-              }
-            />
-=======
               {/* Membership registration routes - protected */}
               <Route
                 path="/membership/new"
@@ -243,7 +179,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
->>>>>>> 30a6a26cc07556eebe4ba44b45a4279b5b15f140
+              <Route
+                path="/membership/:id/benefits"
+                element={
+                  <ProtectedRoute>
+                    <BenefitStorePage />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Map routes - protected */}
               <Route
@@ -352,7 +295,6 @@ function App() {
             </Routes>
           </Suspense>
         </Layout>
-      </ThemeProvider>
     </BrowserRouter>
   );
 }

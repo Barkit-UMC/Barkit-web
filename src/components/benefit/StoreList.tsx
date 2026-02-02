@@ -7,27 +7,25 @@ import tving from "../../assets/icons/store/tving.svg";
 import boribori from "../../assets/icons/store/boribori.svg";
 
 interface StoreListProps {
-    searchQuery: string;
+    stores: {
+        storeName: string;
+        storeImageUrl: string;
+    }[];
 }
-const STORES = [
-        { storeName: "올리브영", storeImageUrl: oliveyoung },
-        { storeName: "CGV", storeImageUrl: cgv },
-        { storeName: "CU", storeImageUrl: cu },
-        { storeName: "메가MGC커피", storeImageUrl: megacoffee },
-        { storeName: "TVING", storeImageUrl: tving },
-        { storeName: "보리보리", storeImageUrl: boribori },
-    ];
 
-export default function StoreList({ searchQuery }: StoreListProps) {
-    
+export const STORES = [
+    { storeName: "올리브영", storeImageUrl: oliveyoung },
+    { storeName: "CGV", storeImageUrl: cgv },
+    { storeName: "CU", storeImageUrl: cu },
+    { storeName: "메가MGC커피", storeImageUrl: megacoffee },
+    { storeName: "TVING", storeImageUrl: tving },
+    { storeName: "보리보리", storeImageUrl: boribori },
+];
 
-    const filteredStores = STORES.filter(store =>
-        store.storeName.includes(searchQuery)
-    );
-    
+export default function StoreList({ stores }: StoreListProps) {
     return (
         <div className="w-full h-full flex flex-col items-center">
-            {(searchQuery ? filteredStores : STORES).map((store, idx) => (
+            {stores.map((store, idx) => (
                 <Store
                     key={idx}
                     storeName={store.storeName}
