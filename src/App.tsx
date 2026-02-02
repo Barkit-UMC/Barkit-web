@@ -6,7 +6,6 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
-import { theme } from './styles/theme';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -68,7 +67,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 // Root redirect - sends to home if authenticated, login otherwise
 const RootRedirect = () => {
   // TODO: Replace with actual auth check
-  if (isDev) return <Navigate to="/home" replace />;
+  if (isDev) return <Navigate to="/login" replace />;
   const isAuthenticated = localStorage.getItem('authToken') !== null;
 
   return <Navigate to={isAuthenticated ? '/home' : '/login'} replace />;
@@ -77,7 +76,6 @@ const RootRedirect = () => {
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
         <Layout>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
@@ -298,7 +296,6 @@ function App() {
             </Routes>
           </Suspense>
         </Layout>
-      </ThemeProvider>
     </BrowserRouter>
   );
 }
