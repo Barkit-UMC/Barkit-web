@@ -19,8 +19,8 @@ export default function Header({
   const navigate = useNavigate();
 
   return (
-    <header className="fixed top-0 left-1/2 -translate-x-1/2 z-40 bg-white w-full border-b border-gray-200">
-      <div className="relative flex items-center justify-center h-full px-4 my-4">
+    <header className="fixed top-0 inset-x-0 z-40 bg-white border-b border-gray-200 transition-all">
+      <div className="relative flex items-center justify-center h-[60px] px-4 mx-auto">
         {/* 뒤로가기 */}
         {showBackButton && (
           <button
