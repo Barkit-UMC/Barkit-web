@@ -27,7 +27,7 @@ export default function Button({
     loadingText,
     className = ''
 }: ButtonProps) {
-    const baseStyles = 'w-full py-4 font-semibold transition-all flex items-center justify-center gap-2';
+    const baseStyles = 'w-full py-4 text-[16px] font-medium transition-all flex items-center justify-center gap-2';
 
     const variantStyles = {
         primary: 'w-[345px] h-[56px] rounded-[28px] bg-[#00C0E8]/5 text-[#00C0E8] text-[16px] font-semibold hover:bg-[#00C0E8]/10',

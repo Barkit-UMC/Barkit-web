@@ -49,7 +49,7 @@ export default function MyPage() {
     <Layout showBottomNav>
       <Header title="프로필" showBackButton={false}  />
 
-<main className="flex-1 overflow-y-auto scrollbar-hide pb-20">
+    <main className="flex-1 overflow-y-auto scrollbar-hide pb-20">
       {/* 메뉴 리스트 */}
       <div className="mt-20">
         {menuItems.map((item) => (
@@ -102,7 +102,7 @@ export default function MyPage() {
           </button>
         ))}
       </div>
-      </main>
+    </main>
 
       {/* 토스트 조건부 렌더링 */}
       {toast && (

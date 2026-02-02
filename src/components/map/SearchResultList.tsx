@@ -12,6 +12,8 @@ interface StoreItem {
   category: string;
   distance: string;
   address: string;
+  lat: number; // 추가
+  lng: number; // 추가
 }
 
 interface SearchResultListProps {
@@ -26,6 +28,14 @@ const SearchResultList = ({ results }: SearchResultListProps) => {
     navigate(`/map/${id}`); // 예: /store/1 경로로 이동
   };
 
+  const handleNavigation = (e: React.MouseEvent, store: StoreItem) => {
+    e.stopPropagation();
+    
+    const { lat, lng, name } = store;
+    const url = `https://map.kakao.com/link/to/${name},${lat},${lng}`;
+    
+    window.open(url, '_blank');
+  };
 
   return (
     <div className="flex flex-col !px-6 h-full pb-20 overflow-y-auto">
@@ -52,7 +62,7 @@ const SearchResultList = ({ results }: SearchResultListProps) => {
               <div className="flex justify-between items-end !mt-4">
                 {/* 왼쪽: 멤버십 정보 부문 */}
                 <div className="flex flex-col gap-2">
-                    <span className="text-[12px] text-gray-500 font-medium">적용 가능 보유 멤버십</span>
+                    <span className="text-[12px] text-gray-500 font-medium">사용 가능 멤버십</span>
                     <div className="flex gap-1.5">
                         {/* 멤버십 아이콘 이미지들 */}
                         <img src={kt} alt="KT" className="w-7 h-7 object-contain rounded-lg shadow-sm" />
@@ -68,7 +78,11 @@ const SearchResultList = ({ results }: SearchResultListProps) => {
                     </button>
                     {/* 길찾기 버튼 */}
                     <button className="transition-transform active:scale-90">
-                        <img src={navigation} alt="길찾기" className="w-12 h-12 object-contain shadow-sm rounded-full" />
+                        <img 
+                          src={navigation} 
+                          onClick={(e) => handleNavigation(e, store)}
+                          alt="길찾기" 
+                          className="w-12 h-12 object-contain shadow-sm rounded-full" />
                     </button>
                 </div>
               </div>
