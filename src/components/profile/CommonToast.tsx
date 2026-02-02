@@ -44,20 +44,20 @@ export default function CommonToast({ type, status, onClose }: CommonToastProps)
 
   const message = {
     notification: status === "on"
-      ? "알림 설정이 허용되었습니다."
-      : "알림 설정이 거절되었습니다.",
+      ? "알림 설정이 허용되었습니다"
+      : "알림 설정이 거절되었습니다",
     location: status === "on"
-      ? "위치 권한 요청이 허용되었습니다."
-      : "위치 권한 요청이 거절되었습니다.",
-    password: "비밀번호 변경이 완료되었습니다.",
-    birthday: "생년월일 변경이 완료되었습니다.",
+      ? "위치 권한 요청이 허용되었습니다"
+      : "위치 권한 요청이 거절되었습니다",
+    password: "비밀번호 변경이 완료되었습니다",
+    birthday: "생년월일 변경이 완료되었습니다",
     
   };
 
   return (
     <div
       className={`
-        fixed bottom-20 left-1/2 -translate-x-1/2 w-85 h-16
+        fixed bottom-20 left-1/2 -translate-x-1/2 w-[88%] h-16
         bg-[#006F98] rounded-lg shadow-lg
         px-4 py-3 flex items-center justify-center space-x-3
 
