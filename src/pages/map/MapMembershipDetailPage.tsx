@@ -1,24 +1,27 @@
 import Header from "../../components/common/Header";
 import Layout from "../../components/common/Layout";
 
-import iconSetting from '../../assets/icons/memberships/iconSetting.svg';
-import iconEdit from '../../assets/icons/memberships/iconEdit.svg';
-import iconPlus from '../../assets/icons/memberships/iconPlus.svg';
 import MembershipCard from "../../components/membership/MembershipCard";
+import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
+
+interface Membership {
+    id: number;
+    brandName: string;
+    brandLogo: string;
+    brandColor: string;
+    barcode: string;
+}
 
 // 임시 데이터 (실제로는 API나 Props에서 가져옵니다)
-const DUMMY_DATA = {
-    name: "CJ ONE",
-    barcode: "1234 5678 9123 8284",
-    // 만약 이 배열이 비어있거나 null이면 왼쪽 화면처럼 보입니다.
-    stores: [
-        { id: 1, name: "OliveYoung", logo: "/logos/oliveyoung.png" },
-        { id: 2, name: "CGV", logo: "/logos/cgv.png" },
-        { id: 3, name: "CU", logo: "/logos/cu.png" },
-        { id: 4, name: "TousLesJours", logo: "/logos/touslesjours.png" },
-        { id: 5, name: "MegaCoffee", logo: "/logos/megacoffee.png" },
-    ]
-};
+const DUMMY_DATA: Membership[] = [
+    {
+        id: 1,
+        brandName: 'CJ ONE',
+        brandLogo: cjoneIcon,
+        brandColor: '#1a1a2e',
+        barcode: "1234 5678 9123 8284",
+    },
+];
 
 export default function MapMembershipDetailPage() {
     const data = DUMMY_DATA; // 데이터 소스
@@ -30,16 +33,16 @@ export default function MapMembershipDetailPage() {
                {/* 공통 Header 사용 */}
                 <Header 
                     showBackButton={true}
-                    title={data.name}
+                    title={data[0].brandName}
                 />
 
                 <div className="pt-20 overflow-y-auto scrollbar-hide">
                     {/* 1. 멤버십 카드 컴포넌트로 교체된 영역 */}
                     <div className="px-6">
                         <MembershipCard 
-                            brandName={data.name}
-                            barcodeNumber={data.barcode}
-                            // brandLogo={data.logo} // 로고 데이터가 있다면 전달
+                            brandName={data[0].brandName}
+                            brandLogo={data[0].brandLogo}
+                            brandColor={data[0].brandColor}
                         />
                     </div>
 
@@ -48,7 +51,7 @@ export default function MapMembershipDetailPage() {
                             <h3 className="text-lg font-bold text-gray-800">멤버십 번호</h3>
                         </div>
                         <div className="flex gap-2">
-                            {data.barcode.split(' ').map((chunk, idx) => (
+                            {data[0].barcode.split(' ').map((chunk, idx) => (
                                 <div key={idx} className="flex-1 bg-gray-100 py-3 rounded-lg text-center font-semibold text-gray-600">
                                     {chunk}
                                 </div>

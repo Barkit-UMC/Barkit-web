@@ -3,48 +3,65 @@ import React from 'react';
 interface BarcodeCardProps {
     brandName: string;
     brandLogo?: string;
-    barcodeNumber: string;
+    brandColor?: string;
     onClick?: () => void;
 }
 
-/**
- * [PAGE 9] 상세 페이지용 바코드 카드 UI
- * 상단 브랜드 바와 하단 바코드 영역이 분리된 디자인
- */
 export default function MembershipCard({
     brandName,
     brandLogo,
-    barcodeNumber,
+    brandColor = '#1F2937', // 기본값: gray-900
     onClick
 }: BarcodeCardProps) {
     return (
-        <div
+        <div 
+            className="flex flex-col cursor-pointer rounded-[10px] overflow-hidden"
+            style={{ backgroundColor: brandColor }}
             onClick={onClick}
-            className="flex flex-col rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 cursor-pointer active:scale-[0.98] transition-transform"
         >
-            {/* 1. 카드 상단 헤더 (어두운 배경) */}
-            <div className="bg-[#2D161B] px-4 py-3.5 flex items-center gap-3">
-                {brandLogo ? (
-                    <img 
-                        src={brandLogo} 
-                        alt={brandName} 
-                        className="w-7 h-7 rounded-full object-cover border border-white/20" 
-                    />
-                ) : (
-                    /* 로고가 없을 때 보여줄 기본 그라디언트 아이콘 */
-                    <div className="w-7 h-7 bg-gradient-to-tr from-purple-400 to-pink-500 rounded-full" />
-                )}
-                <span className="text-white text-[15px] tracking-tight">
-                    {brandName}
-                </span>
+            {/* 브랜드 헤더 */}
+            <div className="flex items-center justify-between px-4 h-[70px]">
+                <div className="w-[319px] h-11 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        {brandLogo ? (
+                            <img src={brandLogo} alt={brandName} className="w-11 h-11 rounded-lg border border-gray-400" />
+                        ) : (
+                            <div className="w-11 h-11 rounded-lg bg-white/20 flex items-center justify-center">
+                                <span className="text-white text-lg font-bold">
+                                    {brandName.charAt(0)}
+                                </span>
+                            </div>
+                        )}
+                        <span className="text-white font-semibold text-base">{brandName}</span>
+                    </div>
+                </div>
             </div>
 
-            {/* 2. 카드 하단 (흰색 바코드 영역) */}
-            <div className="bg-white px-6 py-8 flex flex-col items-center justify-center">
-                {/* 바코드 이미지 영역 */}
-                <div className="w-full max-w-[280px] h-24 flex flex-col items-center">
-                    {/* 실제 구현시에는 여기에 Barcode 라이브러리를 넣으세요 */}
-                    <div className="w-full h-20 bg-[url('/barcode-sample.png')] bg-contain bg-no-repeat bg-center" />
+            {/* 바코드 영역 */}
+            <div 
+                className="bg-white h-[138px] flex flex-col items-center justify-center border border-gray-200"
+            >
+                {/* 바코드 이미지 */}
+                <div 
+                    className="bg-white flex items-center justify-center mb-2 w-[265px] h-[122px]"
+                >
+                    <svg 
+                        className="w-full h-full" 
+                        viewBox="0 0 300 100" 
+                        preserveAspectRatio="none"
+                    >
+                        {/* 간단한 바코드 시뮬레이션 */}
+                        {Array.from({ length: 50 }, (_, i) => (
+                            <rect
+                                key={i}
+                                x={i * 6}
+                                y="10"
+                                width={Math.random() > 0.5 ? 3 : 2}
+                                height="80"
+                                fill="black"
+                            />
+                        ))}
+                    </svg>
                 </div>
             </div>
         </div>
