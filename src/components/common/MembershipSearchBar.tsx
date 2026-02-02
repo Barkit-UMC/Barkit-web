@@ -20,22 +20,26 @@ export default function MembershipSearchBar({
   };
 
   return (
-    <div className="w-[345px] h-[56px] mx-auto">
-      <div className="flex w-full h-full border border-[#00C0E8] rounded-[10px] overflow-hidden bg-[#AAE8F5]/10">
+    /* 1. 외부 컨테이너: 너비는 부모에 맞추고 최대 너비를 제한하여 PC 뷰 대응 */
+    <div className="w-full max-w-[600px] mx-auto px-1">
+      <div className="flex w-full h-12 sm:h-[56px] border border-[#00C0E8] rounded-[10px] overflow-hidden bg-[#AAE8F5]/10 shadow-sm focus-within:ring-2 focus-within:ring-cyan-500/30 transition-all">
         <input
           type="text"
           placeholder={placeholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 px-4 text-[14px] placeholder:text-gray-300 bg-transparent focus:outline-none"
+          /* 2. 인풋: 모바일에서 가독성을 위해 최소 16px 권장 (iOS 자동 줌 방지) */
+          className="flex-1 px-4 text-base sm:text-[14px] placeholder:text-gray-300 bg-transparent focus:outline-none text-gray-800"
         />
 
         <button
           onClick={onSearchClick}
-          className="w-[69px] h-full flex items-center justify-center bg-[#00C0E8]"
+          /* 3. 버튼: 고정 폭 대신 비율이나 적절한 padding으로 모바일 터치 영역 확보 */
+          className="w-14 sm:w-[69px] h-full flex items-center justify-center bg-[#00C0E8] active:bg-[#00accf] transition-colors"
+          aria-label="검색"
         >
-          <img src={searchIcon} alt="검색" className="w-6 h-6" />
+          <img src={searchIcon} alt="검색" className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </div>
     </div>

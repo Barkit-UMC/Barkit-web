@@ -58,15 +58,15 @@ export default function MembershipSearchPage() {
 
     return (
         <Layout showBottomNav={false}>
-            <div className="min-h-screen bg-gray-50">
+            <div className="flex h-full bg-gray-50">
                 <Header 
                     title="멤버십 브랜드 검색"
                     showBackButton={true}
                 />
                 
-                <div className="pt-[64px] pb-20">
+                <div className="flex-1 flex flex-col pt-[64px] pb-20">
                     {/* 서치바 */}
-                    <div className="py-4 mt-4 mb-4">
+                    <div className="px-6 py-4 mt-4 mb-4">
                         <MembershipSearchBar
                             searchQuery={searchQuery}
                             setSearchQuery={handleSearchQueryChange}
@@ -76,7 +76,7 @@ export default function MembershipSearchPage() {
                     </div>
                     
                     {/* 검색 결과 영역 */}
-                    <div className="px-6">
+                    <div className="flex-1 flex flex-col px-6">
                         {/* 검색 전 */}
                         {!isSearching && searchResult === 'idle' && searchQuery.trim() === "" && (
                             <div className="h-[400px]" />
@@ -108,16 +108,16 @@ export default function MembershipSearchPage() {
                                 </div>
 
                                 {/* 버튼 */}
-                                <div className="w-full space-y-3 mt-auto mb-8">
+                                <div className="mt-auto pb-10 space-y-3">
                                     <button
                                         onClick={handleGoHome}
-                                        className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px] text-[#00C0E8] text-[16px] font-semibold"
+                                        className="w-full h-14 bg-[#00C0E8]/5 rounded-[28px] text-[#00C0E8] text-[16px] font-semibold"
                                     >
                                         취소
                                     </button>
                                     <button
                                         onClick={handleShowBarcode}
-                                        className="w-full h-[54px] bg-[#00C0E8] text-white rounded-[28px] text-[16px] font-semibold"
+                                        className="w-full h-14 bg-[#00C0E8] text-white rounded-[28px] text-[16px] font-semibold"
                                     >
                                         바코드 제시하기
                                     </button>

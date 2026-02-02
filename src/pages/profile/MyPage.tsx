@@ -54,6 +54,7 @@ export default function MyPage() {
         title='프로필'
       />
 
+<main className="flex-1 pt-[60px] overflow-y-auto scrollbar-hide pb-20">
       {/* 메뉴 리스트 */}
       <div className="mt-4">
         {menuItems.map((item) => (
@@ -106,6 +107,7 @@ export default function MyPage() {
           </button>
         ))}
       </div>
+      </main>
 
       {/* 토스트 조건부 렌더링 */}
       {toast && (
