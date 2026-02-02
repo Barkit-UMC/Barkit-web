@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react';
 import confetti from 'canvas-confetti';
 import BarkitSmileIcon from '../../assets/icons/Barkit_icon_smile.svg?react';
+import Button from './Button';
 
 interface SuccessViewProps {
     title: ReactNode;
@@ -84,12 +85,12 @@ export default function SuccessView({
 
             {/* Bottom Button */}
             <div className="px-6 pb-8">
-                <button
+                <Button
                     onClick={onButtonClick}
-                    className="w-full py-4 rounded-full bg-[#00C0E8] text-white font-bold text-lg hover:bg-[#00B3D8] transition-colors shadow-lg"
+                    variant="cyan"
                 >
                     {buttonText}
-                </button>
+                </Button>
             </div>
         </div>
     );
