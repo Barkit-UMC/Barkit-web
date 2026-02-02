@@ -55,21 +55,6 @@ export default function MapMembershipDetailPage() {
                             ))}
                         </div>
                     </div>
-
-                    {data.stores && data.stores.length > 0 && (
-                        <div className="px-6 mt-10">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-bold text-gray-800">적립 / 할인 가능한 매장</h3>
-                            </div>
-                            <div className="flex gap-4 overflow-x-auto scrollbar-hide">
-                                {data.stores.map((store) => (
-                                    <div key={store.id} className="flex-shrink-0 w-14 h-14 rounded-xl border border-gray-100 shadow-sm overflow-hidden bg-white flex items-center justify-center">
-                                        <img src={store.logo} alt={store.name} className="w-10 h-10 object-contain" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </Layout>
