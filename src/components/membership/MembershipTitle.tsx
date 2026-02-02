@@ -18,7 +18,7 @@ export default function MembershipGridCard({
     return (
         <button
             onClick={onClick}
-            className="relative aspect-[16/10] w-[165px] h-[91px] rounded-[10px] overflow-hidden cursor-pointer"
+            className="relative aspect-[16/10] rounded-[10px] overflow-hidden cursor-pointer"
             style={{ backgroundColor: brandColor }}
         >
             <img 

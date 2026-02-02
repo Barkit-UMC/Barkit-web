@@ -59,10 +59,8 @@ body {
 }
 
 /* Desktop view: centered mobile viewport simulation */
-@media (min-width: 394px) {
+@media (min-width: 320px) {
   .app {
-    width: 393px;
-    max-width: 393px;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
   }
 }

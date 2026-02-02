@@ -19,7 +19,7 @@ export default function FavoriteMembershipCard({
 }: FavoriteMembershipCardProps) {
     return (
         <div 
-            className="flex flex-col cursor-pointer w-[345px] h-[208px] rounded-[10px] overflow-hidden"
+            className="flex flex-col cursor-pointer rounded-[10px] overflow-hidden"
             style={{ backgroundColor: brandColor }}
             onClick={onClick}
         >
