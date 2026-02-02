@@ -6,6 +6,7 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
+import BenefitStorePage from './pages/home/BenefitStorePage';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -145,6 +146,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MembershipDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/benefits"
+              element={
+                <ProtectedRoute>
+                  <BenefitStorePage />
                 </ProtectedRoute>
               }
             />
