@@ -34,6 +34,7 @@ const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'))
 const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
 const DeleteCompletePage = lazy(() => import('./pages/membership/DeleteCompletePage'));
 const DeleteFailurePage = lazy(() => import('./pages/membership/DeleteFailurePage'));
+const BenefitStorePage = lazy(() => import('./pages/membership/BenefitStorePage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -77,7 +78,6 @@ const RootRedirect = () => {
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
         <Layout>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
@@ -190,6 +190,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/membership/:id/benefits"
+                element={
+                  <ProtectedRoute>
+                    <BenefitStorePage />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Map routes - protected */}
               <Route
@@ -298,7 +306,6 @@ function App() {
             </Routes>
           </Suspense>
         </Layout>
-      </ThemeProvider>
     </BrowserRouter>
   );
 }
