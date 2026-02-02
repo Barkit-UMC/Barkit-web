@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import iconShare from '../../assets/icons/map/navigation.svg'; // 공유 아이콘 경로 확인 필요
 import kt from '../../assets/icons/memberships/kt.svg';
-import oliveyoung from '../../assets/icons/memberships/oliveyoung.svg';
+import oliveyoung from '../../assets/icons/memberships/cjone.svg';
 import sampleimg from '../../assets/images/map_image_sample.png';
 import Header from '../../components/common/Header';
 import MapContainer from '../../components/map/MapContainer';
