@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import ToggleSwitch from '../../components/profile/ToggleSwitch';
 import CommonToast from '../../components/profile/CommonToast';
+import Header from '../../components/common/Header';
 
 /**
  * [PAGE 20] 마이페이지 메인
@@ -46,10 +47,12 @@ export default function MyPage() {
 
   return (
     <Layout showBottomNav>
-      {/* 헤더 */}
-      <div className="w-full h-[128px] flex justify-center place-items-end border-b border-gray-200">
-        <h1 className="text-[20px] font-semibold pb-4">프로필</h1>
-      </div>
+
+      {/* 2. 공통 Header 사용 */}
+      <Header 
+        showBackButton={false}
+        title='프로필'
+      />
 
       {/* 메뉴 리스트 */}
       <div className="mt-4">
