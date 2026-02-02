@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import BarkitWonderIcon from '../../assets/icons/Barkit_icon_wonder.svg?react';
 import QuestionMarkIcon from '../../assets/icons/question_mark.svg?react';
+import Button from './Button';
 
 interface ErrorViewProps {
     title: ReactNode;
@@ -94,19 +95,20 @@ export default function ErrorView({
 
             {/* Bottom Buttons */}
             <div className="px-6 pb-8">
-                <button
+                <Button
                     onClick={onPrimaryClick}
-                    className="w-full py-4 rounded-xl bg-[#00C0E8] text-white font-bold text-lg hover:bg-[#00B3D8] transition-colors shadow-lg"
+                    variant="cyan"
                 >
                     {primaryButtonText}
-                </button>
+                </Button>
                 {secondaryButtonText && onSecondaryClick && (
-                    <button
+                    <Button
                         onClick={onSecondaryClick}
-                        className="w-full py-4 rounded-xl bg-cyan-50 text-[#00C0E8] font-bold text-lg hover:bg-cyan-100 transition-colors mt-3"
+                        variant="cyan-secondary"
+                        className="mt-3"
                     >
                         {secondaryButtonText}
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

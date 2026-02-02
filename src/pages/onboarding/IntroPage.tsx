@@ -4,6 +4,7 @@ import HyundaiIcon from '../../assets/icons/BrandIcon/cjone.svg?react';
 import OliveYoungIcon from '../../assets/icons/BrandIcon/skt.svg?react';
 import HappyPointIcon from '../../assets/icons/BrandIcon/uplus.svg?react';
 import KTIcon from '../../assets/icons/BrandIcon/kt.svg?react';
+import Button from '../../components/common/Button';
 
 export default function IntroPage() {
     const navigate = useNavigate();
@@ -75,13 +76,12 @@ export default function IntroPage() {
 
                 {/* 3. Next Button -> Register 페이지로 이동 */}
                 <div className="w-full pb-4">
-                    <button
+                    <Button
                         onClick={() => navigate('/onboarding/search')}
-                        className="w-full py-4 rounded-full bg-[#00C0E8] text-white font-bold text-lg hover:bg-[#00B3D8] transition-colors shadow-lg"
-                        aria-label="다음 단계로 이동"
+                        variant="cyan"
                     >
                         다음
-                    </button>
+                    </Button>
                 </div>
             </main>
         </div>

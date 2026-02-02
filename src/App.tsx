@@ -198,72 +198,63 @@ function App() {
                 }
               />
 
-              {/* Profile routes - protected */}
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <MyPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/pwa"
-                element={
-                  <ProtectedRoute>
-                    <AddToHomePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/edit"
-                element={
-                  <ProtectedRoute>
-                    <EditProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/edit/password"
-                element={
-                  <ProtectedRoute>
-                    <ChangePasswdPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/edit/birthday"
-                element={
-                  <ProtectedRoute>
-                    <ChangeBirthdayPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/locationpermission"
-                element={
-                  <ProtectedRoute>
-                    <LocationPermissionPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/logout"
-                element={
-                  <ProtectedRoute>
-                    <LogoutPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/unscribe"
-                element={
-                  <ProtectedRoute>
-                    <UnscribePage />
-                  </ProtectedRoute>
-                }
-              />
-
+            {/* Profile routes - protected */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <MyPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/pwa"
+              element={
+                <ProtectedRoute>
+                  <AddToHomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit"
+              element={
+                <ProtectedRoute>
+                  <EditProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit/password"
+              element={
+                <ProtectedRoute>
+                  <ChangePasswdPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit/birthday"
+              element={
+                <ProtectedRoute>
+                  <ChangeBirthdayPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/logout"
+              element={
+                <ProtectedRoute>
+                  <LogoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/unscribe"
+              element={
+                <ProtectedRoute>
+                  <UnscribePage />
+                </ProtectedRoute>
+              }
+            />
 
               {/* 404 fallback - redirect to home or login */}
               <Route path="*" element={<RootRedirect />} />
