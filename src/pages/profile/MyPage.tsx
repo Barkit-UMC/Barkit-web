@@ -49,7 +49,7 @@ export default function MyPage() {
     <Layout showBottomNav>
       <Header title="프로필" showBackButton={false}  />
 
-<main className="flex-1 pt-[60px] overflow-y-auto scrollbar-hide pb-20">
+<main className="flex-1 overflow-y-auto scrollbar-hide pb-20">
       {/* 메뉴 리스트 */}
       <div className="mt-20">
         {menuItems.map((item) => (
