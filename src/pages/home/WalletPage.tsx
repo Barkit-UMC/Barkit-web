@@ -14,6 +14,7 @@ import naverIcon from '../../assets/icons/memberships/naver.svg'
 import kakaopayIcon from '../../assets/icons/memberships/kakaopay.svg'
 import FavoriteMembershipCard from '../../components/membership/FavoriteMembershipCard';
 import emptyFavoriteImage from '../../assets/images/empty_favorite.svg';
+import { useState } from 'react';
 
 interface FavoriteMembership {
     id: number;
@@ -24,31 +25,72 @@ interface FavoriteMembership {
 
 export default function WalletPage() {
     const navigate = useNavigate();
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [touchStart, setTouchStart] = useState(0);
+    const [touchEnd, setTouchEnd] = useState(0);
 
     // TODO: API에서 사용자의 멤버십 목록 가져오기
-    // const favoriteMemberships: FavoriteMembership[] = []; // 멤버십 미추가된 상태
-
     const favoriteMemberships: FavoriteMembership[] = [
-    {
-        id: 1,
-        brandName: 'CJ ONE',
-        brandLogo: cjoneIcon,
-        brandColor: '#1a1a2e',
-    },
-];
+        {
+            id: 1,
+            brandName: 'CJ ONE',
+            brandLogo: cjoneIcon,
+            brandColor: '#1E192A',
+        },
+        {
+            id: 2,
+            brandName: 'KT',
+            brandLogo: ktIcon,
+            brandColor: '#2CBBB6',
+        },
+        {
+            id: 3,
+            brandName: 'SKT',
+            brandLogo: sktIcon,
+            brandColor: '#3617CE',
+        },
+    ];
 
     const membershipList = [
-        { id: 2, brandName: 'CJ ONE', brandLogo: cjoneIcon, brandColor: '#1a1a2e' },
-        { id: 3, brandName: 'KT', brandLogo: ktIcon, brandColor: '#16423C' },
-        { id: 4, brandName: 'SKT', brandLogo: sktIcon, brandColor: '#8B4513' },
-        { id: 5, brandName: 'LG+', brandLogo: uplusIcon, brandColor: '#8B1538' },
-        { id: 6, brandName: '신세계 SSG', brandLogo: ssgIcon, brandColor: '#2F5233' },
-        { id: 7, brandName: 'L.POINT', brandLogo: lpointIcon, brandColor: '#4A5568' },
-        { id: 8, brandName: 'OK 캐쉬백', brandLogo: okcashbagIcon, brandColor: '#8B1538' },
-        { id: 9, brandName: '해피포인트', brandLogo: happypointIcon, brandColor: '#1e3a8a' },
-        { id: 10, brandName: '네이버', brandLogo: naverIcon, brandColor: '#059669' },
-        { id: 11, brandName: '카카오페이', brandLogo: kakaopayIcon, brandColor: '#854d0e' },
+        { id: 2, brandName: 'CJ ONE', brandLogo: cjoneIcon, brandColor: '#1E192A' },
+        { id: 3, brandName: 'KT', brandLogo: ktIcon, brandColor: '#2CBBB6' },
+        { id: 4, brandName: 'SKT', brandLogo: sktIcon, brandColor: '#3617CE' },
+        { id: 5, brandName: 'LG+', brandLogo: uplusIcon, brandColor: '#FF2E98' },
+        { id: 6, brandName: '신세계 SSG', brandLogo: ssgIcon, brandColor: '#902CDF' },
+        { id: 7, brandName: 'L.POINT', brandLogo: lpointIcon, brandColor: '#009BFA' },
+        { id: 8, brandName: 'OK 캐쉬백', brandLogo: okcashbagIcon, brandColor: '#FE0955' },
+        { id: 9, brandName: '해피포인트', brandLogo: happypointIcon, brandColor: '#0D0F71' },
+        { id: 10, brandName: '네이버', brandLogo: naverIcon, brandColor: '#1A033B' },
+        { id: 11, brandName: '카카오페이', brandLogo: kakaopayIcon, brandColor: '#FFEB00' },
     ];
+
+    // 스와이프 최소 거리
+    const minSwipeDistance = 50;
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(0);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe && currentSlide < favoriteMemberships.length - 1) {
+            setCurrentSlide(prev => prev + 1);
+        }
+        
+        if (isRightSwipe && currentSlide > 0) {
+            setCurrentSlide(prev => prev - 1);
+        }
+    };
 
     return (
         <Layout showBottomNav>
@@ -64,14 +106,26 @@ export default function WalletPage() {
                             <h2 className="text-xl font-bold text-gray-900">대표 멤버십</h2>
                         </div>
 
-                        <div className="relative">
+                        <div className="relative overflow-hidden">
                             {favoriteMemberships.length > 0 ? (
-                                <FavoriteMembershipCard
-                                    brandName={favoriteMemberships[0].brandName}
-                                    brandLogo={favoriteMemberships[0].brandLogo}
-                                    brandColor={favoriteMemberships[0].brandColor}
-                                    onClick={() => navigate(`/membership/${favoriteMemberships[0].id}`)}
-                                />
+                                <div
+                                    className="flex transition-transform duration-300 ease-out"
+                                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                                    onTouchStart={handleTouchStart}
+                                    onTouchMove={handleTouchMove}
+                                    onTouchEnd={handleTouchEnd}
+                                >
+                                    {favoriteMemberships.map((membership) => (
+                                        <div key={membership.id} className="w-full flex-shrink-0">
+                                            <FavoriteMembershipCard
+                                                brandName={membership.brandName}
+                                                brandLogo={membership.brandLogo}
+                                                brandColor={membership.brandColor}
+                                                onClick={() => navigate(`/membership/${membership.id}`)}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             ) : (
                                 <div className="w-full h-[208px] bg-gray-200 rounded-[10px] flex items-center justify-center overflow-hidden">
                                     <img 
@@ -84,14 +138,18 @@ export default function WalletPage() {
                         </div>
 
                         {/* 페이지 인디케이터 */}
-                        <div className="flex justify-center gap-2 mt-4">
-                            {[...Array(3)].map((_, index) => (
-                                <div 
-                                    key={index}
-                                    className={`w-1.5 h-1.5 rounded-full transition-colors ${index === 0 ? 'bg-cyan-400' : 'bg-gray-300'}`}
-                                />
-                            ))}
-                        </div>
+                        {favoriteMemberships.length > 0 && (
+                            <div className="flex justify-center gap-2 mt-4">
+                                {favoriteMemberships.map((_, index) => (
+                                    <div 
+                                        key={index}
+                                        className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                                            index === currentSlide ? 'bg-cyan-400' : 'bg-gray-300'
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </section>
 
                     <div className="h-8" /> {/* 섹션 간 간격 */}
@@ -112,12 +170,13 @@ export default function WalletPage() {
                             /* 그리드 시스템: 모바일에선 2열 고정 */
                             <div className="grid grid-cols-2 gap-x-3 gap-y-4 w-full justify-items-stretch">
                                 {membershipList.map((membership) => (
-                                        <MembershipTitle
-                                            brandName={membership.brandName}
-                                            brandLogo={membership.brandLogo}
-                                            brandColor={membership.brandColor}
-                                            onClick={() => navigate(`/membership/${membership.id}`)}
-                                        />
+                                    <MembershipTitle
+                                        key={membership.id}
+                                        brandName={membership.brandName}
+                                        brandLogo={membership.brandLogo}
+                                        brandColor={membership.brandColor}
+                                        onClick={() => navigate(`/membership/${membership.id}`)}
+                                    />
                                 ))}
                             </div>
                         ) : (
