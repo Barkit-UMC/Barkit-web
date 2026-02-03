@@ -21,7 +21,7 @@ export default function MembershipSearchBar({
 
   return (
     /* 1. 외부 컨테이너: 너비는 부모에 맞추고 최대 너비를 제한하여 PC 뷰 대응 */
-    <div className="w-full max-w-[600px] mx-auto px-1">
+    <div className="w-full px-6 pb-2">
       <div className="flex w-full h-12 sm:h-[56px] border border-[#00C0E8] rounded-[10px] overflow-hidden bg-[#AAE8F5]/10 shadow-sm focus-within:ring-2 focus-within:ring-cyan-500/30 transition-all">
         <input
           type="text"

@@ -4,9 +4,10 @@ import iconSetting from '../../assets/icons/memberships/iconSetting.svg';
 import iconEdit from '../../assets/icons/memberships/iconEdit.svg';
 import iconPlus from '../../assets/icons/memberships/iconPlus.svg';
 import MembershipCard from "../../components/membership/MembershipCard";
-import { useState } from "react";
+import { use, useState } from "react";
 import MembershipSettingBottomSheet from "../../components/membership/MembershipSettingsBottomSheet";
 import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
+import { useNavigate } from "react-router";
 
 interface Store {
   id: number;
@@ -44,6 +45,7 @@ const DUMMY_DATA: Membership[] = [
 export default function MembershipDetailPage() {
     const data = DUMMY_DATA; // 데이터 소스
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <Layout showBottomNav={!isBottomSheetOpen}>
@@ -92,7 +94,10 @@ export default function MembershipDetailPage() {
                         <div className="px-6 mt-10">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-lg font-bold text-gray-800">적립 / 할인 가능한 매장</h3>
-                                <button><img src={iconPlus} alt="추가" className="w-6 h-6" /></button>
+                                <button 
+                                    onClick={() => navigate(`/membership/${data[0].id}/benefits`)}>
+                                    <img src={iconPlus} alt="추가" className="w-6 h-6" />
+                                </button>
                             </div>
                             <div className="flex gap-4 overflow-x-auto scrollbar-hide">
                                 {data[0].stores.map((store) => (
