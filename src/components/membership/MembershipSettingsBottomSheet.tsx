@@ -44,9 +44,8 @@ export default function MembershipSettingBottomSheet({
         const newValue = !isFavorite;
         setIsFavorite(newValue);
         setShowToast(true);
-        setTimeout(() => setShowToast(false), 1000);
         onSetFavorite?.(newValue);
-        onClose(); // 바텀시트 닫기
+        onClose();
     };
 
     const handleDeleteConfirm = () => {
@@ -131,7 +130,7 @@ export default function MembershipSettingBottomSheet({
             )}
 
             {/* 토스트 */}
-            <FavoriteMembershipToast show={showToast} isFavorite={isFavorite} />
+            {showToast && <FavoriteMembershipToast isFavorite={isFavorite} onClose={() => setShowToast(false)} />}
 
             {/* 삭제 확인 모달 */}
             <MembershipDeleteModal
