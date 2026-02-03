@@ -1,6 +1,4 @@
-import React from 'react';
-
-interface BarcodeCardProps {
+interface MembershipCardProps {
     brandName: string;
     brandLogo?: string;
     brandColor?: string;
@@ -12,7 +10,7 @@ export default function MembershipCard({
     brandLogo,
     brandColor = '#1F2937', // 기본값: gray-900
     onClick
-}: BarcodeCardProps) {
+}: MembershipCardProps) {
     return (
         <div 
             className="flex flex-col cursor-pointer rounded-[10px] overflow-hidden"
