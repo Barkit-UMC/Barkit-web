@@ -44,30 +44,29 @@ export default function BenefitStorePage() {
     return (
         <Layout showBottomNav={true}>
             <Header title="적립/할인 가능한 매장" />
-
-            <div className="pt-24 px-4 bg-gray-50 min-h-[calc(100vh-66px)]">
-                <MembershipSearchBar
-                    placeholder="올리브영"
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    onSearchClick={onSearchClick}
-                />
-
-                {/* 🔹 결과 영역 */}
-                <div className="mt-4">
-                    {isTyping ? (
-                        <div className="w-full h-[200px] flex items-center justify-center">
-                            <LoadingDots />
+            {/*검색 바*/}
+            <div className="pt-24 pb-4 bg-gray-50 fixed w-full top-[20px] z-20">
+                    <MembershipSearchBar
+                        placeholder="올리브영"
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        onSearchClick={onSearchClick}
+                    />
+            </div>
+            {/* 결과 영역 */}
+            <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] px-4">
+                {isTyping ? (
+                    <div className="w-full h-[200px] flex items-center justify-center">
+                        <LoadingDots />
+                    </div>
+                    ) : ( hasSearched && filteredStores.length === 0 ? (
+                        <div className="w-full h-[200px] flex items-center justify-center text-gray-400">
+                            검색 결과가 없습니다
                         </div>
-                        ) : ( hasSearched && filteredStores.length === 0 ? (
-                            <div className="w-full h-[200px] flex items-center justify-center text-gray-400">
-                                검색 결과가 없습니다
-                            </div>
-                        ) : (
-                            <StoreList stores={filteredStores} />
-                        )
-                    )}
-                </div>
+                    ) : (
+                        <StoreList stores={filteredStores} />
+                    )
+                )}
             </div>
         </Layout>
     );
