@@ -31,9 +31,11 @@ const InputNumberPage = lazy(() => import('./pages/membership/InputNumberPage'))
 const CameraScanPage = lazy(() => import('./pages/membership/CameraScanPage'));
 const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'));
 const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
-const DeleteCompletePage = lazy(() => import('./pages/membership/DeleteCompletePage'));
-const DeleteFailurePage = lazy(() => import('./pages/membership/DeleteFailurePage'));
+const DeleteCompletePage = lazy(() => import('./pages/membership/delete/DeleteCompletePage'));
+const DeleteFailurePage = lazy(() => import('./pages/membership/delete/DeleteFailurePage'));
 const BenefitStorePage = lazy(() => import('./pages/membership/BenefitStorePage'));
+const BarcodeChangeCompletePage = lazy(() => import('./pages/membership/change/BarcodeChangeCompletePage'));
+const BarcodeChangeFailurePage = lazy(() => import('./pages/membership/change/BarcodeChangeFailureChange'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -187,6 +189,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DeleteFailurePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/change/complete"
+              element={
+                <ProtectedRoute>
+                  <BarcodeChangeCompletePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/change/failure"
+              element={
+                <ProtectedRoute>
+                  <BarcodeChangeFailurePage />
                 </ProtectedRoute>
               }
             />

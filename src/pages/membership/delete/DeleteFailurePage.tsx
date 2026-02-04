@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import ErrorView from '../../components/common/ErrorView';
+import ErrorView from '../../../components/common/ErrorView';
 
 export default function DeleteFailurePage() {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function DeleteFailurePage() {
             title={
                 <>
                     아차!<br />
-                    멤버십 삭제에 실패했어요.<br />
+                    멤버십 삭제에 실패했어요<br />
                     다시 해볼까요?
                 </>
             }

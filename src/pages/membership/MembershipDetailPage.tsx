@@ -4,7 +4,7 @@ import iconSetting from '../../assets/icons/memberships/iconSetting.svg';
 import iconEdit from '../../assets/icons/memberships/iconEdit.svg';
 import iconPlus from '../../assets/icons/memberships/iconPlus.svg';
 import MembershipCard from "../../components/membership/MembershipCard";
-import { use, useState } from "react";
+import { useState } from "react";
 import MembershipSettingBottomSheet from "../../components/membership/MembershipSettingsBottomSheet";
 import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
 import { useNavigate } from "react-router";
