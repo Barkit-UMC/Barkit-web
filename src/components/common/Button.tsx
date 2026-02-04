@@ -36,13 +36,16 @@ export default function Button({
         'cyan-secondary': 'w-[345px] h-[56px] rounded-xl bg-cyan-50 text-[#00C0E8] hover:bg-cyan-100'
     };
 
+    const disabledStyles = 'w-[345px] h-[56px] rounded-[28px] bg-gray-300 text-[16px] text-white cursor-not-allowed';
+
+    const currentStyles = disabled ? disabledStyles : variantStyles[variant];
     const isDisabled = disabled || isLoading;
 
     return (
         <button
             onClick={onClick}
             disabled={isDisabled}
-            className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+            className={`${baseStyles} ${currentStyles} ${className}`}
         >
             {isLoading ? (
                 <>

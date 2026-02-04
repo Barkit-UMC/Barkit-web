@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
+import Button from '../../components/common/Button';
+import IconComplete from '../../assets/icons/toast/complete.svg';
 
 /**
  * [PAGE] 비밀번호 변경 페이지
@@ -13,7 +15,6 @@ export default function ChangePasswordPage() {
   const [newPw, setNewPw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
 
-  // 포커스 벗어났는지 여부
   const [touched, setTouched] = useState({
     currentPw: false,
     newPw: false,
@@ -26,48 +27,48 @@ export default function ChangePasswordPage() {
     confirmPw: '',
   });
 
-  // 🔐 비밀번호 조건
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,12}$/;
 
-  /** 🔍 필드별 검증 */
-  const validateField = (field: keyof typeof errors) => {
+  const validateField = (field: keyof typeof errors, value?: string) => {
     setErrors((prev) => {
       const newErrors = { ...prev };
 
       if (field === 'currentPw') {
-        /**
-         * TODO:
-         * 🔐 현재 비밀번호 검증은 실제로는 API 호출로 처리해야 함
-         * ex) await checkCurrentPassword(currentPw)
-         */
-        if (currentPw && currentPw !== '기존비밀번호') {
+        const pw = value ?? currentPw;
+        if (!pw) newErrors.currentPw = '';
+        else if (pw !== '1234')
           newErrors.currentPw = '현재 비밀번호와 일치하지 않습니다';
-        } else {
-          newErrors.currentPw = '';
-        }
+        else newErrors.currentPw = '';
       }
 
       if (field === 'newPw') {
-        if (newPw && !passwordRegex.test(newPw)) {
+        const pw = value ?? newPw;
+        if (!pw) newErrors.newPw = '';
+        else if (!passwordRegex.test(pw))
           newErrors.newPw = '8~12자 영문 + 특수문자 조합으로 입력해주세요';
-        } else {
-          newErrors.newPw = '';
-        }
+        else newErrors.newPw = '';
+
+        if (confirmPw && pw !== confirmPw)
+          newErrors.confirmPw = '입력하신 비밀번호와 일치하지 않습니다';
+        else newErrors.confirmPw = '';
       }
 
       if (field === 'confirmPw') {
-        if (confirmPw && newPw !== confirmPw) {
+        const pw = value ?? confirmPw;
+        if (!pw) newErrors.confirmPw = '';
+        else if (pw !== newPw)
           newErrors.confirmPw = '입력하신 비밀번호와 일치하지 않습니다';
-        } else {
-          newErrors.confirmPw = '';
-        }
+        else newErrors.confirmPw = '';
       }
 
       return newErrors;
     });
   };
 
-  /** ✅ 최종 유효성 */
+  /** 유효하면 체크 표시 */
+  const isFieldValid = (value: string, error: string) =>
+    value.length > 0 && !error;
+
   const isValid =
     currentPw &&
     newPw &&
@@ -77,7 +78,7 @@ export default function ChangePasswordPage() {
     !errors.confirmPw;
 
   const inputBase =
-    'w-full pb-2 text-[16px] font-normal focus:outline-none';
+    'w-full pb-2 pr-10 text-[16px] font-normal focus:outline-none';
 
   const getBorderColor = (error: string, isTouched: boolean) =>
     error && isTouched
@@ -85,32 +86,40 @@ export default function ChangePasswordPage() {
       : 'focus-within:border-[#00C0E8] border-gray-300';
 
   const handleSubmit = () => {
-    //if (!isValid) return;
-
-    console.log('비밀번호 변경 완료');
-    navigate('/profile/edit', { state: {toast: 'password'} });
+    navigate('/profile/edit', { state: { toast: 'password' } });
   };
 
   return (
     <Layout>
-      {/* 헤더 */}
       <Header title="비밀번호 변경" />
 
-      {/* 입력 영역 */}
       <div className="mt-24 flex flex-col space-y-[38px]">
         {/* 현재 비밀번호 */}
         <div className="px-[25px]">
-          <input
-            type="password"
-            placeholder="현재 비밀번호"
-            value={currentPw}
-            onChange={(e) => setCurrentPw(e.target.value)}
-            onBlur={() => {
-              setTouched((p) => ({ ...p, currentPw: true }));
-              validateField('currentPw');
-            }}
-            className={`${inputBase} text-gray-800`}
-          />
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="현재 비밀번호"
+              value={currentPw}
+              onChange={(e) => {
+                const v = e.target.value;
+                setCurrentPw(v);
+                validateField('currentPw', v);
+              }}
+              onBlur={() =>
+                setTouched((p) => ({ ...p, currentPw: true }))
+              }
+              className={`${inputBase} text-gray-800`}
+            />
+            {isFieldValid(currentPw, errors.currentPw) && (
+              <img
+                src={IconComplete}
+                alt="complete"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4"
+              />
+            )}
+          </div>
+
           <div
             className={`border-b ${getBorderColor(
               errors.currentPw,
@@ -126,17 +135,30 @@ export default function ChangePasswordPage() {
 
         {/* 새 비밀번호 */}
         <div className="px-[25px]">
-          <input
-            type="password"
-            placeholder="새 비밀번호 (8~12자 영문+특수문자)"
-            value={newPw}
-            onChange={(e) => setNewPw(e.target.value)}
-            onBlur={() => {
-              setTouched((p) => ({ ...p, newPw: true }));
-              validateField('newPw');
-            }}
-            className={`${inputBase} text-gray-800`}
-          />
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="새 비밀번호 (8~12자 영문+특수문자)"
+              value={newPw}
+              onChange={(e) => {
+                const v = e.target.value;
+                setNewPw(v);
+                validateField('newPw', v);
+              }}
+              onBlur={() =>
+                setTouched((p) => ({ ...p, newPw: true }))
+              }
+              className={`${inputBase} text-gray-800`}
+            />
+            {isFieldValid(newPw, errors.newPw) && (
+              <img
+                src={IconComplete}
+                alt="complete"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4"
+              />
+            )}
+          </div>
+
           <div
             className={`border-b ${getBorderColor(
               errors.newPw,
@@ -152,17 +174,30 @@ export default function ChangePasswordPage() {
 
         {/* 새 비밀번호 확인 */}
         <div className="px-[25px]">
-          <input
-            type="password"
-            placeholder="새 비밀번호 확인"
-            value={confirmPw}
-            onChange={(e) => setConfirmPw(e.target.value)}
-            onBlur={() => {
-              setTouched((p) => ({ ...p, confirmPw: true }));
-              validateField('confirmPw');
-            }}
-            className={`${inputBase} text-gray-800`}
-          />
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="새 비밀번호 확인"
+              value={confirmPw}
+              onChange={(e) => {
+                const v = e.target.value;
+                setConfirmPw(v);
+                validateField('confirmPw', v);
+              }}
+              onBlur={() =>
+                setTouched((p) => ({ ...p, confirmPw: true }))
+              }
+              className={`${inputBase} text-gray-800`}
+            />
+            {isFieldValid(confirmPw, errors.confirmPw) && (
+              <img
+                src={IconComplete}
+                alt="complete"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4"
+              />
+            )}
+          </div>
+
           <div
             className={`border-b ${getBorderColor(
               errors.confirmPw,
@@ -177,27 +212,11 @@ export default function ChangePasswordPage() {
         </div>
       </div>
 
-      {/* 완료 버튼 */}
-      <button
-        onClick={handleSubmit}
-        //disabled={!isValid}
-        className={`
-          fixed bottom-10
-          left-1/2 -translate-x-1/2
-          w-[343px] h-[54px]
-          rounded-full
-          font-semibold text-[16px]
-          flex justify-center items-center
-          transition-colors
-          ${
-            isValid
-              ? 'bg-[#00C0E8] text-white cursor-pointer hover:bg-[#00B3D8]'
-              : 'bg-gray-300 text-white cursor-not-allowed'
-          }
-        `}
-      >
-        완료하기
-      </button>
+      <div className="fixed bottom-10 left-0 right-0 px-6">
+        <Button onClick={handleSubmit} variant="secondary" disabled={!isValid}>
+          완료하기
+        </Button>
+      </div>
     </Layout>
   );
 }
