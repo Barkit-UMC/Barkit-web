@@ -1,36 +1,39 @@
-// src/pages/onboarding/InputPage.tsx
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useOnboardingStore } from '../../store/useOnboardingStore';
-import Header from '../../components/common/Header';
-import Button from '../../components/common/Button';
-import MembershipNumberInput, {
-    type MembershipNumberInputRef
-} from '../../components/onboarding/MembershipNumberInput';
+import { useRef, useState } from "react";
+import Button from "../../../components/common/Button";
+import Header from "../../../components/common/Header";
+import MembershipNumberInput, { type MembershipNumberInputRef } from "../../../components/onboarding/MembershipNumberInput";
+import { useNavigate, useParams } from "react-router-dom";
 
-/**
- * Step 3: 멤버십 번호 입력 페이지
- */
-export default function InputPage() {
+export default function InputNumberPage() {
     const navigate = useNavigate();
-    const { setCardNumber } = useOnboardingStore();
+    const { id } = useParams<{ id: string }>();
     const [isLoading, setIsLoading] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
     const inputRef = useRef<MembershipNumberInputRef>(null);
 
     const handleCardNumberChange = (value: string) => {
-        setCardNumber(value);
         setIsComplete(value.length === 16);
     };
 
     const handleComplete = () => {
-        if (!isComplete) return;
+        if (!isComplete || !id) return;
 
         setIsLoading(true);
         // Mock API call
         setTimeout(() => {
             setIsLoading(false);
-            navigate('/onboarding/complete');
+            
+            // TODO: API 연결 시 성공/실패 처리
+            const isSuccess = true; // 임시로 성공으로 설정
+            
+            if (isSuccess) {
+                navigate(`/membership/${id}/change/complete`);
+            } else {
+                // 실패 시 changeMethod 전달
+                navigate(`/membership/${id}/change/failure`, {
+                    state: { changeMethod: 'number' }
+                });
+            }
         }, 1500);
     };
 
@@ -54,7 +57,7 @@ export default function InputPage() {
                     onClick={handleComplete}
                     disabled={!isComplete}
                     isLoading={isLoading}
-                    loadingText="등록 중..."
+                    loadingText="변경 중..."
                     variant="cyan"
                 >
                     완료하기

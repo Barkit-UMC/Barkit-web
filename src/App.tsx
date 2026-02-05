@@ -33,9 +33,12 @@ const RegCompletePage = lazy(() => import('./pages/membership/RegCompletePage'))
 const MembershipDetailPage = lazy(() => import('./pages/membership/MembershipDetailPage'));
 const DeleteCompletePage = lazy(() => import('./pages/membership/delete/DeleteCompletePage'));
 const DeleteFailurePage = lazy(() => import('./pages/membership/delete/DeleteFailurePage'));
-const BenefitStorePage = lazy(() => import('./pages/membership/BenefitStorePage'));
+const BarcodeChangeSelectMethodPage = lazy(() => import('./pages/membership/change/SelectMethodPage'));
+const BarcodeChangeInputPage = lazy(() => import('./pages/membership/change/InputNumberPage'));
+const BarcodeChangePhotoPage = lazy(() => import('./pages/membership/change/AddBarcodePhotoPage'));
 const BarcodeChangeCompletePage = lazy(() => import('./pages/membership/change/BarcodeChangeCompletePage'));
-const BarcodeChangeFailurePage = lazy(() => import('./pages/membership/change/BarcodeChangeFailureChange'));
+const BarcodeChangeFailurePage = lazy(() => import('./pages/membership/change/BarcodeChangeFailurePage'));
+const BenefitStorePage = lazy(() => import('./pages/membership/BenefitStorePage'));
 
 // Map pages
 const MapHomePage = lazy(() => import('./pages/map/MapHomePage'));
@@ -205,6 +208,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BarcodeChangeFailurePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/change/select-method"
+              element={
+                <ProtectedRoute>
+                  <BarcodeChangeSelectMethodPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/change/input"
+              element={
+                <ProtectedRoute>
+                  <BarcodeChangeInputPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/membership/:id/change/photo"
+              element={
+                <ProtectedRoute>
+                  <BarcodeChangePhotoPage />
                 </ProtectedRoute>
               }
             />

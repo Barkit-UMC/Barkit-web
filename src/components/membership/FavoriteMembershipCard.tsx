@@ -41,7 +41,7 @@ export default function FavoriteMembershipCard({
                     <img 
                         src={ChevronRightIcon} 
                         alt="더보기" 
-                        className="w-4 h-4"
+                        className="w-5 h-5"
                     />
                 </div>
             </div>
