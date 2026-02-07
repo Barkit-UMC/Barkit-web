@@ -11,7 +11,7 @@ interface MembershipSettingBottomSheetProps {
     onDelete?: () => void;
     brandName?: string;
     membershipNumber?: string;
-    membershipId?: string;
+    membershipId: string;
 }
 
 export default function MembershipSettingBottomSheet({
@@ -105,6 +105,8 @@ export default function MembershipSettingBottomSheet({
                         {/* 바코드 변경하기 */}
                         <button
                             onClick={() => {
+                                if (!membershipId) return;
+
                                 navigate(`/membership/${membershipId}/change/select-method`);
                                 onClose();  
                             }}
