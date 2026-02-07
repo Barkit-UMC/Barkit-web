@@ -30,7 +30,7 @@ export default function SelectMethodPage() {
             <Header title="멤버십 브랜드 등록" showBackButton />
 
             {/* Progress Bar */}
-            <div className="fixed top-[64px] left-0 right-0 h-2 bg-gray-100 z-30 mx-auto w-[390px]">
+            <div className="fixed top-[60px] left-0 right-0 h-2 bg-gray-100 z-30">
                 <div
                     className="h-full bg-[#00C0E8] transition-all duration-1000 ease-out"
                     style={{ width: `${progress}%` }}

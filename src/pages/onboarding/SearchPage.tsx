@@ -10,28 +10,32 @@ import CJOneIcon from '../../assets/icons/BrandIcon/cjone_icon.svg?react';
 import KTIcon from '../../assets/icons/BrandIcon/kt_icon.svg?react';
 import SKTIcon from '../../assets/icons/BrandIcon/skt_icon.svg?react';
 import UplusIcon from '../../assets/icons/BrandIcon/uplus_icon.svg?react';
+import SSGIcon from '../../assets/icons/BrandIcon/SSG.svg?react';
+import LpointIcon from '../../assets/icons/BrandIcon/Lpoint.svg?react';
+import OKcashIcon from '../../assets/icons/BrandIcon/OKcash.svg?react';
+import HappyPointIcon from '../../assets/icons/BrandIcon/HappyPoint.svg?react';
+import NaverIcon from '../../assets/icons/BrandIcon/Naver.svg?react';
+import KakaopayIcon from '../../assets/icons/BrandIcon/kakaopay.svg?react';
 
 // Brand data type
 interface Brand {
     id: string;
     name: string;
-    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
-    placeholderColor?: string;
-    placeholderText?: string;
+    icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
-// Brand list with icons and placeholders
+// Brand list with icons
 const BRANDS: Brand[] = [
     { id: 'cjone', name: 'CJ ONE', icon: CJOneIcon },
     { id: 'kt', name: 'KT', icon: KTIcon },
     { id: 'skt', name: 'SKT', icon: SKTIcon },
     { id: 'uplus', name: 'LG U+', icon: UplusIcon },
-    { id: 'ssg', name: '신세계 SSG', placeholderColor: 'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 50%, #45B7D1 100%)', placeholderText: 'SSG' },
-    { id: 'lpoint', name: 'L.POINT', placeholderColor: '#FFFFFF', placeholderText: 'L.' },
-    { id: 'okcashbag', name: 'OK캐쉬백', placeholderColor: 'linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)', placeholderText: 'OK' },
-    { id: 'happypoint', name: '해피포인트', placeholderColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', placeholderText: 'HP' },
-    { id: 'naver', name: '네이버', placeholderColor: '#7C3AED', placeholderText: 'N+' },
-    { id: 'kakaopay', name: '카카오페이', placeholderColor: '#FEE500', placeholderText: 'pay' },
+    { id: 'ssg', name: '신세계 SSG', icon: SSGIcon },
+    { id: 'lpoint', name: 'L.POINT', icon: LpointIcon },
+    { id: 'okcashbag', name: 'OK캐쉬백', icon: OKcashIcon },
+    { id: 'happypoint', name: '해피포인트', icon: HappyPointIcon },
+    { id: 'naver', name: '네이버', icon: NaverIcon },
+    { id: 'kakaopay', name: '카카오페이', icon: KakaopayIcon },
 ];
 
 // ============================================
@@ -57,20 +61,7 @@ function BrandItem({ brand, isSelected, hasSelection, onSelect }: BrandItemProps
             style={{ opacity }}
         >
             <div className="w-21 h-21 flex items-center justify-center rounded-2xl overflow-hidden">
-                {IconComponent ? (
-                    <IconComponent className="w-full h-full" />
-                ) : (
-                    <div
-                        className="w-full h-full flex items-center justify-center text-xl font-bold rounded-2xl"
-                        style={{
-                            background: brand.placeholderColor || '#E5E7EB',
-                            color: brand.placeholderColor === '#FEE500' ? '#3C1E1E' :
-                                brand.placeholderColor === '#FFFFFF' ? '#7C3AED' : '#FFFFFF',
-                        }}
-                    >
-                        {brand.placeholderText}
-                    </div>
-                )}
+                <IconComponent className="w-full h-full" />
             </div>
             <span className="text-medium font-semibold text-center leading-tight">
                 {brand.name}
@@ -144,7 +135,7 @@ export default function SearchPage() {
                 id: parseInt(selectedBrand.id, 36), // Convert string id to number
                 name: selectedBrand.name,
                 icon: selectedBrand.name.charAt(0),
-                color: selectedBrand.placeholderColor || '#00C7E2',
+                color: '#00C7E2',
             });
             navigate('/onboarding/select-method');
         }
@@ -158,7 +149,7 @@ export default function SearchPage() {
             <Header title="멤버십 브랜드 등록" showBackButton />
 
             {/* Progress Bar */}
-            <div className="fixed top-[64px] left-0 right-0 h-2 bg-gray-100 z-30 mx-auto w-[390px]">
+            <div className="fixed top-[60px] left-0 right-0 h-2 bg-gray-100 z-30">
                 <div
                     className="h-full bg-[#00C0E8] transition-all duration-1000 ease-out"
                     style={{ width: `${progress}%` }}

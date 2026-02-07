@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Image, Camera, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import Barcode from 'react-barcode';
 import Header from '../../../components/common/Header';
 import { useBarcodeScanner } from '../../../hooks/useBarcodeScanner';
@@ -10,7 +10,6 @@ type StepType = 'initial' | 'preview';
 export default function AddBarcodePhotoPage() {
     const navigate = useNavigate();
     const [step, setStep] = useState<StepType>('initial');
-    const [showActionSheet, setShowActionSheet] = useState(true);
     const { id } = useParams<{ id: string }>();
 
     // 바코드 스캐너 훅
@@ -18,48 +17,52 @@ export default function AddBarcodePhotoPage() {
 
     // 파일 input ref
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const cameraInputRef = useRef<HTMLInputElement>(null);
+
+    // 페이지 마운트 시 바로 파일 선택 다이얼로그 열기
+    useEffect(() => {
+        // 약간의 딜레이 후 파일 선택 다이얼로그 열기
+        const timer = setTimeout(() => {
+            fileInputRef.current?.click();
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
 
     // 파일 선택 처리
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setShowActionSheet(false);
             await scanFromFile(file);
             setStep('preview');
+        } else {
+            // 파일 선택을 취소한 경우 이전 페이지로 이동
+            if (step === 'initial') {
+                navigate(-1);
+            }
         }
         // input 초기화 (같은 파일 다시 선택 가능하도록)
         e.target.value = '';
     };
 
-    // 사진에서 불러오기
-    const handleSelectFromGallery = () => {
+    // 사진 추가하기 버튼 (초기 화면에서)
+    const handleAddPhoto = () => {
         fileInputRef.current?.click();
-    };
-
-    // 직접 촬영하기
-    const handleTakePhoto = () => {
-        cameraInputRef.current?.click();
-    };
-
-    // 취소 버튼
-    const handleCancel = () => {
-        setShowActionSheet(false);
-        navigate(-1);
     };
 
     // 다시하기 버튼
     const handleRetry = () => {
         reset();
         setStep('initial');
-        setShowActionSheet(true);
+        // 다시하기 시에도 바로 파일 선택
+        setTimeout(() => {
+            fileInputRef.current?.click();
+        }, 100);
     };
 
     // 완료하기 버튼
     const handleComplete = () => {
         // TODO: scannedValue를 서버에 저장
         const isSuccess = true; // 임시로 성공으로 설정
-        
+
         if (isSuccess) {
             navigate(`/membership/${id}/change/complete`);
         } else {
@@ -74,19 +77,11 @@ export default function AddBarcodePhotoPage() {
         <div className="h-full mx-auto bg-[#f5f5f5] flex flex-col relative">
             <Header title="바코드 사진 추가" showBackButton />
 
-            {/* Hidden File Inputs */}
+            {/* Hidden File Input */}
             <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-            />
-            <input
-                ref={cameraInputRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
                 onChange={handleFileChange}
                 className="hidden"
             />
@@ -96,10 +91,18 @@ export default function AddBarcodePhotoPage() {
                 {/* Barcode Preview Area */}
                 <div className="mt-4">
                     {step === 'initial' ? (
-                        /* 초기 상태: 빈 플레이스홀더 박스 */
-                        <div className="w-full aspect-[4/3] bg-white rounded-2xl shadow-sm flex items-center justify-center">
-                            <div className="w-full h-full bg-gray-200 rounded-2xl" />
-                        </div>
+                        /* 초기 상태: 사진 추가 안내 */
+                        <button
+                            onClick={handleAddPhoto}
+                            className="w-full aspect-[4/3] bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center gap-3 hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="w-16 h-16 rounded-full bg-[#E0F7FA] flex items-center justify-center">
+                                <svg className="w-8 h-8 text-[#00C7E2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                            <span className="text-base text-gray-500">탭하여 사진 추가</span>
+                        </button>
                     ) : (
                         /* 완료 상태: 바코드 이미지가 표시된 카드 */
                         <div className="w-full bg-white rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center min-h-[180px]">
@@ -177,65 +180,6 @@ export default function AddBarcodePhotoPage() {
                         완료하기
                     </button>
                 </div>
-            )}
-
-            {/* 초기 상태: 바텀 시트 (Action Sheet) */}
-            {showActionSheet && step === 'initial' && (
-                <>
-                    {/* Dimmed Overlay */}
-                    <div
-                        className="fixed inset-0 bg-black/40 z-40"
-                        onClick={handleCancel}
-                    />
-
-                    {/* Action Sheet Container - 중앙 정렬용 */}
-                    <div className="fixed inset-0 flex items-end justify-center z-50 pointer-events-none">
-                        {/* Action Sheet Panel */}
-                        <div className="w-[393px] bg-white rounded-t-3xl pointer-events-auto animate-slide-up-simple">
-                            <div className="p-6">
-                                {/* 메뉴 옵션들 */}
-                                <div className="space-y-1">
-                                    {/* 사진에서 불러오기 */}
-                                    <button
-                                        onClick={handleSelectFromGallery}
-                                        className="w-full flex items-center gap-4 py-4 px-4 rounded-xl hover:bg-gray-50 transition-colors"
-                                    >
-                                        <Image className="w-6 h-6 text-gray-600" />
-                                        <span className="text-base font-medium text-gray-900">
-                                            사진에서 불러오기
-                                        </span>
-                                    </button>
-
-                                    {/* 직접 촬영하기 */}
-                                    <button
-                                        onClick={handleTakePhoto}
-                                        className="w-full flex items-center gap-4 py-4 px-4 rounded-xl hover:bg-gray-50 transition-colors"
-                                    >
-                                        <Camera className="w-6 h-6 text-gray-600" />
-                                        <span className="text-base font-medium text-gray-900">
-                                            직접 촬영하기
-                                        </span>
-                                    </button>
-                                </div>
-
-                                {/* 취소 버튼 */}
-                                <div className="mt-4">
-                                    <button
-                                        onClick={handleCancel}
-                                        className="w-full py-4 rounded-full bg-[#E0F7FA] text-[#00C0E8] font-semibold text-base transition-all hover:bg-[#B2EBF2] active:scale-[0.98]"
-                                    >
-                                        취소
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Home Indicator (iOS style) */}
-                            <div className="flex justify-center pb-4">
-                                <div className="w-32 h-1 bg-gray-300 rounded-full" />
-                            </div>
-                        </div>
-                    </div>
-                </>
             )}
         </div>
     );

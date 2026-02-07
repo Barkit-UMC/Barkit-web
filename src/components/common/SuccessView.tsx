@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react';
 import confetti from 'canvas-confetti';
 import BarkitSmileIcon from '../../assets/icons/Barkit_icon_smile.svg?react';
+import BarkitShadowIcon from '../../assets/icons/Barkit_icon_shadow.svg?react';
 import Button from './Button';
 
 interface SuccessViewProps {
@@ -77,9 +78,13 @@ export default function SuccessView({
                     </h1>
                 </div>
 
-                {/* Character with floating animation */}
-                <div className="w-52 h-52 flex items-center justify-center animate-float-slow mb-30 self-center">
-                    <BarkitSmileIcon className="w-full h-full drop-shadow-lg" />
+                {/* Character with floating animation and shadow */}
+                <div className="flex flex-col items-center self-center mb-30">
+                    <div className="w-52 h-52 flex items-center justify-center animate-float-slow">
+                        <BarkitSmileIcon className="w-full h-full" />
+                    </div>
+                    {/* Shadow below the character */}
+                    <BarkitShadowIcon className="w-40 mt-1" />
                 </div>
             </main>
 

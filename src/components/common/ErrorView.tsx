@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import BarkitWonderIcon from '../../assets/icons/Barkit_icon_wonder.svg?react';
+import BarkitShadowIcon from '../../assets/icons/Barkit_icon_shadow.svg?react';
 import QuestionMarkIcon from '../../assets/icons/question_mark.svg?react';
 import Button from './Button';
 
@@ -82,14 +83,18 @@ export default function ErrorView({
                     </h1>
                 </div>
 
-                {/* Illustration Area */}
-                <div className="relative w-40 h-40 self-center mb-20">
-                    {/* Character */}
-                    <BarkitWonderIcon className="w-full h-full drop-shadow-lg animate-tilt" />
-                    {/* Question Mark - positioned top-right with boing animation */}
-                    <div className="absolute -top-6 -right-8 w-16 h-16 animate-boing">
-                        <QuestionMarkIcon className="w-full h-full" />
+                {/* Illustration Area with shadow */}
+                <div className="flex flex-col items-center self-center mb-20">
+                    <div className="relative w-40 h-40">
+                        {/* Character */}
+                        <BarkitWonderIcon className="w-full h-full animate-tilt" />
+                        {/* Question Mark - positioned top-right with boing animation */}
+                        <div className="absolute -top-4 -right-6 w-10 h-10 animate-boing">
+                            <QuestionMarkIcon className="w-full h-full" />
+                        </div>
                     </div>
+                    {/* Shadow below the character */}
+                    <BarkitShadowIcon className="w-32 mt-2" />
                 </div>
             </main>
 

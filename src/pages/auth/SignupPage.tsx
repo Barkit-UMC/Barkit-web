@@ -100,7 +100,7 @@ export default function SignupPage() {
                 {/* Email Input with Check Button */}
                 <FormInput
                     type="email"
-                    placeholder="아이디 ( 이메일 주소 )"
+                    placeholder="아이디( 이메일 주소 )"
                     value={email}
                     onChange={setEmail}
                     hasError={emailCheckResult === 'invalid'}
@@ -112,7 +112,7 @@ export default function SignupPage() {
                 {/* Password Input */}
                 <FormInput
                     type="password"
-                    placeholder="비밀번호 (8~12자 · 영문 + 특수문자 조합)"
+                    placeholder="비밀번호(8~12자 · 영문 + 특수문자 조합)"
                     value={password}
                     onChange={setPassword}
                     error={passwordError}
@@ -152,7 +152,7 @@ export default function SignupPage() {
                 <div className="mb-6">
                     <input
                         type="text"
-                        placeholder="생년월일"
+                        placeholder="생년월일(8자리)"
                         value={birthDate}
                         onChange={(e) => {
                             // Only allow numbers

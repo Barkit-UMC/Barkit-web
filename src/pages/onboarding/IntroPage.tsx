@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import BarkitIcon from '../../assets/icons/Barkit_icon_default.svg?react';
+import BarkitShadowIcon from '../../assets/icons/Barkit_icon_shadow.svg?react';
 import HyundaiIcon from '../../assets/icons/BrandIcon/cjone.svg?react';
 import OliveYoungIcon from '../../assets/icons/BrandIcon/skt.svg?react';
 import HappyPointIcon from '../../assets/icons/BrandIcon/uplus.svg?react';
@@ -35,9 +36,13 @@ export default function IntroPage() {
 
                 {/* 2. Illustration with Floating Icons */}
                 <div className="flex-1 relative flex items-center justify-center -mt-5">
-                    {/* Main Character (Barkit) - Center */}
-                    <div className="relative z-10 w-45 h-45 flex items-center justify-center animate-float">
-                        <BarkitIcon className="w-full h-full" />
+                    {/* Main Character (Barkit) - Center with shadow */}
+                    <div className="flex flex-col items-center z-10">
+                        <div className="w-45 h-45 flex items-center justify-center animate-float">
+                            <BarkitIcon className="w-full h-full" />
+                        </div>
+                        {/* Shadow below the character */}
+                        <BarkitShadowIcon className="w-36 mt-1" />
                     </div>
 
                     {/* Floating Brand Icons (순수 아이콘, 배경 없음) */}
