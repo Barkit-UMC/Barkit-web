@@ -33,7 +33,7 @@ export default function SelectMethodPage() {
     };
 
     return (
-        <div className="flex h-full mx-auto bg-white flex flex-col relative">
+        <div className="h-full mx-auto bg-white flex flex-col relative">
             <Header title="바코드 변경" showBackButton />
 
             {/* Progress Bar */}

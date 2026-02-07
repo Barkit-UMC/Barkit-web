@@ -26,7 +26,7 @@ export default function SelectMethodPage() {
     };
 
     return (
-        <div className="flex h-full mx-auto bg-white flex flex-col relative">
+        <div className="h-full mx-auto bg-white flex flex-col relative">
             <Header title="멤버십 브랜드 등록" showBackButton />
 
             {/* Progress Bar */}
