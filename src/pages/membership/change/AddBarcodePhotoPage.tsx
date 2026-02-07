@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Image, Camera, Loader2 } from 'lucide-react';
 import Barcode from 'react-barcode';
-import Header from '../../components/common/Header';
-import { useBarcodeScanner } from '../../hooks/useBarcodeScanner';
+import Header from '../../../components/common/Header';
+import { useBarcodeScanner } from '../../../hooks/useBarcodeScanner';
 
 type StepType = 'initial' | 'preview';
 
@@ -11,6 +11,7 @@ export default function AddBarcodePhotoPage() {
     const navigate = useNavigate();
     const [step, setStep] = useState<StepType>('initial');
     const [showActionSheet, setShowActionSheet] = useState(true);
+    const { id } = useParams<{ id: string }>();
 
     // 바코드 스캐너 훅
     const { scannedValue, isScanning, error, scanFromFile, reset } = useBarcodeScanner();
@@ -56,8 +57,17 @@ export default function AddBarcodePhotoPage() {
 
     // 완료하기 버튼
     const handleComplete = () => {
-        // TODO: scannedValue를 서버에 저장하거나 다음 페이지로 전달
-        navigate('/onboarding/complete');
+        // TODO: scannedValue를 서버에 저장
+        const isSuccess = true; // 임시로 성공으로 설정
+        
+        if (isSuccess) {
+            navigate(`/membership/${id}/change/complete`);
+        } else {
+            // 실패 시 changeMethod 전달
+            navigate(`/membership/${id}/change/failure`, {
+                state: { changeMethod: 'barcode' }
+            });
+        }
     };
 
     return (
@@ -181,7 +191,7 @@ export default function AddBarcodePhotoPage() {
                     {/* Action Sheet Container - 중앙 정렬용 */}
                     <div className="fixed inset-0 flex items-end justify-center z-50 pointer-events-none">
                         {/* Action Sheet Panel */}
-                        <div className="w-[390px] bg-white rounded-t-3xl pointer-events-auto animate-slide-up-simple">
+                        <div className="w-[393px] bg-white rounded-t-3xl pointer-events-auto animate-slide-up-simple">
                             <div className="p-6">
                                 {/* 메뉴 옵션들 */}
                                 <div className="space-y-1">
@@ -212,7 +222,7 @@ export default function AddBarcodePhotoPage() {
                                 <div className="mt-4">
                                     <button
                                         onClick={handleCancel}
-                                        className="w-full py-4 rounded-full bg-[#E0F7FA] text-[#00C7E2] font-semibold text-base transition-all hover:bg-[#B2EBF2] active:scale-[0.98]"
+                                        className="w-full py-4 rounded-full bg-[#E0F7FA] text-[#00C0E8] font-semibold text-base transition-all hover:bg-[#B2EBF2] active:scale-[0.98]"
                                     >
                                         취소
                                     </button>

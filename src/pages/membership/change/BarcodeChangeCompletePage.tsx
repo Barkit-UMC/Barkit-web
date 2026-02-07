@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import SuccessView from '../../components/common/SuccessView';
+import SuccessView from '../../../components/common/SuccessView';
 
-export default function DeleteCompletePage() {
+export default function BarcodeChangeCompletePage() {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
@@ -12,8 +12,8 @@ export default function DeleteCompletePage() {
     <SuccessView
       title={
         <>
-          완료!<br />
-          멤버십 삭제가 완료되었어요.
+          축하합니다!<br />
+          바코드 변경이 완료되었어요
         </>
       }
       buttonText="홈으로"

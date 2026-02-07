@@ -4,10 +4,10 @@ import iconSetting from '../../assets/icons/memberships/iconSetting.svg';
 import iconEdit from '../../assets/icons/memberships/iconEdit.svg';
 import iconPlus from '../../assets/icons/memberships/iconPlus.svg';
 import MembershipCard from "../../components/membership/MembershipCard";
-import { use, useState } from "react";
+import { useState } from "react";
 import MembershipSettingBottomSheet from "../../components/membership/MembershipSettingsBottomSheet";
 import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 interface Store {
   id: number;
@@ -43,6 +43,7 @@ const DUMMY_DATA: Membership[] = [
 ];
 
 export default function MembershipDetailPage() {
+    const { id } = useParams<{ id: string }>();
     const data = DUMMY_DATA; // 데이터 소스
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const navigate = useNavigate();
@@ -115,6 +116,7 @@ export default function MembershipDetailPage() {
             <MembershipSettingBottomSheet
                 isOpen={isBottomSheetOpen}
                 onClose={() => setIsBottomSheetOpen(false)}
+                membershipId={id}
             />
         </Layout>
     );

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ScanBarcode } from 'lucide-react';
-import Header from '../../components/common/Header';
-import Button from '../../components/common/Button';
+import Header from '../../../components/common/Header';
+import Button from '../../../components/common/Button';
 
 type MethodType = 'number' | 'barcode' | null;
 
@@ -10,6 +10,7 @@ export default function SelectMethodPage() {
     const navigate = useNavigate();
     const [selectedMethod, setSelectedMethod] = useState<MethodType>(null);
     const [progress, setProgress] = useState(50);
+    const { id } = useParams<{ id: string }>();
 
     // Animate progress on mount
     useEffect(() => {
@@ -18,16 +19,22 @@ export default function SelectMethodPage() {
     }, []);
 
     const handleNext = () => {
+        // id가 없으면 경고 로그 출력
+        if (!id) {
+            console.error('Membership ID is missing');
+            return;
+        }
+
         if (selectedMethod === 'number') {
-            navigate('/onboarding/input');
+            navigate(`/membership/${id}/change/input`);
         } else if (selectedMethod === 'barcode') {
-            navigate('/onboarding/add-barcode-photo');
+            navigate(`/membership/${id}/change/photo`);
         }
     };
 
     return (
         <div className="h-full mx-auto bg-white flex flex-col relative">
-            <Header title="멤버십 브랜드 등록" showBackButton />
+            <Header title="바코드 변경" showBackButton />
 
             {/* Progress Bar */}
             <div className="fixed top-[64px] left-0 right-0 h-2 bg-gray-100 z-30 mx-auto w-[390px]">
@@ -55,7 +62,6 @@ export default function SelectMethodPage() {
                             }`}>
                             멤버십 번호 입력
                         </span>
-                        {/* Styled 123 representation */}
                         <div className={`text-2xl font-mono tracking-widest ${selectedMethod === 'number' ? 'text-[#00C0E8]' : 'text-gray-300'
                             }`}>
                             123
@@ -84,7 +90,7 @@ export default function SelectMethodPage() {
             <div className="absolute bottom-0 left-0 right-0 p-6">
                 <Button
                     onClick={handleNext}
-                    disabled={!selectedMethod}
+                    disabled={!selectedMethod || !id}
                     variant="cyan"
                 >
                     다음

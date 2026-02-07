@@ -11,6 +11,7 @@ interface MembershipSettingBottomSheetProps {
     onDelete?: () => void;
     brandName?: string;
     membershipNumber?: string;
+    membershipId: string;
 }
 
 export default function MembershipSettingBottomSheet({
@@ -20,6 +21,7 @@ export default function MembershipSettingBottomSheet({
     onDelete,
     brandName = 'CJ ONE',
     membershipNumber = '1234-5678-9123-8284',
+    membershipId,
 }: MembershipSettingBottomSheetProps) {
     const [isFavorite, setIsFavorite] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -53,6 +55,9 @@ export default function MembershipSettingBottomSheet({
         onDelete?.();
         setShowDeleteModal(false);
         onClose();
+
+        // 홈으로 라우팅 추가
+        navigate('/home');
     };
 
     return (
@@ -100,7 +105,9 @@ export default function MembershipSettingBottomSheet({
                         {/* 바코드 변경하기 */}
                         <button
                             onClick={() => {
-                                navigate('/membership/input');
+                                if (!membershipId) return;
+
+                                navigate(`/membership/${membershipId}/change/select-method`);
                                 onClose();  
                             }}
                             className="flex items-center gap-3 w-full py-3"
@@ -121,7 +128,7 @@ export default function MembershipSettingBottomSheet({
                         {/* 취소 버튼 */}
                         <button
                             onClick={onClose}
-                            className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px] text-gray-300 text-[16px] font-semibold mt-6"
+                            className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px] text-[#00C0E8] text-[16px] font-semibold mt-6"
                         >
                             취소
                         </button>
