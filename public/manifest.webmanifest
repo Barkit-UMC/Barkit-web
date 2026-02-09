@@ -1,11 +1,16 @@
 {
     "name": "Barkit",
+    "short_name": "Barkit",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#00C0E8",
-    "form_factor": ["narrow", "wide"],
+    "theme_color": "#ffffff",
     "icons": [
+        {
+            "src": "/icons/icon-96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
         {
             "src": "/icons/icon-512.png",
             "sizes": "512x512",
