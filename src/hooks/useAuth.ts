@@ -120,7 +120,8 @@ export const useAuth = (): UseAuthReturn => {
             setError(null);
 
             try {
-                const response = await authApi.kakaoLogin(code);
+                const redirectUri = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+                const response = await authApi.kakaoLogin(code, redirectUri);
 
                 if (response.isSuccess && response.result) {
                     const { accessToken, refreshToken, userId } = response.result;
@@ -146,7 +147,7 @@ export const useAuth = (): UseAuthReturn => {
 
     /**
      * 네이버 소셜 로그인 시작
-     * 백엔드에서 네이버 OAuth URL을 받아와 리다이렉트
+     * 백엔드에서 네이버 OAuth URL(state 포함)을 받아와 리다이렉트
      */
     const startNaverLogin = useCallback(async () => {
         setIsLoading(true);
@@ -177,7 +178,8 @@ export const useAuth = (): UseAuthReturn => {
             setError(null);
 
             try {
-                const response = await authApi.naverLogin(code, state);
+                const redirectUri = import.meta.env.VITE_NAVER_REDIRECT_URI;
+                const response = await authApi.naverLogin(code, state, redirectUri);
 
                 if (response.isSuccess && response.result) {
                     const { accessToken, refreshToken, userId } = response.result;

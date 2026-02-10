@@ -27,11 +27,13 @@ interface SignupRequest {
 
 interface KakaoLoginRequest {
     code: string;
+    redirectUri: string;
 }
 
 interface NaverLoginRequest {
     code: string;
     state: string;
+    redirectUri: string;
 }
 
 interface RefreshTokenRequest {
@@ -55,10 +57,6 @@ interface LoginResult {
 interface SignupResult {
     userId: number;
     email: string;
-}
-
-interface RefreshResult {
-    accessToken: string;
 }
 
 interface RefreshResult {
@@ -121,12 +119,12 @@ export const authApi = {
     /**
      * 카카오 소셜 로그인
      * POST /api/auth/oauth/kakao/login
-     * 카카오에서 받은 인가 코드(code)를 백엔드로 전달
+     * 카카오에서 받은 인가 코드(code)와 redirectUri를 백엔드로 전달
      */
-    kakaoLogin: async (code: string): Promise<ApiResponse<LoginResult>> => {
+    kakaoLogin: async (code: string, redirectUri: string): Promise<ApiResponse<LoginResult>> => {
         const response = await axiosInstance.post<ApiResponse<LoginResult>>(
             '/api/auth/oauth/kakao/login',
-            { code } as KakaoLoginRequest
+            { code, redirectUri } as KakaoLoginRequest
         );
         return response.data;
     },
@@ -134,7 +132,7 @@ export const authApi = {
     /**
      * 네이버 인증 URL 가져오기
      * GET /api/auth/oauth/naver/authorize-url
-     * 백엔드에서 네이버 OAuth URL을 생성하여 반환
+     * 백엔드에서 네이버 OAuth URL(state 포함)을 생성하여 반환
      */
     getNaverAuthorizeUrl: async (redirectUri: string): Promise<string> => {
         const response = await axiosInstance.get<ApiResponse<string>>(
@@ -147,12 +145,12 @@ export const authApi = {
     /**
      * 네이버 소셜 로그인
      * POST /api/auth/oauth/naver/login
-     * 네이버에서 받은 인가 코드(code)와 state를 백엔드로 전달
+     * 네이버에서 받은 인가 코드(code), state, redirectUri를 백엔드로 전달
      */
-    naverLogin: async (code: string, state: string): Promise<ApiResponse<LoginResult>> => {
+    naverLogin: async (code: string, state: string, redirectUri: string): Promise<ApiResponse<LoginResult>> => {
         const response = await axiosInstance.post<ApiResponse<LoginResult>>(
             '/api/auth/oauth/naver/login',
-            { code, state } as NaverLoginRequest
+            { code, state, redirectUri } as NaverLoginRequest
         );
         return response.data;
     },
