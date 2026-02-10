@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { authApi } from '../api/auth';
 
 // 정규식 패턴
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,11 +70,30 @@ export function useSignupForm(): UseSignupFormReturn {
     const [isFormValid, setIsFormValid] = useState(false);
 
     // Handle email check button click
-    const handleEmailCheck = useCallback(() => {
-        if (EMAIL_REGEX.test(email)) {
-            setEmailCheckResult('valid');
-            setIsEmailChecked(true);
-        } else {
+    const handleEmailCheck = useCallback(async () => {
+        if (!EMAIL_REGEX.test(email)) {
+            setEmailCheckResult('invalid');
+            setIsEmailChecked(false);
+            return;
+        }
+
+        try {
+            // 실제 API 호출로 중복 확인
+            const response = await authApi.checkEmail(email);
+            if (response.isSuccess && response.result) {
+                if (response.result.isAvailable) {
+                    setEmailCheckResult('valid');
+                    setIsEmailChecked(true);
+                } else {
+                    setEmailCheckResult('invalid'); // 사용 불가능 (중복 등)
+                    setIsEmailChecked(false);
+                }
+            } else {
+                setEmailCheckResult('invalid');
+                setIsEmailChecked(false);
+            }
+        } catch (error) {
+            console.error('Email check failed:', error);
             setEmailCheckResult('invalid');
             setIsEmailChecked(false);
         }

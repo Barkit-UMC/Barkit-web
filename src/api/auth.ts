@@ -21,6 +21,7 @@ interface SignupRequest {
     email: string;
     password: string;
     confirmPassword: string;
+    birthDate: string;
     terms: TermAgreement[];
 }
 
@@ -60,6 +61,15 @@ interface RefreshResult {
     accessToken: string;
 }
 
+interface RefreshResult {
+    accessToken: string;
+}
+
+interface CheckEmailResult {
+    isAvailable: boolean;
+    message: string;
+}
+
 // === API Functions ===
 
 export const authApi = {
@@ -75,14 +85,22 @@ export const authApi = {
         return response.data;
     },
 
-    /**
-     * 회원가입
-     * POST /api/auth/signup
-     */
     signup: async (data: SignupRequest): Promise<ApiResponse<SignupResult>> => {
         const response = await axiosInstance.post<ApiResponse<SignupResult>>(
             '/api/auth/signup',
             data
+        );
+        return response.data;
+    },
+
+    /**
+     * 이메일 중복 확인
+     * POST /api/auth/check-email
+     */
+    checkEmail: async (email: string): Promise<ApiResponse<CheckEmailResult>> => {
+        const response = await axiosInstance.post<ApiResponse<CheckEmailResult>>(
+            '/api/auth/check-email',
+            { email }
         );
         return response.data;
     },
