@@ -69,34 +69,6 @@ export default function MyPage() {
             <span className="text-[20px] font-semibold">
               {item.label}
             </span>
-
-            {/* 토글 */}
-            {item.type === 'toggle' && (
-              <ToggleSwitch
-                isOn={
-                  item.id === 'notification'
-                    ? isNotiOn
-                    : isLocationOn
-                }
-                onToggle={() => {
-                  if (item.id === 'notification') {
-                    setIsNotiOn((prev) => {
-                      const next = !prev;
-                      showToast('notification', next ? 'on' : 'off');
-                      return next;
-                    });
-                  }
-
-                  if (item.id === 'locationpermission') {
-                    setLocationOn((prev) => {
-                      const next = !prev;
-                      showToast('location', next ? 'on' : 'off');
-                      return next;
-                    });
-                  }
-                }}
-              />
-            )}
           </button>
         ))}
       </div>
