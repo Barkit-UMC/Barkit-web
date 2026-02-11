@@ -12,6 +12,7 @@ import SearchResultList from '../../components/map/SearchResultList';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { mapApi } from '../../api/map';
 import MapMarker from '../../components/map/MapMarker';
+import LoadingDots from '../../components/common/LoadingDots';
 
 const search_icon = iconSearch; 
 const filter_icon = iconFilter;
@@ -135,8 +136,8 @@ export default function MapHomePage() {
     if (!currentLocation) {
         return (
             <Layout showBottomNav>
-                <div className="flex items-center justify-center w-full h-[calc(100dvh-64px)] bg-white text-gray-500">
-                    지도를 불러오는 중...
+                <div className="flex items-center justify-center py-20">
+                                <LoadingDots />
                 </div>
             </Layout>
         );
