@@ -21,6 +21,7 @@ const KakaoCallbackPage = () => {
             hasCalledRef.current = true;
 
             const code = searchParams.get('code');
+            const state = searchParams.get('state');
             const errorParam = searchParams.get('error');
 
             if (errorParam) {
@@ -35,6 +36,16 @@ const KakaoCallbackPage = () => {
                 navigate('/login', { replace: true });
                 return;
             }
+
+            // State 검증 (CSRF 방지)
+            const storedState = sessionStorage.getItem('kakao_oauth_state');
+            if (!state || state !== storedState) {
+                console.error('Invalid state parameter');
+                sessionStorage.removeItem('kakao_oauth_state'); // 사용 후 삭제
+                navigate('/login', { replace: true });
+                return;
+            }
+            sessionStorage.removeItem('kakao_oauth_state'); // 검증 성공 후 삭제
 
             try {
                 const result = await kakaoLogin(code);

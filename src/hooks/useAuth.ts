@@ -104,8 +104,12 @@ export const useAuth = (): UseAuthReturn => {
     const startKakaoLogin = useCallback(() => {
         const kakaoClientId = import.meta.env.VITE_KAKAO_REST_API_KEY;
         const redirectUri = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+        const state = Math.random().toString(36).substring(2, 15); // CSRF 방지용 state 생성
 
-        const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${redirectUri}`;
+        // state를 sessionStorage에 저장 (콜백에서 검증용)
+        sessionStorage.setItem('kakao_oauth_state', state);
+
+        const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
 
         window.location.href = kakaoAuthUrl;
     }, []);
