@@ -56,7 +56,7 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
                             key={m.id} 
                             src={m.logoUrl} 
                             alt={m.name} 
-                            className="w-7 h-7 object-contain rounded-lg shadow-sm border border-gray-50" 
+                            className="w-7 h-7 object-contain rounded-lg" 
                           />
                         ))}
                     </div>
