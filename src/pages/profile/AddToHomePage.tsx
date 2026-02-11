@@ -23,7 +23,7 @@ export default function AddToHomePage() {
                     <span className="text-[20px] font-semibold">아이폰(iOS)</span>
                 </div>
                 {/* 설명 */}
-                <div className="h-[260px] w-[90%] rounded-xl bg-gray-100 mx-auto flex flex-col">
+                <div className="min-h-[260px] h-auto w-[90%] rounded-xl bg-gray-100 mx-auto flex flex-col">
                     <p className="p-5 text-[16px]">
                         Safari 브라우저로 접속<br/>
                         BarKit 주소로 접속해주세요 (Safari만 가능)<br/>
@@ -47,7 +47,7 @@ export default function AddToHomePage() {
                     <span className="text-[20px] font-semibold">안드로이드(Android)</span>
                 </div>
                 {/* 설명 */}
-                <div className="h-[260px] w-[90%] rounded-xl bg-gray-100 mx-auto flex flex-col">
+                <div className="min-h-[260px] h-auto w-[90%] rounded-xl bg-gray-100 mx-auto flex flex-col">
                     <p className="p-5 text-[16px]">
                         Chrome 브라우저로 접속<br/>
                         BarKit 주소로 접속해주세요<br/>
