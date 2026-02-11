@@ -26,5 +26,15 @@ export const userApi = {
         }
 
         return response.data.result;
-    }
+    },
+    updateBirthDate: async (birthDate: string): Promise<UserResponse> => {
+        const response = await axiosInstance.put<ApiResponse<UserResponse>>(
+            '/api/users/me/birth-date',
+            { birthDate }
+        );
+        if (!response.data.isSuccess) {
+            throw new Error(response.data.message || '생일 업데이트 실패');
+        }
+        return response.data.result;
+    },
 };
