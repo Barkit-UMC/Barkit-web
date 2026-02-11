@@ -132,7 +132,7 @@ export default function MapDetailPage() {
                     <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">보유 멤버십</h2>
                     <div className="flex gap-3">
                         {storeData.userMembership.map((m, i) => (
-                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} 
+                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl" alt={m.name} title={m.name} 
                                 onClick={() => handleMembershipClick(m.userMembershipId)}/>
                         ))}
                     </div>
@@ -144,7 +144,7 @@ export default function MapDetailPage() {
                     <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">전체 멤버십</h2>
                     <div className="flex gap-3">
                         {storeData.membership.map((m, i) => (
-                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} />
+                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl" alt={m.name} title={m.name} />
                         ))}
                     </div>
                 </div>
@@ -165,7 +165,12 @@ export default function MapDetailPage() {
                             )}
                             
                             {/* 2. 요일 텍스트 출력 */}
-                            {storeData.hourInfo.weekdayText}
+                            {storeData.hourInfo.weekdayText.map((text, index) => (
+                                <React.Fragment key={index}>
+                                    {text}
+                                    <br />
+                                </React.Fragment>
+                            ))}
                         </span>
                     </div>
 
