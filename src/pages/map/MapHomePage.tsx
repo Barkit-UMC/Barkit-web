@@ -10,6 +10,8 @@ import iconMapPin from '../../assets/icons/map/loc.svg'
 import iconMyLoc from '../../assets/icons/map/sort_loc.svg'
 import SortBottomSheet from '../../components/common/BottomSheet';
 import SearchResultList from '../../components/map/SearchResultList';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { mapApi } from '../../api/map';
 
 const search_icon = iconSearch; 
 const filter_icon = iconFilter;
@@ -40,6 +42,34 @@ export default function MapHomePage() {
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
     const latestCoords = useRef<{lat: number, lng: number} | null>(null);
+
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
+        queryKey: ['stores', searchText, selectedCategory, currentSort],
+        queryFn: ({ pageParam = 0 }) => 
+        mapApi.searchStores(
+            { 
+                query: searchText, 
+                centerlat: currentLocation?.lat, 
+                centerlng: currentLocation?.lng,
+                userlat: latestCoords.current?.lat, // 내 현재 위치
+                userlng: latestCoords.current?.lng  // 내 현재 위치
+            }, 
+            pageParam as number, // 타입 단언 (필요시)
+            currentSort === 'my-location' ? 'CURRENT' : 'CENTER',
+            selectedCategory === '전체' ? 'ALL' : selectedCategory,
+            'DISTANCE', // 정렬 기준 (필요에 따라 수정)
+            20          // 사이즈
+        ),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            // 서버 응답 구조: lastPage.result.hasNext
+            return lastPage.result.hasNext ? lastPage.result.nextCursor : undefined;
+        },
+        enabled: !!currentLocation,
+    });
+
+    // 데이터 추출
+    const allStores = data?.pages.flatMap(page => page.result.content) || [];
 
     useEffect(() => {
         if (!navigator.geolocation) return;
@@ -111,27 +141,6 @@ export default function MapHomePage() {
             id: 'my-location', 
             label: '현재 내 위치 거리순', 
             icon: myLocIcon  
-        },
-    ];
-
-    const dummyResults = [
-        { 
-            id: 1, 
-            name: '올리브영 성수', 
-            category: '드럭스토어', 
-            distance: '0.55km', 
-            address: '서울 성동구 연무장7길 13 팩토리얼',
-            lat: 37.5436, // 실제 위도
-            lng: 127.0545  // 실제 경도
-        },
-        { 
-            id: 2, 
-            name: '올리브영 성수2', 
-            category: '드럭스토어', 
-            distance: '0.82km', 
-            address: '서울 성동구 어쩌구 저쩌구',
-            lat: 37.5450,
-            lng: 127.0580
         },
     ];
     
@@ -225,7 +234,13 @@ export default function MapHomePage() {
                     </div>
 
                     {/* 분리한 리스트 컴포넌트 삽입 */}
-                    <SearchResultList results={dummyResults} />
+                    <SearchResultList 
+                        results={allStores} 
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                        isLoading={isLoading}
+                    />
                 </div>
 
                 {/* 3. 현재 위치 버튼 (우측 하단) */}

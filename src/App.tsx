@@ -258,17 +258,17 @@ function App() {
             <Route
               path="/map"
               element={
-                // <ProtectedRoute>
-                <MapHomePage />
-                // </ProtectedRoute>
+                <ProtectedRoute>
+                  <MapHomePage />
+                </ProtectedRoute>
               }
             />
             <Route
-              path="/map/:id"
+              path="/map/:googleId"
               element={
-                // <ProtectedRoute>
-                <MapDetailPage />
-                // </ProtectedRoute>
+                <ProtectedRoute>
+                  <MapDetailPage />
+                </ProtectedRoute>
               }
             />
             <Route

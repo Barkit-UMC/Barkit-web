@@ -11,41 +11,56 @@ import MapContainer from '../../components/map/MapContainer';
 
 export default function MapDetailPage() {
     const { googleId } = useParams<{ googleId: string }>();
-    const [searchParams] = useSearchParams();
 
     // 상태 관리
     const [storeData, setStoreData] = useState<StoreDetail | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
-        const fetchDetail = async () => {
-            if (!googleId) return;
+    const fetchDetail = async () => {
+        if (!googleId) return;
+        console.log("1. 상세 데이터 호출 시작 - ID:", googleId);
+
+        try {
+            // 위치 정보를 못 가져올 상황을 대비해 기본값 설정
+            let lat = 37.5445;
+            let lng = 127.0560;
 
             try {
-                // URL 쿼리에서 위치 정보 가져오기 (없으면 기본값)
-                const lat = parseFloat(searchParams.get('lat') || '37.5445');
-                const lng = parseFloat(searchParams.get('lng') || '127.0560');
-
-                const response = await mapApi.getStoreDetail(googleId, lat, lng);
-                
-                if (response.isSuccess) {
-                    setStoreData(response.result);
-                }
-            } catch (error) {
-                console.error("매장 정보를 불러오는데 실패했습니다.", error);
-            } finally {
-                setLoading(false);
+                const pos: any = await new Promise((res, rej) => {
+                    navigator.geolocation.getCurrentPosition(res, rej, { timeout: 3000 });
+                });
+                lat = pos.coords.latitude;
+                lng = pos.coords.longitude;
+                console.log("2. 위치 정보 획득 성공:", lat, lng);
+            } catch (e) {
+                console.warn("위치 정보를 가져오지 못해 기본 좌표를 사용합니다.");
             }
-        };
 
-        fetchDetail();
-    }, [googleId, searchParams]);
+            const response = await mapApi.getStoreDetail(googleId, lat, lng);
+            console.log("3. API 응답 수신:", response);
+
+            if (response.isSuccess) {
+                setStoreData(response.result);
+            } else {
+                alert(`에러 발생: ${response.message}`);
+            }
+        } catch (error) {
+            console.error("4. 치명적 에러 발생:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchDetail();
+}, [googleId]);
 
     if (loading) return <Layout showBottomNav={false}><div className="flex h-full items-center justify-center">로딩 중...</div></Layout>;
     if (!storeData) return <Layout showBottomNav={false}><div className="flex h-full items-center justify-center">데이터가 없습니다.</div></Layout>;
 
     // 상세 페이지 네비게이션
-    const navigate = useNavigate();
     const handleMembershipClick = (membershipId: string) => {
         // 멤버십 상세 페이지로 이동 (ID를 경로 파라미터로 전달)
         navigate(`/map/membership/${membershipId}`);
@@ -86,7 +101,7 @@ export default function MapDetailPage() {
                         <h1 className="text-2xl font-bold text-gray-900">{storeData.name}</h1>
                     </div>
                     <p className="text-gray-500 mt-1">
-                        <span className="font-semibold text-gray-700">{storeData.distance}</span>
+                        <span className="font-semibold text-gray-700">{storeData.distance}Km</span>
                         <span className="mx-2">|</span>
                         {storeData.contact.address}
                     </p>
@@ -111,7 +126,8 @@ export default function MapDetailPage() {
                     <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">보유 멤버십</h2>
                     <div className="flex gap-3">
                         {storeData.userMembership.map((m, i) => (
-                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} />
+                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} 
+                                onClick={() => handleMembershipClick(m.id)}/>
                         ))}
                     </div>
                 </div>
@@ -122,7 +138,8 @@ export default function MapDetailPage() {
                     <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">전체 멤버십</h2>
                     <div className="flex gap-3">
                         {storeData.membership.map((m, i) => (
-                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} />
+                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} 
+                                onClick={() => handleMembershipClick(m.id)}/>
                         ))}
                     </div>
                 </div>
