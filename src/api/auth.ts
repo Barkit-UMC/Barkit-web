@@ -16,6 +16,10 @@ interface LoginRequest {
     password: string;
 }
 
+interface LogoutRequest {
+    refreshToken: string;
+}
+
 interface SignupRequest {
     name: string;
     email: string;
@@ -162,16 +166,15 @@ export const authApi = {
      * 로그아웃
      * 클라이언트 측 토큰 삭제
      */
-    logout: (): void => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userId');
-    },
+    logout: async (data: LogoutRequest): Promise<void> => {
+        await axiosInstance.post('/api/auth/logout', data);
+    }
 };
 
 // === Export Types ===
 export type {
     LoginRequest,
+    LogoutRequest,
     SignupRequest,
     KakaoLoginRequest,
     NaverLoginRequest,
