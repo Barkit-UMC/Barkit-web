@@ -1,6 +1,6 @@
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
-import MembershipSearchBar from '../../components/common/MembershipSearchBar';
+import MembershipSearchBar from '../../components/common/SearchBar';
 import LoadingDots from '../../components/common/LoadingDots';
 import CjoneIcon from '../../assets/icons/memberships/cjone.svg'
 import { useState } from 'react';
