@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://api.barkit.site/api/:path*"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }
