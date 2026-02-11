@@ -60,6 +60,9 @@ export default function ChangePasswordPage() {
         if (isValid) {
           setCurrentPwValid(true);
           setErrors(p => ({ ...p, currentPw: '' }));
+        } else {
+          setCurrentPwValid(false);
+          setErrors(p => ({ ...p, currentPw: '현재 비밀번호가 일치하지 않습니다.' }) );
         }
       } catch (err: any) {
         setCurrentPwValid(false);
