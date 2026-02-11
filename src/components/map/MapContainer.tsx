@@ -38,9 +38,7 @@ const render = (status: Status) => {
         );
     }
 
-    // 3. 정상 상태일 때는 null을 반환하여 아무것도 그리지 않거나, 
-    // 필요한 기본 UI가 있다면 여기에 추가하세요.
-    return null;
+    return <></>;
 };
 
 export default function MapContainer({
