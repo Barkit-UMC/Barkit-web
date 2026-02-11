@@ -56,7 +56,7 @@ export default function SuccessView({
     }, []);
 
     return (
-        <div className="flex h-full mx-auto bg-white flex flex-col">
+        <div className="flex flex-col w-full h-full mx-auto bg-white flex flex-col">
             {/* Floating Animation Style */}
             <style>{`
                 @keyframes float {
@@ -70,16 +70,16 @@ export default function SuccessView({
             `}</style>
 
             {/* Content */}
-            <main className="flex-1 flex flex-col items-start justify-center px-6 pt-32 pb-4">
+            <main className="flex-1 flex flex-col items-start justify-center px-6 pt-8 pb-4">
                 {/* Title */}
-                <div className="w-full text-left mb-40">
+                <div className="w-full text-left mb-20">
                     <h1 className="text-[28px] font-semibold text-gray-900 leading-tight">
                         {title}
                     </h1>
                 </div>
 
                 {/* Character with floating animation and shadow */}
-                <div className="flex flex-col items-center self-center mb-30">
+                <div className="flex flex-col items-center self-center">
                     <div className="w-52 h-52 flex items-center justify-center animate-float-slow">
                         <BarkitSmileIcon className="w-full h-full" />
                     </div>
@@ -89,7 +89,7 @@ export default function SuccessView({
             </main>
 
             {/* Bottom Button */}
-            <div className="px-6 pb-12">
+            <div className="px-6 pb-8">
                 <Button
                     onClick={onButtonClick}
                     variant="cyan"

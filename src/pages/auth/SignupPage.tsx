@@ -70,7 +70,7 @@ export default function SignupPage() {
     );
 
     return (
-        <div className="w-[390px] min-h-[852px] mx-auto bg-white flex flex-col">
+        <div className="w-full mx-auto bg-white flex flex-col">
             {/* Header */}
             <header className="relative flex items-center justify-center h-18 border-b border-gray-100 mt-2">
                 <button
