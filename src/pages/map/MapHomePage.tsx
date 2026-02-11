@@ -91,7 +91,7 @@ export default function MapHomePage() {
                 const newPos = { lat: latitude, lng: longitude };
                 
                 // latestCoords.current = newPos; // Ref에 실시간 좌표 저장
-+               setUserLocation(newPos);
+                setUserLocation(newPos);
                 
                 // 앱 처음 실행 시에만 지도를 내 위치로 이동
                 if (!currentLocation) {

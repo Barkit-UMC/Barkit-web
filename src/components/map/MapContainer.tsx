@@ -1,5 +1,6 @@
 import { Status, Wrapper } from '@googlemaps/react-wrapper';
 import React, { useEffect, useRef, useState } from 'react';
+import LoadingDots from '../common/LoadingDots';
 
 const GOOGLE_MAP_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY;
 console.log("내 API 키:", GOOGLE_MAP_KEY);
@@ -19,8 +20,27 @@ interface MapContainerProps {
 
 // 로딩 상태에 따른 렌더링 함수
 const render = (status: Status) => {
-    if (status === Status.FAILURE) return <div>지도를 불러오지 못했습니다.</div>;
-    return <div className="flex items-center justify-center h-full">로딩 중...</div>;
+    // 1. 에러 발생 시
+    if (status === Status.FAILURE) {
+        return (
+            <div className="flex items-center justify-center py-20 text-gray-500">
+                지도를 불러오지 못했습니다.
+            </div>
+        );
+    }
+
+    // 2. 로딩 중일 때 (검색 중 포함)
+    if (status === Status.LOADING) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <LoadingDots />
+            </div>
+        );
+    }
+
+    // 3. 정상 상태일 때는 null을 반환하여 아무것도 그리지 않거나, 
+    // 필요한 기본 UI가 있다면 여기에 추가하세요.
+    return null;
 };
 
 export default function MapContainer({
