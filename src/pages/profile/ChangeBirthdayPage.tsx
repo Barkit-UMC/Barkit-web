@@ -1,29 +1,75 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DatePicker, ConfigProvider } from 'antd-mobile';
 import koKR from 'antd-mobile/es/locales/ko-KR';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import CommonToast from '../../components/profile/CommonToast';
+import { userApi, type changeBirthResponse, type UserResponse } from '../../api/user';
 
 export default function ChangeBirthdayPage() {
-  const initialBirthday = new Date(2003, 4, 19); // 2003년 5월 19일 (월은 0부터 시작)
+  const initialBirthday = new Date();
   const [open, setOpen] = useState(false);
   const [birthday, setBirthday] = useState<Date | null>(initialBirthday);
   const [showToast, setShowToast] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleConfirm = (date: Date) => {
+  // 사용자 정보 불러오기
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userInfo: UserResponse = await userApi.getMyInfo();
+        if (userInfo.birthDate) {
+          setBirthday(new Date(userInfo.birthDate));
+        } else {
+          setBirthday(null);
+        }
+      } catch (err) {
+        console.error('사용자 정보 불러오기 실패:', err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleConfirm = async (date: Date) => {
     setOpen(false);
 
-    if (birthday?.getTime() === date.getTime()) return;
+    // 날짜를 YYYY-MM-DD 형식으로 안전하게 변환
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
 
-    setBirthday(date);
-    setShowToast(true);
+    // 이전과 날짜가 같다면 API 호출 안 함
+    const currentFormatted = birthday ? 
+      `${birthday.getFullYear()}-${String(birthday.getMonth() + 1).padStart(2, '0')}-${String(birthday.getDate()).padStart(2, '0')}` 
+      : null;
+
+    if (currentFormatted === formattedDate) return;
+
+    setLoading(true);
+
+    try {
+      // 서버에 변경 요청
+      const updatedUser = await userApi.updateBirthDate(formattedDate);
+
+      console.log('생년월일 변경 성공:', updatedUser.birthDate);
+
+      // 서버에서 받은 "2026-02-11" 문자열을 Date 객체로 변환
+      setBirthday(new Date(updatedUser.birthDate));
+      setShowToast(true);
+    } catch (err) {
+      console.error('생년월일 변경 실패:', err);
+      alert('생년월일 변경에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ConfigProvider locale={koKR}>
       <Layout>
-        {/* ✅ 페이지 전용 헤더 */}
+        {/* 페이지 전용 헤더 */}
         <Header title="생년월일 변경" path="/profile/edit" />
 
         {/* 입력창 */}
@@ -72,12 +118,12 @@ export default function ChangeBirthdayPage() {
           title="생년월일 선택"
         />
 
-        { showToast && (
-            <CommonToast 
-                type="birthday"
-                onClose={() => setShowToast(false)}
-            />
-        ) }
+        {showToast && (
+          <CommonToast 
+            type="birthday"
+            onClose={() => setShowToast(false)}
+          />
+        )}
       </Layout>
     </ConfigProvider>
   );

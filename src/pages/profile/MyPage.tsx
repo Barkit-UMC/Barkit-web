@@ -16,8 +16,6 @@ export default function MyPage() {
   const menuItems = [
     { id: 'pwa', label: '홈 화면에 추가 (PWA)', path: '/profile/pwa' },
     { id: 'edit', label: '개인정보 변경', path: '/profile/edit' },
-    { id: 'locationpermission', label: '위치 권한 요청', type: 'toggle' },
-    { id: 'notification', label: '알림 설정', type: 'toggle' },
     { id: 'logout', label: '로그아웃', path: '/profile/logout' },
     { id: 'unsubscribe', label: '회원탈퇴', path: '/profile/unscribe' }
   ];
@@ -66,34 +64,6 @@ export default function MyPage() {
             <span className="text-[20px] font-semibold">
               {item.label}
             </span>
-
-            {/* 토글 */}
-            {item.type === 'toggle' && (
-              <ToggleSwitch
-                isOn={
-                  item.id === 'notification'
-                    ? isNotiOn
-                    : isLocationOn
-                }
-                onToggle={() => {
-                  if (item.id === 'notification') {
-                    setIsNotiOn((prev) => {
-                      const next = !prev;
-                      showToast('notification', next ? 'on' : 'off');
-                      return next;
-                    });
-                  }
-
-                  if (item.id === 'locationpermission') {
-                    setLocationOn((prev) => {
-                      const next = !prev;
-                      showToast('location', next ? 'on' : 'off');
-                      return next;
-                    });
-                  }
-                }}
-              />
-            )}
           </button>
         ))}
       </div>

@@ -1,27 +1,43 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import MembershipTitle from '../../components/membership/MembershipTitle';
-import searchIcon from '../../assets/icons/search/search_gray.svg'
-import cjoneIcon from '../../assets/icons/memberships/cjone.svg'
-import ktIcon from '../../assets/icons/memberships/kt.svg'
-import sktIcon from '../../assets/icons/memberships/skt.svg'
-import uplusIcon from '../../assets/icons/memberships/uplus.svg'
-import ssgIcon from '../../assets/icons/memberships/ssg.svg'
-import lpointIcon from '../../assets/icons/memberships/lpoint.svg'
-import okcashbagIcon from '../../assets/icons/memberships/okcashbag.svg'
-import happypointIcon from '../../assets/icons/memberships/happypoint.svg'
-import naverIcon from '../../assets/icons/memberships/naver.svg'
-import kakaopayIcon from '../../assets/icons/memberships/kakaopay.svg'
 import FavoriteMembershipCard from '../../components/membership/FavoriteMembershipCard';
+import searchIcon from '../../assets/icons/search/search_gray.svg';
 import emptyFavoriteImage from '../../assets/images/empty_favorite.svg';
-import { useState } from 'react';
+import { dashboardApi } from '../../api/dashboard';
+import type { MainMembership, MembershipSummary } from '../../api/dashboard';
 
-interface FavoriteMembership {
-    id: number;
-    brandName: string;
-    brandLogo: string;
-    brandColor: string;
-}
+// 브랜드 ID → 로컬 아이콘/컬러 매핑
+import cjoneIcon from '../../assets/icons/memberships/cjone.svg';
+import ktIcon from '../../assets/icons/memberships/kt.svg';
+import sktIcon from '../../assets/icons/memberships/skt.svg';
+import uplusIcon from '../../assets/icons/memberships/uplus.svg';
+import ssgIcon from '../../assets/icons/memberships/ssg.svg';
+import lpointIcon from '../../assets/icons/memberships/lpoint.svg';
+import okcashbagIcon from '../../assets/icons/memberships/okcashbag.svg';
+import happypointIcon from '../../assets/icons/memberships/happypoint.svg';
+import naverIcon from '../../assets/icons/memberships/naver.svg';
+import kakaopayIcon from '../../assets/icons/memberships/kakaopay.svg';
+
+const BRAND_META: Record<number, { icon: string; color: string }> = {
+    1: { icon: cjoneIcon, color: '#1E192A' },
+    2: { icon: happypointIcon, color: '#0D0F71' },
+    3: { icon: ktIcon, color: '#2CBBB6' },
+    4: { icon: lpointIcon, color: '#009BFA' },
+    5: { icon: sktIcon, color: '#3617CE' },
+    6: { icon: uplusIcon, color: '#FF2E98' },
+    7: { icon: ssgIcon, color: '#902CDF' },
+    8: { icon: okcashbagIcon, color: '#FE0955' },
+    9: { icon: naverIcon, color: '#1A033B' },
+    10: { icon: kakaopayIcon, color: '#FFEB00' },
+};
+
+const getBrandIcon = (brandId: number, logoUrl?: string) =>
+    logoUrl || BRAND_META[brandId]?.icon || '';
+
+const getBrandColor = (brandId: number) =>
+    BRAND_META[brandId]?.color || '#888888';
 
 export default function WalletPage() {
     const navigate = useNavigate();
@@ -29,40 +45,28 @@ export default function WalletPage() {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
 
-    // TODO: API에서 사용자의 멤버십 목록 가져오기
-    const favoriteMemberships: FavoriteMembership[] = [
-        {
-            id: 1,
-            brandName: 'CJ ONE',
-            brandLogo: cjoneIcon,
-            brandColor: '#1E192A',
-        },
-        {
-            id: 2,
-            brandName: 'KT',
-            brandLogo: ktIcon,
-            brandColor: '#2CBBB6',
-        },
-        {
-            id: 3,
-            brandName: 'SKT',
-            brandLogo: sktIcon,
-            brandColor: '#3617CE',
-        },
-    ];
+    // 실제 API 데이터
+    const [mainMemberships, setMainMemberships] = useState<MainMembership[]>([]);
+    const [memberships, setMemberships] = useState<MembershipSummary[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const membershipList = [
-        { id: 2, brandName: 'CJ ONE', brandLogo: cjoneIcon, brandColor: '#1E192A' },
-        { id: 3, brandName: 'KT', brandLogo: ktIcon, brandColor: '#2CBBB6' },
-        { id: 4, brandName: 'SKT', brandLogo: sktIcon, brandColor: '#3617CE' },
-        { id: 5, brandName: 'LG+', brandLogo: uplusIcon, brandColor: '#FF2E98' },
-        { id: 6, brandName: '신세계 SSG', brandLogo: ssgIcon, brandColor: '#902CDF' },
-        { id: 7, brandName: 'L.POINT', brandLogo: lpointIcon, brandColor: '#009BFA' },
-        { id: 8, brandName: 'OK 캐쉬백', brandLogo: okcashbagIcon, brandColor: '#FE0955' },
-        { id: 9, brandName: '해피포인트', brandLogo: happypointIcon, brandColor: '#0D0F71' },
-        { id: 10, brandName: '네이버', brandLogo: naverIcon, brandColor: '#1A033B' },
-        { id: 11, brandName: '카카오페이', brandLogo: kakaopayIcon, brandColor: '#FFEB00' },
-    ];
+    // 대시보드 API 호출
+    useEffect(() => {
+        const fetchDashboard = async () => {
+            try {
+                const response = await dashboardApi.getDashboard();
+                if (response.isSuccess && response.result) {
+                    setMainMemberships(response.result.mainMemberships || []);
+                    setMemberships(response.result.memberships || []);
+                }
+            } catch (err) {
+                console.error('Dashboard fetch error:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchDashboard();
+    }, []);
 
     // 스와이프 최소 거리
     const minSwipeDistance = 50;
@@ -83,7 +87,7 @@ export default function WalletPage() {
         const isLeftSwipe = distance > minSwipeDistance;
         const isRightSwipe = distance < -minSwipeDistance;
 
-        if (isLeftSwipe && currentSlide < favoriteMemberships.length - 1) {
+        if (isLeftSwipe && currentSlide < 2) {
             setCurrentSlide(prev => prev + 1);
         }
         
@@ -91,6 +95,16 @@ export default function WalletPage() {
             setCurrentSlide(prev => prev - 1);
         }
     };
+
+    if (isLoading) {
+        return (
+            <Layout showBottomNav>
+                <div className="flex items-center justify-center h-screen">
+                    <div className="w-8 h-8 border-4 border-gray-200 border-t-cyan-400 rounded-full animate-spin" />
+                </div>
+            </Layout>
+        );
+    }
 
     return (
         <Layout showBottomNav>
@@ -107,49 +121,51 @@ export default function WalletPage() {
                         </div>
 
                         <div className="relative overflow-hidden">
-                            {favoriteMemberships.length > 0 ? (
-                                <div
-                                    className="flex transition-transform duration-300 ease-out"
-                                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                                    onTouchStart={handleTouchStart}
-                                    onTouchMove={handleTouchMove}
-                                    onTouchEnd={handleTouchEnd}
-                                >
-                                    {favoriteMemberships.map((membership) => (
-                                        <div key={membership.id} className="w-full flex-shrink-0">
-                                            <FavoriteMembershipCard
-                                                brandName={membership.brandName}
-                                                brandLogo={membership.brandLogo}
-                                                brandColor={membership.brandColor}
-                                                onClick={() => navigate(`/membership/${membership.id}`)}
+                            <div
+                                className="flex transition-transform duration-300 ease-out"
+                                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                                onTouchStart={handleTouchStart}
+                                onTouchMove={handleTouchMove}
+                                onTouchEnd={handleTouchEnd}
+                            >
+                                {/* 대표 멤버십 카드들 */}
+                                {mainMemberships.map((membership) => (
+                                    <div key={membership.userMembershipBrandId} className="w-full flex-shrink-0">
+                                        <FavoriteMembershipCard
+                                            brandName={membership.name}
+                                            brandLogo={getBrandIcon(membership.membershipBrandId, membership.logoUrl)}
+                                            brandColor={getBrandColor(membership.membershipBrandId)}
+                                            onClick={() => navigate(`/membership/${membership.userMembershipBrandId}`)}
+                                        />
+                                    </div>
+                                ))}
+                                
+                                {/* 부족한 슬롯만큼 빈 카드 추가 */}
+                                {Array.from({ length: 3 - mainMemberships.length }).map((_, index) => (
+                                    <div key={`empty-${index}`} className="w-full flex-shrink-0">
+                                        <div className="w-full h-[208px] bg-gray-200 rounded-[10px] flex items-center justify-center overflow-hidden">
+                                            <img 
+                                                src={emptyFavoriteImage} 
+                                                alt="대표 멤버십 미설정" 
+                                                className="w-full h-full object-cover"
                                             />
                                         </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="w-full h-[208px] bg-gray-200 rounded-[10px] flex items-center justify-center overflow-hidden">
-                                    <img 
-                                        src={emptyFavoriteImage} 
-                                        alt="대표 멤버십 미설정" 
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                            )}
-                        </div>
-
-                        {/* 페이지 인디케이터 */}
-                        {favoriteMemberships.length > 0 && (
-                            <div className="flex justify-center gap-2 mt-4">
-                                {favoriteMemberships.map((_, index) => (
-                                    <div 
-                                        key={index}
-                                        className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                                            index === currentSlide ? 'bg-cyan-400' : 'bg-gray-300'
-                                        }`}
-                                    />
+                                    </div>
                                 ))}
                             </div>
-                        )}
+                        </div>
+
+                        {/* 페이지 인디케이터 - 항상 3개 표시 */}
+                        <div className="flex justify-center gap-2 mt-4">
+                            {[0, 1, 2].map((index) => (
+                                <div 
+                                    key={index}
+                                    className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                                        index === currentSlide ? 'bg-cyan-400' : 'bg-gray-300'
+                                    }`}
+                                />
+                            ))}
+                        </div>
                     </section>
 
                     <div className="h-8" /> {/* 섹션 간 간격 */}
@@ -166,16 +182,16 @@ export default function WalletPage() {
                             </button>
                         </div>
 
-                        {membershipList.length > 0 ? (
+                        {memberships.length > 0 ? (
                             /* 그리드 시스템: 모바일에선 2열 고정 */
                             <div className="grid grid-cols-2 gap-x-3 gap-y-4 w-full justify-items-stretch">
-                                {membershipList.map((membership) => (
+                                {memberships.map((membership) => (
                                     <MembershipTitle
-                                        key={membership.id}
-                                        brandName={membership.brandName}
-                                        brandLogo={membership.brandLogo}
-                                        brandColor={membership.brandColor}
-                                        onClick={() => navigate(`/membership/${membership.id}`)}
+                                        key={membership.userMembershipBrandId}
+                                        brandName={membership.name}
+                                        brandLogo={getBrandIcon(membership.membershipBrandId, membership.logoUrl)}
+                                        brandColor={getBrandColor(membership.membershipBrandId)}
+                                        onClick={() => navigate(`/membership/${membership.userMembershipBrandId}`)}
                                     />
                                 ))}
                             </div>
@@ -186,8 +202,8 @@ export default function WalletPage() {
                                 <h3 className="text-lg font-semibold text-gray-900">등록된 멤버십이 없습니다</h3>
                                 <p className="text-gray-500 text-sm mb-6">첫 멤버십을 등록해보세요</p>
                                 <button
-                                    onClick={() => navigate('/membership/select')}
-                                    className="px-8 py-3 bg-blue-600 text-white rounded-xl font-medium active:scale-95 transition-all shadow-md"
+                                    onClick={() => navigate('/onboarding/search')}
+                                    className="px-8 py-3 bg-[#00BCD4] text-white rounded-xl font-medium active:scale-95 transition-all"
                                 >
                                     멤버십 등록하기
                                 </button>
