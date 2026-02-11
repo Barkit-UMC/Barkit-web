@@ -19,23 +19,23 @@ import KakaopayIcon from '../../assets/icons/BrandIcon/kakaopay.svg?react';
 
 // Brand data type
 interface Brand {
-    id: string;
+    id: number;
     name: string;
     icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
-// Brand list with icons
+// Brand list with icons (IDs match backend membershipBrandId)
 const BRANDS: Brand[] = [
-    { id: 'cjone', name: 'CJ ONE', icon: CJOneIcon },
-    { id: 'kt', name: 'KT', icon: KTIcon },
-    { id: 'skt', name: 'SKT', icon: SKTIcon },
-    { id: 'uplus', name: 'LG U+', icon: UplusIcon },
-    { id: 'ssg', name: '신세계 SSG', icon: SSGIcon },
-    { id: 'lpoint', name: 'L.POINT', icon: LpointIcon },
-    { id: 'okcashbag', name: 'OK캐쉬백', icon: OKcashIcon },
-    { id: 'happypoint', name: '해피포인트', icon: HappyPointIcon },
-    { id: 'naver', name: '네이버', icon: NaverIcon },
-    { id: 'kakaopay', name: '카카오페이', icon: KakaopayIcon },
+    { id: 1, name: 'CJ ONE', icon: CJOneIcon },
+    { id: 3, name: 'KT', icon: KTIcon },
+    { id: 5, name: 'SKT', icon: SKTIcon },
+    { id: 6, name: 'LG U+', icon: UplusIcon },
+    { id: 7, name: '신세계 SSG', icon: SSGIcon },
+    { id: 4, name: 'L.POINT', icon: LpointIcon },
+    { id: 8, name: 'OK캐쉬백', icon: OKcashIcon },
+    { id: 2, name: '해피포인트', icon: HappyPointIcon },
+    { id: 9, name: '네이버', icon: NaverIcon },
+    { id: 10, name: '카카오페이', icon: KakaopayIcon },
 ];
 
 // ============================================
@@ -75,7 +75,7 @@ function BrandItem({ brand, isSelected, hasSelection, onSelect }: BrandItemProps
 // ============================================
 interface BrandGridProps {
     brands: Brand[];
-    selectedBrandId: string | null;
+    selectedBrandId: number | null;
     onSelectBrand: (brand: Brand) => void;
 }
 
@@ -103,7 +103,7 @@ function BrandGrid({ brands, selectedBrandId, onSelectBrand }: BrandGridProps) {
 export default function SearchPage() {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null);
+    const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
     const [progress, setProgress] = useState(0);
 
     // Animate progress on mount
@@ -132,7 +132,7 @@ export default function SearchPage() {
         const selectedBrand = BRANDS.find((b) => b.id === selectedBrandId);
         if (selectedBrand) {
             setBrand({
-                id: parseInt(selectedBrand.id, 36), // Convert string id to number
+                id: selectedBrand.id,
                 name: selectedBrand.name,
                 icon: selectedBrand.name.charAt(0),
                 color: '#00C7E2',

@@ -42,7 +42,21 @@ export const membershipApi = {
     },
 
     /**
-     * 멤버십 등록
+     * 멤버십 등록 (NEW API)
+     * POST /api/user-membership-brands/{membershipBrandId}
+     */
+    registerUserMembership: async (
+        membershipBrandId: number,
+        membershipNumber: string
+    ): Promise<ApiResponse<{ userMembershipBrandId: number; membershipNumber: string }>> => {
+        const response = await axiosInstance.post<
+            ApiResponse<{ userMembershipBrandId: number; membershipNumber: string }>
+        >(`/api/user-membership-brands/${membershipBrandId}`, { membershipNumber });
+        return response.data;
+    },
+
+    /**
+     * @deprecated 기존 멤버십 등록 API — 새 API(registerUserMembership) 사용 권장
      */
     registerMembership: async (data: RegisterMembershipRequest): Promise<Membership> => {
         const response = await axiosInstance.post<ApiResponse<Membership>>('/api/memberships', data);

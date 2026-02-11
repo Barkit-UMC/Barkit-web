@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
+import { useMembershipRegister } from '../../hooks/useMembershipRegister';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import MembershipNumberInput, {
@@ -13,25 +14,28 @@ import MembershipNumberInput, {
  */
 export default function InputPage() {
     const navigate = useNavigate();
-    const { setCardNumber } = useOnboardingStore();
-    const [isLoading, setIsLoading] = useState(false);
+    const { selectedBrand, setCardNumber } = useOnboardingStore();
     const [isComplete, setIsComplete] = useState(false);
     const inputRef = useRef<MembershipNumberInputRef>(null);
+    const [membershipNumber, setMembershipNumber] = useState('');
+
+    // 멤버십 등록 훅 — 성공/실패 시 각각 다른 페이지로 이동
+    const { register, isLoading, error } = useMembershipRegister({
+        onSuccess: () => navigate('/onboarding/complete'),
+        onError: () => navigate('/onboarding/failure'),
+    });
 
     const handleCardNumberChange = (value: string) => {
         setCardNumber(value);
+        setMembershipNumber(value);
         setIsComplete(value.length === 16);
     };
 
-    const handleComplete = () => {
-        if (!isComplete) return;
+    const handleComplete = async () => {
+        if (!isComplete || !selectedBrand) return;
 
-        setIsLoading(true);
-        // Mock API call
-        setTimeout(() => {
-            setIsLoading(false);
-            navigate('/onboarding/complete');
-        }, 1500);
+        // 실제 API 호출
+        await register(selectedBrand.id, membershipNumber);
     };
 
     return (
@@ -41,6 +45,13 @@ export default function InputPage() {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col pt-[80px] px-6 pb-24">
+                {/* 에러 메시지 */}
+                {error && (
+                    <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
+                        {error}
+                    </div>
+                )}
+
                 <MembershipNumberInput
                     ref={inputRef}
                     onChange={handleCardNumberChange}

@@ -52,13 +52,20 @@ export const dashboardApi = {
             const response = await axiosInstance.get<ApiResponse<DashboardResult>>(
                 '/api/home/dashboard'
             );
+
+            // 디버깅용 로그 (추후 제거)
+            console.log('[hasMemberships] Dashboard response:', JSON.stringify(response.data));
+
             // isSuccess=false인 경우 안전하게 홈으로 보냄 (온보딩 스킵)
             if (!response.data.isSuccess) {
                 return true;
             }
             const { mainMemberships, memberships } = response.data.result;
-            return mainMemberships.length > 0 || memberships.length > 0;
-        } catch {
+            const result = mainMemberships.length > 0 || memberships.length > 0;
+            console.log('[hasMemberships] result:', result, 'main:', mainMemberships.length, 'memberships:', memberships.length);
+            return result;
+        } catch (err) {
+            console.error('[hasMemberships] API error:', err);
             // API 실패시 일단 홈으로 보냄 (온보딩 스킵)
             return true;
         }
