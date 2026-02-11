@@ -139,6 +139,9 @@ export const authApi = {
             '/api/auth/oauth/naver/authorize-url',
             { params: { redirectUri } }
         );
+        if (!response.data.isSuccess) {
+            throw new Error(response.data.message || '네이버 인증 URL 조회에 실패했습니다.');
+        }
         return response.data.result;
     },
 

@@ -52,6 +52,10 @@ export const dashboardApi = {
             const response = await axiosInstance.get<ApiResponse<DashboardResult>>(
                 '/api/home/dashboard'
             );
+            // isSuccess=false인 경우 안전하게 홈으로 보냄 (온보딩 스킵)
+            if (!response.data.isSuccess) {
+                return true;
+            }
             const { mainMemberships, memberships } = response.data.result;
             return mainMemberships.length > 0 || memberships.length > 0;
         } catch {

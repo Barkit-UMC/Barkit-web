@@ -11,7 +11,7 @@ import AgreementSection from '../../components/auth/AgreementSection';
  */
 export default function SignupPage() {
     const navigate = useNavigate();
-    const { signup, isLoading } = useAuth();
+    const { signup, isLoading, error, clearError } = useAuth();
     const {
         name, setName,
         email, setEmail,
@@ -87,6 +87,16 @@ export default function SignupPage() {
 
             {/* Form Container */}
             <div className="flex-1 flex flex-col px-6 pt-6 pb-4 gap-1">
+                {/* 회원가입 에러 메시지 */}
+                {error && (
+                    <div
+                        className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl flex justify-between items-center mb-4"
+                        onClick={clearError}
+                    >
+                        <span>{error}</span>
+                        <button className="text-red-400 hover:text-red-600">✕</button>
+                    </div>
+                )}
                 {/* Name Input */}
                 <div className="mb-4">
                     <input

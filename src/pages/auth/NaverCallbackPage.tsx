@@ -24,41 +24,32 @@ const NaverCallbackPage = () => {
             const state = searchParams.get('state');
             const errorParam = searchParams.get('error');
 
-            console.log('[Naver Callback] code:', code, 'state:', state, 'error:', errorParam);
-
             if (errorParam) {
                 // 사용자가 로그인을 취소했거나 에러 발생
                 console.error('Naver OAuth Error:', errorParam);
-                alert(`네이버 로그인 에러: ${errorParam}`);
                 navigate('/login', { replace: true });
                 return;
             }
 
             if (!code || !state) {
                 console.error('No authorization code or state found');
-                alert('네이버 인가 코드 또는 state가 없습니다.');
                 navigate('/login', { replace: true });
                 return;
             }
 
             try {
-                console.log('[Naver Callback] Calling naverLogin with code and state...');
                 const result = await naverLogin(code, state);
-                console.log('[Naver Callback] Result:', result);
 
                 if (result) {
                     // 멤버십 보유 여부 확인 → 온보딩 or 홈
                     const hasMembership = await dashboardApi.hasMemberships();
                     navigate(hasMembership ? '/home' : '/onboarding/intro', { replace: true });
                 } else {
-                    // 로그인 실패 - 로그인 페이지로 이동
-                    console.error('[Naver Callback] Login returned null');
-                    alert('네이버 로그인 실패: 서버 응답이 없습니다.');
+                    console.error('Naver login failed');
                     navigate('/login', { replace: true });
                 }
             } catch (err) {
                 console.error('Naver login error:', err);
-                alert(`네이버 로그인 에러: ${err}`);
                 navigate('/login', { replace: true });
             }
         };
