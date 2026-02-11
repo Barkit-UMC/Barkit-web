@@ -4,56 +4,32 @@ import navigation from '../../assets/icons/map/navigation.svg'
 import kt from '../../assets/icons/memberships/kt.svg'
 import oliveyoung from '../../assets/icons/memberships/cjone.svg'
 import { useNavigate } from 'react-router-dom';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import type { mapApi, SearchStoresRequest } from '../../api/map';
 
-// 데이터 타입 정의
-interface StoreItem {
-  id: number;
-  name: string;
-  category: string;
-  distance: string;
-  address: string;
-  lat: number; // 추가
-  lng: number; // 추가
-}
-
-interface SearchResultListProps {
-  results: StoreItem[];
-}
-
-const SearchResultList = ({ results }: SearchResultListProps) => {
-  const navigate = useNavigate(); // 2. 네비게이트 함수 초기화
-
-  // 클릭 핸들러: 상세 페이지로 이동
-  const handleStoreClick = (id: number) => {
-    navigate(`/map/${id}`); // 예: /store/1 경로로 이동
-  };
-
-  const handleNavigation = (e: React.MouseEvent, store: StoreItem) => {
-    e.stopPropagation();
-    
-    const { lat, lng, name } = store;
-    const url = `https://map.kakao.com/link/to/${name},${lat},${lng}`;
-    
-    window.open(url, '_blank');
-  };
+const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextPage }: any) => {
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col !px-6 h-full pb-20 overflow-y-auto">
       {/* 매장 리스트 반복 */}
-      {results.map((store) => (
+      {results.map((store: any) => (
         <div 
-            key={store.id} 
+            key={store.storeId} 
             className="!py-5 border-b border-gray-100 last:border-0"
-            onClick={() => handleStoreClick(store.id)}
+            onClick={() => navigate(`/map/${store.storeId}`)}
         >
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h3 className="text-[18px] font-bold text-gray-900">{store.name}</h3>
-                <span className="text-gray-300 text-sm font-normal">{store.category}</span>
               </div>
               <p className="text-sm text-gray-500 !mt-1">
-                <span className="font-semibold text-gray-700">{store.distance}</span>
+                <span className="font-semibold text-gray-700">
+                  {store.distanceKm < 1 
+                    ? `${Math.round(store.distanceKm * 1000)}m` 
+                    : `${store.distanceKm.toFixed(1)}km`}
+                </span>
                 <span className="!mx-1 text-gray-300">|</span>
                 {store.address}
               </p>
@@ -65,25 +41,25 @@ const SearchResultList = ({ results }: SearchResultListProps) => {
                     <span className="text-[12px] text-gray-500 font-medium">사용 가능 멤버십</span>
                     <div className="flex gap-1.5">
                         {/* 멤버십 아이콘 이미지들 */}
-                        <img src={kt} alt="KT" className="w-7 h-7 object-contain rounded-lg shadow-sm" />
-                        <img src={oliveyoung} alt="OK" className="w-7 h-7 object-contain rounded-lg shadow-sm" />
+                        {store.memberships?.map((m: any) => (
+                          <img 
+                            key={m.id} 
+                            src={m.logoUrl} 
+                            alt={m.name} 
+                            className="w-7 h-7 object-contain rounded-lg shadow-sm border border-gray-50" 
+                          />
+                        ))}
                     </div>
                 </div>
 
                 {/* 우측 액션 버튼들 */}
                 <div className="flex gap-3">
-                    {/* 전화 버튼 */}
-                    <button className="transition-transform active:scale-90">
-                        <img src={call} alt="전화" className="w-12 h-12 object-contain" />
-                    </button>
-                    {/* 길찾기 버튼 */}
-                    <button className="transition-transform active:scale-90">
-                        <img 
-                          src={navigation} 
-                          onClick={(e) => handleNavigation(e, store)}
-                          alt="길찾기" 
-                          className="w-12 h-12 object-contain shadow-sm rounded-full" />
-                    </button>
+                  <button onClick={(e) => { e.stopPropagation(); window.location.href=`tel:${store.phone}` }}>
+                    <img src={call} alt="전화" className="w-12 h-12 object-contain" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); window.open(store.directionUrl, '_blank') }}>
+                    <img src={navigation} alt="길찾기" className="w-12 h-12 object-contain shadow-sm rounded-full" />
+                  </button>
                 </div>
               </div>
             </div>

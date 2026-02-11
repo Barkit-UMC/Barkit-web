@@ -13,6 +13,7 @@
     "@googlemaps/react-wrapper": "^1.2.0",
     "@iconify/react": "^6.0.2",
     "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-query": "^5.90.20",
     "all": "^0.0.0",
     "antd-mobile": "^5.42.3",
     "canvas-confetti": "^1.9.4",

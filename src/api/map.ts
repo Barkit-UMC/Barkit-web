@@ -11,7 +11,7 @@ export interface CommonResponse<T> {
     result: T;
 }
 
-// 매장 상세 dto
+// 매장 상세 응답 dto
 export interface StoreDetail {
   name: string;
   distance: number;
@@ -45,28 +45,40 @@ export interface StoreDetail {
 
 // 매장 검색 dto
 export interface SearchStoresRequest {
-    lat?: number;
-    lng?: number;
-    radius?: number; // meters
     query?: string;
-    brandId?: number;
+    userlat?: number;
+    userlng?: number;
+    centerlat?: number;
+    centerlng?: number;
 }
 
 export const mapApi = {
     /**
      * 주변 매장 검색
      */
-    searchStores: async (params: SearchStoresRequest): Promise<StoreDetail[]> => {
-        const queryParams = new URLSearchParams();
+    searchStores: async (
+        req: SearchStoresRequest, 
+        cursor: number = 0,
+        distanceType: 'CURRENT' | 'CENTER' = 'CURRENT',
+        category: string = 'ALL',
+        sort: 'DISTANCE' | 'POPULAR' = 'DISTANCE',
+        size: number = 20
+    ): Promise<CommonResponse<any>> => {
+        const queryParams = new URLSearchParams({
+            // req 객체의 필드들을 쿼리 파라미터로 변환
+            ...(req.query && { 'req.query': req.query }),
+            ...(req.userlat && { 'req.userLat': req.userlat.toString() }),
+            ...(req.userlng && { 'req.userLng': req.userlng.toString() }),
+            ...(req.centerlat && { 'req.centerLat': req.centerlat.toString() }),
+            ...(req.centerlng && { 'req.centerLng': req.centerlng.toString() }),
+            distanceType,
+            category,
+            sort,
+            cursor: cursor.toString(),
+            size: size.toString(),
+        });
 
-        if (params.lat) queryParams.append('lat', params.lat.toString());
-        if (params.lng) queryParams.append('lng', params.lng.toString());
-        if (params.radius) queryParams.append('radius', params.radius.toString());
-        if (params.query) queryParams.append('q', params.query);
-        if (params.brandId) queryParams.append('brandId', params.brandId.toString());
-
-        const endpoint = `/stores?${queryParams.toString()}`;
-        return await apiClient<StoreDetail[]>(endpoint);
+        return await apiClient<CommonResponse<any>>(`/api/map/search?${queryParams.toString()}`);
     },
 
     /**
