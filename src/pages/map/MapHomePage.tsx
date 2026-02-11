@@ -136,8 +136,8 @@ export default function MapHomePage() {
     if (!currentLocation) {
         return (
             <Layout showBottomNav>
-                <div className="flex items-center justify-center py-20">
-                                <LoadingDots />
+                <div className="flex flex-col items-center justify-center w-full h-[calc(100dvh-64px)]">
+                    <LoadingDots />
                 </div>
             </Layout>
         );
