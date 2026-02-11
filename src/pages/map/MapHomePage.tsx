@@ -20,7 +20,15 @@ const loc_icon_on = iconLocOn;
 const mapPinIcon = iconMapPin;
 const myLocIcon = iconMyLoc;
 
-const CATEGORIES = ['전체', '엔터', '쇼핑', '카페', '식당'];
+const CATEGORY_MAP: Record<string, string> = {
+    '전체': 'ALL',
+    '엔터': 'ENTER',
+    '쇼핑': 'SHOPPING',
+    '카페': 'CAFE',
+    '식당': 'FOOD'
+};
+
+const CATEGORIES = Object.keys(CATEGORY_MAP);
 
 /**
  * [PAGE 16] 지도 메인 페이지
@@ -35,7 +43,7 @@ export default function MapHomePage() {
     const [isTracking, setIsTracking] = useState(false);
 
     const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-    const [currentSort, setCurrentSort] = useState('map-center');
+    const [currentSort, setCurrentSort] = useState('distance');
 
     
     const [searchText, setSearchText] = useState(''); // 검색어 상태
@@ -56,9 +64,12 @@ export default function MapHomePage() {
                     centerlng: currentLocation?.lng,
                 }, 
                 pageParam as number,
-                currentSort === 'my-location' ? 'CURRENT' : 'CENTER',
-                selectedCategory === '전체' ? 'ALL' : selectedCategory,
-                'DISTANCE',
+                // distanceType 결정 (내 위치 기준인지 지도 중심 기준인지)
+                currentSort === 'distance' ? 'CURRENT' : 'CENTER',
+                // 카테고리: image_992e58 매핑 값 전달
+                CATEGORY_MAP[selectedCategory], 
+                // 정렬: image_99803b 매핑 값 전달
+                currentSort === 'popular' ? 'POPULAR' : 'DISTANCE', 
                 20
             ),
         initialPageParam: 0,
@@ -133,13 +144,13 @@ export default function MapHomePage() {
 
     const sortOptions = [
         { 
-            id: 'map-center', 
-            label: '지도 중심 거리순', 
+            id: 'distance', // 정렬 방식 아이디 수정
+            label: '거리순', 
             icon: mapPinIcon
         },
         { 
-            id: 'my-location', 
-            label: '현재 내 위치 거리순', 
+            id: 'popular', 
+            label: '인기순', 
             icon: myLocIcon  
         },
     ];
