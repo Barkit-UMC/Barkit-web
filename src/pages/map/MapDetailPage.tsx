@@ -152,7 +152,7 @@ export default function MapDetailPage() {
                         <span className="w-20 text-black font-medium">영업시간</span>
                         <span className="flex-1 text-gray-800">
                             {/* 1. 타입이 string인지 확인하고, 빈 문자열이 아닐 때만 출력 */}
-                            {typeof storeData.hourInfo.isOpen === 'string' && storeData.hourInfo.isOpen.trim() !== "" && (
+                            {typeof storeData.hourInfo.isOpen === 'string' && (storeData.hourInfo.isOpen as string).trim() !== "" && (
                                 <span className="text-cyan-500 mr-2">
                                     {storeData.hourInfo.isOpen}
                                 </span>
