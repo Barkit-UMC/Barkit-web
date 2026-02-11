@@ -6,7 +6,7 @@ import locOff from "../../assets/icons/toast/location-off.svg";
 import IconComplete from "../../assets/icons/toast/complete.svg";
 
 type CommonToastProps = {
-  type: "notification" | "location" | "password" | "birthday";
+  type: "notification" | "location" | "password" | "birthday" | "connect_kakao" | "connect_naver" | "connect_fail";
   status?: "on" | "off";
   onClose?: () => void;
 };
@@ -40,6 +40,9 @@ export default function CommonToast({ type, status, onClose }: CommonToastProps)
     location: status === "on" ? locOn : locOff,
     password: IconComplete,
     birthday: IconComplete,
+    connect_kakao: IconComplete,
+    connect_naver: IconComplete,
+    connect_fail: notiOff,
   };
 
   const message = {
@@ -51,7 +54,9 @@ export default function CommonToast({ type, status, onClose }: CommonToastProps)
       : "위치 권한 요청이 거절되었습니다",
     password: "비밀번호 변경이 완료되었습니다",
     birthday: "생년월일 변경이 완료되었습니다",
-    
+    connect_kakao: "카카오 계정이 연동되었습니다",
+    connect_naver: "네이버 계정이 연동되었습니다",
+    connect_fail: "계정 연동에 실패했습니다",
   };
 
   return (

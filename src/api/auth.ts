@@ -159,6 +159,32 @@ export const authApi = {
     },
 
     /**
+     * 카카오 계정 연동
+     * POST /api/users/me/oauth/kakao/connect
+     * Body: { code, redirectUri }
+     */
+    connectKakao: async (code: string, redirectUri: string): Promise<ApiResponse<string>> => {
+        const response = await axiosInstance.post<ApiResponse<string>>(
+            '/api/users/me/oauth/kakao/connect',
+            { code, redirectUri }
+        );
+        return response.data;
+    },
+
+    /**
+     * 네이버 계정 연동
+     * POST /api/users/me/oauth/naver/connect
+     * Body: { code, state, redirectUri }
+     */
+    connectNaver: async (code: string, state: string, redirectUri: string): Promise<ApiResponse<string>> => {
+        const response = await axiosInstance.post<ApiResponse<string>>(
+            '/api/users/me/oauth/naver/connect',
+            { code, state, redirectUri }
+        );
+        return response.data;
+    },
+
+    /**
      * 로그아웃
      * 클라이언트 측 토큰 삭제
      */
