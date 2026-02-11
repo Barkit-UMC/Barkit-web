@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import MapContainer from '../../components/map/MapContainer';
-import StoreMarker from '../../components/map/StoreMarker';
 import iconSearch from '../../assets/icons/map/search.svg';
 import iconFilter from '../../assets/icons/map/mapFilter.svg';
 import iconLoc from '../../assets/icons/map/current_loc.svg';
@@ -12,6 +11,7 @@ import SortBottomSheet from '../../components/common/BottomSheet';
 import SearchResultList from '../../components/map/SearchResultList';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { mapApi } from '../../api/map';
+import MapMarker from '../../components/map/MapMarker';
 
 const search_icon = iconSearch; 
 const filter_icon = iconFilter;
@@ -168,7 +168,16 @@ export default function MapHomePage() {
                             console.log("지도 드래그 감지됨 -> 추적 종료"); // 콘솔로 확인해보세요
                             setIsTracking(false); 
                         }}>
-                        {/* TODO: 매장 마커들 표시 */}
+                        {allStores.map((store) => (
+                            <MapMarker
+                                key={store.storeId}
+                                position={{
+                                    lat: store.location.lat,
+                                    lng: store.location.lng
+                                }}
+                                title={store.name.text}
+                            />
+                        ))}
                     </MapContainer>
                 </div>
 
