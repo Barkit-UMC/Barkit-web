@@ -12,11 +12,6 @@ export default function MyPage() {
   const navigate = useNavigate();
 
   // TODO: API에서 사용자 정보 가져오기
-  const user = {
-    name: '홍길동',
-    email: 'hong@example.com',
-    membershipCount: 3
-  };
 
   const menuItems = [
     { id: 'pwa', label: '홈 화면에 추가 (PWA)', path: '/profile/pwa' },
