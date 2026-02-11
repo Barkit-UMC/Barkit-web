@@ -211,10 +211,13 @@ export const useAuth = (): UseAuthReturn => {
      * 로그아웃
      */
     const logout = useCallback(() => {
-        authApi.logout();
-        clearAuth();
-        setUser(null);
-        navigate('/login');
+        authApi.logout({
+            refreshToken: localStorage.getItem("refreshToken") || ""
+        }).then(() => {
+            clearAuth();
+            setUser(null);
+            navigate('/login');
+        });
     }, [clearAuth, setUser, navigate]);
 
     /**
