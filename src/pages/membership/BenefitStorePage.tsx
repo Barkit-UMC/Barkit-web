@@ -37,7 +37,7 @@ export default function BenefitStorePage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, isValidId, resetAndFetch]);
+  }, [searchQuery, isValidId]);
 
   // 검색 버튼 클릭 시 즉시 검색
   const handleSearchClick = async () => {
