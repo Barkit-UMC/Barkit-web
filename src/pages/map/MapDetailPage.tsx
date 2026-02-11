@@ -151,10 +151,9 @@ export default function MapDetailPage() {
                     <div className="flex gap-4">
                         <span className="w-20 text-black font-medium">영업시간</span>
                         <span className="flex-1 text-gray-800">
-                            {/* 1. 타입이 string인지 확인하고, 빈 문자열이 아닐 때만 출력 */}
-                            {typeof storeData.hourInfo.isOpen === 'string' && (storeData.hourInfo.isOpen as string).trim() !== "" && (
-                                <span className="text-cyan-500 mr-2">
-                                    {storeData.hourInfo.isOpen}
+                            {typeof storeData.hourInfo.isOpen === 'boolean' && (
+                                <span className={storeData.hourInfo.isOpen ? "text-cyan-500 mr-2" : "text-red-500 mr-2"}>
+                                    {storeData.hourInfo.isOpen ? "영업중" : "영업종료"}
                                 </span>
                             )}
                             
