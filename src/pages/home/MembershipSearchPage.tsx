@@ -1,72 +1,79 @@
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
-import MembershipSearchBar from '../../components/common/MembershipSearchBar';
+import MembershipSearchBar from '../../components/common/SearchBar';
 import LoadingDots from '../../components/common/LoadingDots';
-import CjoneIcon from '../../assets/icons/memberships/cjone.svg'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { membershipApi } from '../../api/membership';
 
-// 사용자가 보유한 멤버십 데이터 (실제로는 API에서 가져오기)
-const USER_MEMBERSHIPS = [
-    { id: 1, name: "CJ ONE", logo: CjoneIcon, barcode: "1234567890" },
-];
+interface FoundMembership {
+    userMembershipBrandId: number;
+    name: string;
+    logoUrl: string;
+}
 
 export default function MembershipSearchPage() {
     const navigate = useNavigate();
+
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResult, setSearchResult] = useState<'idle' | 'found' | 'not-found'>('idle');
-    const [foundMembership, setFoundMembership] = useState<any>(null);
+    const [foundMembership, setFoundMembership] = useState<FoundMembership | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSearchQueryChange = (value: string) => {
         setSearchQuery(value);
-        // 검색어가 입력되면 결과 초기화
+
         if (value.trim() !== "") {
             setSearchResult('idle');
             setFoundMembership(null);
         }
     };
 
-    const handleSearch = () => {
+    // 검색 API 호출
+    const handleSearch = async () => {
         if (searchQuery.trim() === "") {
             setSearchResult('idle');
             return;
         }
 
-        const found = USER_MEMBERSHIPS.find(membership =>
-            membership.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        try {
+            setIsLoading(true);
 
-        if (found) {
-            setSearchResult('found');
-            setFoundMembership(found);
-        } else {
+            const result = await membershipApi.searchUserMembershipBrands(
+                searchQuery
+            );
+
+            if (result.brands.length > 0) {
+                setFoundMembership(result.brands[0]); // 첫 번째 결과 사용
+                setSearchResult('found');
+            } else {
+                setFoundMembership(null);
+                setSearchResult('not-found');
+            }
+        } catch (e) {
+            console.error('검색 실패', e);
             setSearchResult('not-found');
-            setFoundMembership(null);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleShowBarcode = () => {
-        navigate(`/membership/${foundMembership.id}`);
+        if (!foundMembership) return;
+        navigate(`/membership/${foundMembership.userMembershipBrandId}`);
     };
 
     const handleGoHome = () => {
         navigate('/home');
     };
 
-    // 검색 중 상태 판단
-    const isSearching = searchQuery.trim() !== "" && searchResult === 'idle';
-
     return (
         <Layout showBottomNav={false}>
             <div className="flex h-full bg-gray-50">
-                <Header 
-                    title="멤버십 브랜드 검색"
-                    showBackButton={true}
-                />
-                
-                <div className="flex-1 flex flex-col pt-[64px] pb-20">
-                    {/* 서치바 */}
-                    <div className="px-6 py-4 mt-4 mb-4">
+                <Header title="멤버십 브랜드 검색" showBackButton />
+
+                <div className="flex-1 flex flex-col pt-[96px] pb-20">
+                    <div className="mt-4 mb-4">
                         <MembershipSearchBar
                             searchQuery={searchQuery}
                             setSearchQuery={handleSearchQueryChange}
@@ -74,31 +81,30 @@ export default function MembershipSearchPage() {
                             placeholder='KT'
                         />
                     </div>
-                    
-                    {/* 검색 결과 영역 */}
+
                     <div className="flex-1 flex flex-col px-6">
                         {/* 검색 전 */}
-                        {!isSearching && searchResult === 'idle' && searchQuery.trim() === "" && (
+                        {!isLoading && searchResult === 'idle' && searchQuery.trim() === "" && (
                             <div className="h-[400px]" />
                         )}
 
                         {/* 검색 중 */}
-                        {isSearching && (
+                        {isLoading && (
                             <div className="flex items-center justify-center py-20">
                                 <LoadingDots />
                             </div>
                         )}
 
-                        {/* 검색 완료 - 멤버십 보유 */}
-                        {searchResult === 'found' && foundMembership && (
+                        {/* 검색 완료 - 보유 */}
+                        {!isLoading && searchResult === 'found' && foundMembership && (
                             <div className="flex flex-col min-h-[calc(100vh-200px)]">
                                 <div className="grid grid-cols-3 gap-4 mb-10">
                                     <div className="flex flex-col items-center gap-[10px] w-[90px]">
                                         <div className="w-[90px] h-[90px] rounded-[16px] overflow-hidden">
                                             <img
-                                                src={foundMembership.logo}
+                                                src={foundMembership.logoUrl}
                                                 alt={foundMembership.name}
-                                                className="w-full h-full object-cover scale-105"
+                                                className="w-full h-full object-cover"
                                             />
                                         </div>
                                         <span className="text-[16px] font-normal text-center">
@@ -107,7 +113,6 @@ export default function MembershipSearchPage() {
                                     </div>
                                 </div>
 
-                                {/* 버튼 */}
                                 <div className="mt-auto pb-10 space-y-3">
                                     <button
                                         onClick={handleGoHome}
@@ -125,8 +130,8 @@ export default function MembershipSearchPage() {
                             </div>
                         )}
 
-                        {/* 검색 완료 - 멤버십 미보유 */}
-                        {searchResult === 'not-found' && (
+                        {/* 검색 결과 없음 */}
+                        {!isLoading && searchResult === 'not-found' && (
                             <div className="flex flex-col min-h-[calc(100vh-200px)]">
                                 <div className="flex-1 flex items-start pt-20">
                                     <p className="text-gray-200 text-[16px] w-full text-center">
@@ -134,7 +139,6 @@ export default function MembershipSearchPage() {
                                     </p>
                                 </div>
 
-                                {/* 버튼 */}
                                 <div className="w-full mb-8">
                                     <button
                                         onClick={handleGoHome}

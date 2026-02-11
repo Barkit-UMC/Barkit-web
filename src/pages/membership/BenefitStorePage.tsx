@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import StoreList, { STORES } from "../../components/benefit/StoreList";
 import Header from "../../components/common/Header";
 import Layout from "../../components/common/Layout";
-import MembershipSearchBar from "../../components/common/MembershipSearchBar";
+import MembershipSearchBar from "../../components/common/SearchBar";
 import LoadingDots from "../../components/common/LoadingDots";
 
 export default function BenefitStorePage() {

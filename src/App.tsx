@@ -6,13 +6,13 @@ import ChangeBirthdayPage from './pages/profile/ChangeBirthdayPage';
 import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const KakaoCallbackPage = lazy(() => import('./pages/auth/KakaoCallbackPage'));
 const NaverCallbackPage = lazy(() => import('./pages/auth/NaverCallbackPage'));
-
 // Onboarding pages
 const IntroPage = lazy(() => import('./pages/onboarding/IntroPage'));
 const SelectMethodPage = lazy(() => import('./pages/onboarding/SelectMethodPage'));
@@ -81,8 +81,11 @@ const RootRedirect = () => {
   return <Navigate to={isAuthenticated ? '/home' : '/login'} replace />;
 };
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Layout>
         <Suspense fallback={<LoadingFallback />}>
@@ -254,21 +257,21 @@ function App() {
             <Route
               path="/map"
               element={
-                // <ProtectedRoute>
-                <MapHomePage />
-                // </ProtectedRoute>
+                <ProtectedRoute>
+                  <MapHomePage />
+                </ProtectedRoute>
               }
             />
             <Route
-              path="/map/:id"
+              path="/map/:googleId"
               element={
-                // <ProtectedRoute>
-                <MapDetailPage />
-                // </ProtectedRoute>
+                <ProtectedRoute>
+                  <MapDetailPage />
+                </ProtectedRoute>
               }
             />
             <Route
-              path="/map/membership/:id"
+              path="/map/membership/:userMembershipId"
               element={
                 <ProtectedRoute>
                   <MapMembershipDetailPage />
@@ -358,6 +361,7 @@ function App() {
         </Suspense>
       </Layout>
     </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

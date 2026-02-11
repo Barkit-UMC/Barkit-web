@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import MapContainer from '../../components/map/MapContainer';
-import StoreMarker from '../../components/map/StoreMarker';
 import iconSearch from '../../assets/icons/map/search.svg';
 import iconFilter from '../../assets/icons/map/mapFilter.svg';
 import iconLoc from '../../assets/icons/map/current_loc.svg';
@@ -10,6 +9,9 @@ import iconMapPin from '../../assets/icons/map/loc.svg'
 import iconMyLoc from '../../assets/icons/map/sort_loc.svg'
 import SortBottomSheet from '../../components/common/BottomSheet';
 import SearchResultList from '../../components/map/SearchResultList';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { mapApi } from '../../api/map';
+import MapMarker from '../../components/map/MapMarker';
 
 const search_icon = iconSearch; 
 const filter_icon = iconFilter;
@@ -18,7 +20,15 @@ const loc_icon_on = iconLocOn;
 const mapPinIcon = iconMapPin;
 const myLocIcon = iconMyLoc;
 
-const CATEGORIES = ['전체', '엔터', '쇼핑', '카페', '식당'];
+const CATEGORY_MAP: Record<string, string> = {
+    '전체': 'ALL',
+    '엔터': 'ENTER',
+    '쇼핑': 'SHOPPING',
+    '카페': 'CAFE',
+    '식당': 'FOOD'
+};
+
+const CATEGORIES = Object.keys(CATEGORY_MAP);
 
 /**
  * [PAGE 16] 지도 메인 페이지
@@ -33,13 +43,43 @@ export default function MapHomePage() {
     const [isTracking, setIsTracking] = useState(false);
 
     const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-    const [currentSort, setCurrentSort] = useState('map-center');
+    const [currentSort, setCurrentSort] = useState('distance');
 
     
     const [searchText, setSearchText] = useState(''); // 검색어 상태
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
-    const latestCoords = useRef<{lat: number, lng: number} | null>(null);
+    // const latestCoords = useRef<{lat: number, lng: number} | null>(null);
+    const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
+        // queryKey에 좌표값들을 개별적으로 포함시켜 값이 변할 때마다 트리거
+        queryKey: ['stores', searchText, selectedCategory, currentSort, currentLocation?.lat, currentLocation?.lng, userLocation?.lat, userLocation?.lng],
+        queryFn: ({ pageParam = 0 }) => 
+            mapApi.searchStores(
+                { 
+                    query: searchText, 
+                    userlat: userLocation?.lat, // useRef.current 대신 state 사용
+                    userlng: userLocation?.lng,
+                    centerlat: currentLocation?.lat, 
+                    centerlng: currentLocation?.lng,
+                }, 
+                pageParam as number,
+                // distanceType 결정 (내 위치 기준인지 지도 중심 기준인지)
+                currentSort === 'distance' ? 'CURRENT' : 'CENTER',
+                // 카테고리: image_992e58 매핑 값 전달
+                CATEGORY_MAP[selectedCategory], 
+                // 정렬: image_99803b 매핑 값 전달
+                currentSort === 'popular' ? 'POPULAR' : 'DISTANCE', 
+                20
+            ),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => lastPage.result.hasNext ? lastPage.result.nextCursor : undefined,
+        // 두 좌표가 모두 있을 때만 쿼리 실행
+        enabled: !!currentLocation && !!userLocation,
+    });
+
+    // 데이터 추출
+    const allStores = data?.pages.flatMap(page => page.result.content) || [];
 
     useEffect(() => {
         if (!navigator.geolocation) return;
@@ -50,7 +90,8 @@ export default function MapHomePage() {
                 const { latitude, longitude } = position.coords;
                 const newPos = { lat: latitude, lng: longitude };
                 
-                latestCoords.current = newPos; // Ref에 실시간 좌표 저장
+                // latestCoords.current = newPos; // Ref에 실시간 좌표 저장
++               setUserLocation(newPos);
                 
                 // 앱 처음 실행 시에만 지도를 내 위치로 이동
                 if (!currentLocation) {
@@ -71,24 +112,24 @@ export default function MapHomePage() {
 
     // 3. 현재 위치로 이동하는 함수
     const handleMoveToCurrentLocation = () => {
-        if (latestCoords.current) {
-            // 이미 watchPosition이 잡고 있는 최신 좌표로 즉시 이동
-            setCurrentLocation({ ...latestCoords.current }); 
-            setIsTracking(true);
-        } else {
-            // 아직 좌표가 없다면 새로 요청 (Fallback)
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
-                    setCurrentLocation(newPos);
-                    latestCoords.current = newPos;
-                    setIsTracking(true);
-                },
-                null,
-                { enableHighAccuracy: true, timeout: 2000 }
-            );
-        }
-    };
+    // state인 userLocation에 값이 있다면 바로 이동
+    if (userLocation) {
+        setCurrentLocation({ ...userLocation }); 
+        setIsTracking(true);
+    } else {
+        // 만약 watchPosition에서 아직 값을 못 잡았다면 단발성으로 요청
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                setUserLocation(newPos); // 상태 업데이트
+                setCurrentLocation(newPos); // 지도 중심 이동
+                setIsTracking(true);
+            },
+            (error) => console.error("위치 획득 실패:", error),
+            { enableHighAccuracy: true, timeout: 5000 }
+        );
+    }
+};
 
     // 위치 정보가 올 때까지 '로딩'을 보여주어 지도가 0px로 튀는 것을 방지
     if (!currentLocation) {
@@ -103,35 +144,14 @@ export default function MapHomePage() {
 
     const sortOptions = [
         { 
-            id: 'map-center', 
-            label: '지도 중심 거리순', 
+            id: 'distance', // 정렬 방식 아이디 수정
+            label: '거리순', 
             icon: mapPinIcon
         },
         { 
-            id: 'my-location', 
-            label: '현재 내 위치 거리순', 
+            id: 'popular', 
+            label: '인기순', 
             icon: myLocIcon  
-        },
-    ];
-
-    const dummyResults = [
-        { 
-            id: 1, 
-            name: '올리브영 성수', 
-            category: '드럭스토어', 
-            distance: '0.55km', 
-            address: '서울 성동구 연무장7길 13 팩토리얼',
-            lat: 37.5436, // 실제 위도
-            lng: 127.0545  // 실제 경도
-        },
-        { 
-            id: 2, 
-            name: '올리브영 성수2', 
-            category: '드럭스토어', 
-            distance: '0.82km', 
-            address: '서울 성동구 어쩌구 저쩌구',
-            lat: 37.5450,
-            lng: 127.0580
         },
     ];
     
@@ -148,7 +168,16 @@ export default function MapHomePage() {
                             console.log("지도 드래그 감지됨 -> 추적 종료"); // 콘솔로 확인해보세요
                             setIsTracking(false); 
                         }}>
-                        {/* TODO: 매장 마커들 표시 */}
+                        {allStores.map((store) => (
+                            <MapMarker
+                                key={store.storeId}
+                                position={{
+                                    lat: store.location.lat,
+                                    lng: store.location.lng
+                                }}
+                                title={store.name.text}
+                            />
+                        ))}
                     </MapContainer>
                 </div>
 
@@ -225,7 +254,13 @@ export default function MapHomePage() {
                     </div>
 
                     {/* 분리한 리스트 컴포넌트 삽입 */}
-                    <SearchResultList results={dummyResults} />
+                    <SearchResultList 
+                        results={allStores} 
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                        isLoading={isLoading}
+                    />
                 </div>
 
                 {/* 3. 현재 위치 버튼 (우측 하단) */}

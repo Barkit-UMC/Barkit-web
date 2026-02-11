@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
+import { useMembershipRegister } from '../../hooks/useMembershipRegister';
 
 /**
  * [PAGE 6] 번호 입력 페이지
@@ -13,10 +14,14 @@ export default function InputNumberPage() {
     const { brandId } = useParams();
     const [barcodeNumber, setBarcodeNumber] = useState('');
 
-    const handleSubmit = () => {
-        // TODO: 멤버십 등록 API 호출
-        console.log('Register membership:', { brandId, barcodeNumber });
-        navigate('/membership/complete');
+    // 멤버십 등록 훅
+    const { register, isLoading, error } = useMembershipRegister({
+        onSuccess: () => navigate('/membership/complete'),
+    });
+
+    const handleSubmit = async () => {
+        if (!brandId || !barcodeNumber) return;
+        await register(Number(brandId), barcodeNumber);
     };
 
     const handleScanBarcode = () => {
@@ -31,6 +36,13 @@ export default function InputNumberPage() {
                     <p className="text-gray-600 mb-6">
                         멤버십 카드에 있는 바코드 번호를 입력하세요
                     </p>
+
+                    {/* 에러 메시지 */}
+                    {error && (
+                        <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
+                            {error}
+                        </div>
+                    )}
 
                     <Input
                         type="text"
@@ -58,6 +70,8 @@ export default function InputNumberPage() {
                     <Button
                         onClick={handleSubmit}
                         disabled={!barcodeNumber}
+                        isLoading={isLoading}
+                        loadingText="등록 중..."
                     >
                         등록하기
                     </Button>
