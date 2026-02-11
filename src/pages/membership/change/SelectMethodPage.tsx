@@ -46,7 +46,7 @@ export default function SelectMethodPage() {
 
             <div className="flex-1 px-6 pt-[80px]">
                 <p className="text-xl font-bold text-gray-900 mt-8 mb-8 whitespace-pre-wrap">
-                    원하는 방법 <span className="text-[#00C0E8]">하나</span>를 선택해주세요
+                    원하는 방식 <span className="text-[#00C0E8]">하나</span>를 선택해주세요
                 </p>
 
                 <div className="space-y-4">

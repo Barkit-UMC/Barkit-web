@@ -1,8 +1,7 @@
-import apiClient from './client';
-
 /**
  * 지도/매장 데이터 API
  */
+import axiosInstance from './axios';
 
 interface Store {
     id: number;
@@ -24,52 +23,59 @@ interface SearchStoresRequest {
     brandId?: number;
 }
 
+interface ApiResponse<T> {
+    isSuccess: boolean;
+    code?: string;
+    message?: string;
+    result: T;
+}
+
 export const mapApi = {
     /**
      * 주변 매장 검색
      */
     searchStores: async (params: SearchStoresRequest): Promise<Store[]> => {
-        const queryParams = new URLSearchParams();
-
-        if (params.lat) queryParams.append('lat', params.lat.toString());
-        if (params.lng) queryParams.append('lng', params.lng.toString());
-        if (params.radius) queryParams.append('radius', params.radius.toString());
-        if (params.query) queryParams.append('q', params.query);
-        if (params.brandId) queryParams.append('brandId', params.brandId.toString());
-
-        const endpoint = `/stores?${queryParams.toString()}`;
-        return await apiClient<Store[]>(endpoint);
+        const response = await axiosInstance.get<ApiResponse<Store[]>>('/api/stores', {
+            params: {
+                lat: params.lat,
+                lng: params.lng,
+                radius: params.radius,
+                q: params.query,
+                brandId: params.brandId,
+            },
+        });
+        return response.data.result;
     },
 
     /**
      * 매장 상세 정보
      */
     getStoreById: async (id: number): Promise<Store> => {
-        return await apiClient<Store>(`/stores/${id}`);
+        const response = await axiosInstance.get<ApiResponse<Store>>(`/api/stores/${id}`);
+        return response.data.result;
     },
 
     /**
      * 즐겨찾기 매장 목록
      */
     getFavoriteStores: async (): Promise<Store[]> => {
-        return await apiClient<Store[]>('/stores/favorites');
+        const response = await axiosInstance.get<ApiResponse<Store[]>>('/api/stores/favorites');
+        return response.data.result;
     },
 
     /**
      * 즐겨찾기 추가
      */
     addFavorite: async (storeId: number): Promise<void> => {
-        await apiClient(`/stores/${storeId}/favorite`, {
-            method: 'POST',
-        });
+        await axiosInstance.post(`/api/stores/${storeId}/favorite`);
     },
 
     /**
      * 즐겨찾기 제거
      */
     removeFavorite: async (storeId: number): Promise<void> => {
-        await apiClient(`/stores/${storeId}/favorite`, {
-            method: 'DELETE',
-        });
+        await axiosInstance.delete(`/api/stores/${storeId}/favorite`);
     },
 };
+
+export type { Store, SearchStoresRequest };

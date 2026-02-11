@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { useSignupForm } from '../../hooks/useSignupForm';
 import FormInput from '../../components/auth/FormInput';
 import AgreementSection from '../../components/auth/AgreementSection';
@@ -10,48 +11,48 @@ import AgreementSection from '../../components/auth/AgreementSection';
  */
 export default function SignupPage() {
     const navigate = useNavigate();
+    const { signup, isLoading, error, clearError } = useAuth();
     const {
-        // Form fields
-        name,
-        setName,
-        email,
-        setEmail,
-        password,
-        setPassword,
-        confirmPassword,
-        setConfirmPassword,
-        birthDate,
-        setBirthDate,
-
-        // Validation states
+        name, setName,
+        email, setEmail,
+        password, setPassword,
+        confirmPassword, setConfirmPassword,
+        birthDate, setBirthDate,
         emailCheckResult,
-        passwordError,
-        confirmPasswordError,
-        isPasswordMatch,
-
-        // Terms agreement states
-        agreeAll,
-        agreeTerms,
-        agreePrivacy,
-        agreeMarketing,
-
-        // Handlers
-        handleEmailCheck,
-        handleAgreeAll,
-        setAgreeTerms,
-        setAgreePrivacy,
-        setAgreeMarketing,
-
-        // Form validation
+        passwordError, confirmPasswordError, isPasswordMatch,
+        agreeAll, agreeTerms, agreePrivacy, agreeMarketing,
+        handleEmailCheck, handleAgreeAll, setAgreeTerms, setAgreePrivacy, setAgreeMarketing,
         isFormValid,
     } = useSignupForm();
 
     // Handle form submission
-    const handleSubmit = () => {
-        if (!isFormValid) return;
-        console.log('Signup:', { name, email, password, birthDate });
-        // TODO: API call for signup
-        navigate('/login');
+    const handleSubmit = async () => {
+        if (!isFormValid || isLoading) return;
+
+        // 생년월일 포맷 변환 (YYYYMMDD -> YYYY-MM-DD)
+        const formattedBirthDate = `${birthDate.slice(0, 4)}-${birthDate.slice(4, 6)}-${birthDate.slice(6, 8)}`;
+
+        // 약관 동의 데이터 매핑
+        // [FIX] 백엔드에 존재하는 유일한 약관 ID는 '1'번으로 확인됨 (Curl 테스트 결과)
+        // 프론트엔드에서 '서비스 이용약관'과 '개인정보 처리방침' 동의를 받았지만,
+        // 백엔드에는 '1'번 약관 동의 하나만 전송함.
+        const terms = [
+            { termId: 1, isAgreed: true }, // agreeTerms && agreePrivacy가 true일 때만 여기까지 오므로 true 전송
+        ];
+
+        const result = await signup({
+            name,
+            email,
+            password,
+            confirmPassword,
+            birthDate: formattedBirthDate,
+            terms,
+        });
+
+        if (result) {
+            alert('회원가입이 완료되었습니다! 로그인 후 첫 멤버십을 등록해보세요 🎉');
+            navigate('/login', { replace: true });
+        }
     };
 
     // 중복 확인 버튼
@@ -86,6 +87,16 @@ export default function SignupPage() {
 
             {/* Form Container */}
             <div className="flex-1 flex flex-col px-6 pt-6 pb-4 gap-1">
+                {/* 회원가입 에러 메시지 */}
+                {error && (
+                    <div
+                        className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl flex justify-between items-center mb-4"
+                        onClick={clearError}
+                    >
+                        <span>{error}</span>
+                        <button className="text-red-400 hover:text-red-600">✕</button>
+                    </div>
+                )}
                 {/* Name Input */}
                 <div className="mb-4">
                     <input
