@@ -3,6 +3,7 @@ import Layout from "../../components/common/Layout";
 import ConfirmModal from "../../components/profile/ConfirmModal";
 import Header from "../../components/common/Header";
 import { authApi } from "../../api/auth";
+import { useEffect } from "react";
 
 /**
  * [PAGE 20] 로그아웃 페이지
@@ -10,14 +11,19 @@ import { authApi } from "../../api/auth";
 export default function LogoutPage() {
     const navigate = useNavigate();
 
-    const refreshToken = localStorage.getItem("refreshToken") || "";
-    if (!refreshToken) {
-        // 리프레시 토큰이 없는 경우 로그인 페이지로 이동
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userId");
-        navigate("/login", { replace: true });
-    }
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    useEffect(() => {
+        if (!refreshToken) {
+            // 리프레시 토큰이 없는 경우 로그인 페이지로 이동
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("userId");
+            navigate("/login", { replace: true });
+        }
+    }, [refreshToken, navigate]);
+    if (!refreshToken) return null;
+
     const handleLogout = async () => {
         // 로그아웃 API 호출
         try {
