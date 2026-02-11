@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { dashboardApi } from '../../api/dashboard';
 import kakaoIcon from '../../assets/icons/sns/kakaotalk.svg';
 import naverIcon from '../../assets/icons/sns/naver.svg';
 
@@ -20,7 +21,9 @@ export default function LoginPage() {
 
         const result = await login({ email, password });
         if (result) {
-            navigate('/home');
+            // 멤버십 보유 여부 확인 → 온보딩 or 홈
+            const hasMembership = await dashboardApi.hasMemberships();
+            navigate(hasMembership ? '/home' : '/onboarding/intro', { replace: true });
         }
     };
 

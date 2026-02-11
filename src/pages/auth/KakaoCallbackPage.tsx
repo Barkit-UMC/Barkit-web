@@ -6,6 +6,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { dashboardApi } from '../../api/dashboard';
 
 const KakaoCallbackPage = () => {
     const navigate = useNavigate();
@@ -45,8 +46,9 @@ const KakaoCallbackPage = () => {
                 console.log('[Kakao Callback] Result:', result);
 
                 if (result) {
-                    // 로그인 성공 - 홈 페이지로 이동
-                    navigate('/home', { replace: true });
+                    // 멤버십 보유 여부 확인 → 온보딩 or 홈
+                    const hasMembership = await dashboardApi.hasMemberships();
+                    navigate(hasMembership ? '/home' : '/onboarding/intro', { replace: true });
                 } else {
                     // 로그인 실패 - 로그인 페이지로 이동
                     console.error('[Kakao Callback] Login returned null');
