@@ -10,31 +10,22 @@ import MembershipSearchBar from "../../components/common/MembershipSearchBar";
 export default function BenefitStorePage() {
   const { id } = useParams<{ id: string }>();
   const userMembershipBrandId = Number(id);
+  const isValidId = !!id && !Number.isNaN(userMembershipBrandId);
 
-  if (!id || isNaN(userMembershipBrandId)) {
-    return (
-      <Layout showBottomNav={true}>
-        <Header title="적립/할인 가능한 매장" />
-        <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] 
-                px-4 flex items-center justify-center text-gray-400">
-          잘못된 접근입니다
-        </div>
-      </Layout>
-    );
-  }
 
-  const { stores, loading, resetAndFetch } = useStore(userMembershipBrandId);
+  const { stores, loading, resetAndFetch } = useStore(isValidId ? userMembershipBrandId : 0);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   // 디바운스 + 서버 요청
   useEffect(() => {
+    if (!isValidId) return;
     const query = searchQuery.trim();
 
     // 입력이 비어있으면 전체 리스트 보여주기
     if (query === "") {
-      resetAndFetch(""); 
+      void resetAndFetch(""); 
       setIsTyping(false);
       return;
     }
@@ -46,14 +37,27 @@ export default function BenefitStorePage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, isValidId, resetAndFetch]);
 
   // 검색 버튼 클릭 시 즉시 검색
   const handleSearchClick = async () => {
+    if (!isValidId) return;
     setIsTyping(true);
     await resetAndFetch(searchQuery.trim());
     setIsTyping(false);
   };
+
+  if (!isValidId) {
+    return (
+      <Layout showBottomNav={true}>
+        <Header title="적립/할인 가능한 매장" />
+        <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] 
+                px-4 flex items-center justify-center text-gray-400">
+          잘못된 접근입니다
+        </div>
+      </Layout>
+    );
+  }
 
   const showLoading = loading || isTyping;
 
