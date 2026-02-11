@@ -41,31 +41,30 @@ export default function MapHomePage() {
     const [searchText, setSearchText] = useState(''); // 검색어 상태
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
-    const latestCoords = useRef<{lat: number, lng: number} | null>(null);
-
+    // const latestCoords = useRef<{lat: number, lng: number} | null>(null);
+    const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-        queryKey: ['stores', searchText, selectedCategory, currentSort],
+        // queryKey에 좌표값들을 개별적으로 포함시켜 값이 변할 때마다 트리거
+        queryKey: ['stores', searchText, selectedCategory, currentSort, currentLocation?.lat, currentLocation?.lng, userLocation?.lat, userLocation?.lng],
         queryFn: ({ pageParam = 0 }) => 
-        mapApi.searchStores(
-            { 
-                query: searchText, 
-                centerlat: currentLocation?.lat, 
-                centerlng: currentLocation?.lng,
-                userlat: latestCoords.current?.lat, // 내 현재 위치
-                userlng: latestCoords.current?.lng  // 내 현재 위치
-            }, 
-            pageParam as number, // 타입 단언 (필요시)
-            currentSort === 'my-location' ? 'CURRENT' : 'CENTER',
-            selectedCategory === '전체' ? 'ALL' : selectedCategory,
-            'DISTANCE', // 정렬 기준 (필요에 따라 수정)
-            20          // 사이즈
-        ),
+            mapApi.searchStores(
+                { 
+                    query: searchText, 
+                    userlat: userLocation?.lat, // useRef.current 대신 state 사용
+                    userlng: userLocation?.lng,
+                    centerlat: currentLocation?.lat, 
+                    centerlng: currentLocation?.lng,
+                }, 
+                pageParam as number,
+                currentSort === 'my-location' ? 'CURRENT' : 'CENTER',
+                selectedCategory === '전체' ? 'ALL' : selectedCategory,
+                'DISTANCE',
+                20
+            ),
         initialPageParam: 0,
-        getNextPageParam: (lastPage) => {
-            // 서버 응답 구조: lastPage.result.hasNext
-            return lastPage.result.hasNext ? lastPage.result.nextCursor : undefined;
-        },
-        enabled: !!currentLocation,
+        getNextPageParam: (lastPage) => lastPage.result.hasNext ? lastPage.result.nextCursor : undefined,
+        // 두 좌표가 모두 있을 때만 쿼리 실행
+        enabled: !!currentLocation && !!userLocation,
     });
 
     // 데이터 추출
@@ -80,7 +79,8 @@ export default function MapHomePage() {
                 const { latitude, longitude } = position.coords;
                 const newPos = { lat: latitude, lng: longitude };
                 
-                latestCoords.current = newPos; // Ref에 실시간 좌표 저장
+                // latestCoords.current = newPos; // Ref에 실시간 좌표 저장
++               setUserLocation(newPos);
                 
                 // 앱 처음 실행 시에만 지도를 내 위치로 이동
                 if (!currentLocation) {
@@ -101,24 +101,24 @@ export default function MapHomePage() {
 
     // 3. 현재 위치로 이동하는 함수
     const handleMoveToCurrentLocation = () => {
-        if (latestCoords.current) {
-            // 이미 watchPosition이 잡고 있는 최신 좌표로 즉시 이동
-            setCurrentLocation({ ...latestCoords.current }); 
-            setIsTracking(true);
-        } else {
-            // 아직 좌표가 없다면 새로 요청 (Fallback)
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
-                    setCurrentLocation(newPos);
-                    latestCoords.current = newPos;
-                    setIsTracking(true);
-                },
-                null,
-                { enableHighAccuracy: true, timeout: 2000 }
-            );
-        }
-    };
+    // state인 userLocation에 값이 있다면 바로 이동
+    if (userLocation) {
+        setCurrentLocation({ ...userLocation }); 
+        setIsTracking(true);
+    } else {
+        // 만약 watchPosition에서 아직 값을 못 잡았다면 단발성으로 요청
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                setUserLocation(newPos); // 상태 업데이트
+                setCurrentLocation(newPos); // 지도 중심 이동
+                setIsTracking(true);
+            },
+            (error) => console.error("위치 획득 실패:", error),
+            { enableHighAccuracy: true, timeout: 5000 }
+        );
+    }
+};
 
     // 위치 정보가 올 때까지 '로딩'을 보여주어 지도가 0px로 튀는 것을 방지
     if (!currentLocation) {
