@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { dashboardApi } from '../../api/dashboard';
+import { authApi } from '../../api/auth';
 
 const KakaoCallbackPage = () => {
     const navigate = useNavigate();
@@ -37,16 +38,61 @@ const KakaoCallbackPage = () => {
                 return;
             }
 
-            // State 검증 (CSRF 방지)
+            // 1. 모드 확인 (localStorage)
+            const authMode = localStorage.getItem('auth_mode');
+
+            // --- [MODE: CONNECT] 계정 연동 ---
+            if (authMode === 'connect') {
+                localStorage.removeItem('auth_mode');
+
+                // 연동 모드에서도 State 검증은 권장되나, 여기서는 흐름 분리를 우선함.
+                // 필요시 sessionStorage.getItem('kakao_oauth_state')와 비교 가능.
+
+                try {
+                    // .env가 복구되었으므로 로그인용 Redirect URI 사용
+                    const redirectUri = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+                    const response = await authApi.connectKakao(code, redirectUri);
+
+                    if (response.isSuccess) {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_kakao' }
+                        });
+                    } else {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_already', provider: 'kakao', errorMessage: response.message }
+                        });
+                    }
+                } catch (err: any) {
+                    console.error('Kakao connect error:', err);
+                    if (err.response && err.response.status === 409) {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_already', provider: 'kakao', errorMessage: err.response.data?.message }
+                        });
+                    } else {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_fail' }
+                        });
+                    }
+                }
+                return;
+            }
+
+            // --- [MODE: LOGIN] 로그인 ---
+            // State 검증 (CSRF 방지) - 로그인 시에는 필수
             const storedState = sessionStorage.getItem('kakao_oauth_state');
             if (!state || state !== storedState) {
                 console.error('Invalid state parameter');
-                sessionStorage.removeItem('kakao_oauth_state'); // 사용 후 삭제
+                sessionStorage.removeItem('kakao_oauth_state');
                 navigate('/login', { replace: true });
                 return;
             }
-            sessionStorage.removeItem('kakao_oauth_state'); // 검증 성공 후 삭제
+            sessionStorage.removeItem('kakao_oauth_state');
 
+            // --- [MODE: LOGIN] 로그인 ---
             try {
                 const result = await kakaoLogin(code);
 

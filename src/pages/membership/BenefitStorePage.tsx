@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import StoreList from "../../components/benefit/StoreList";
 import Header from "../../components/common/Header";
 import Layout from "../../components/common/Layout";
+import MembershipSearchBar from "../../components/common/SearchBar";
 import LoadingDots from "../../components/common/LoadingDots";
 import useStore from "../../hooks/useStore";
-import MembershipSearchBar from "../../components/common/MembershipSearchBar";
 
 export default function BenefitStorePage() {
   const { id } = useParams<{ id: string }>();

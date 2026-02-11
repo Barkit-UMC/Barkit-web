@@ -13,7 +13,6 @@ const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const KakaoCallbackPage = lazy(() => import('./pages/auth/KakaoCallbackPage'));
 const NaverCallbackPage = lazy(() => import('./pages/auth/NaverCallbackPage'));
-
 // Onboarding pages
 const IntroPage = lazy(() => import('./pages/onboarding/IntroPage'));
 const SelectMethodPage = lazy(() => import('./pages/onboarding/SelectMethodPage'));
@@ -272,7 +271,7 @@ function App() {
               }
             />
             <Route
-              path="/map/membership/:membershipId"
+              path="/map/membership/:userMembershipId"
               element={
                 <ProtectedRoute>
                   <MapMembershipDetailPage />
