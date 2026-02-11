@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
+import { dashboardApi } from '../../api/dashboard';
 import searchIcon from '../../assets/icons/search/search_main.svg';
 
 // Brand icon imports
@@ -19,23 +20,23 @@ import KakaopayIcon from '../../assets/icons/BrandIcon/kakaopay.svg?react';
 
 // Brand data type
 interface Brand {
-    id: string;
+    id: number;
     name: string;
     icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
-// Brand list with icons
+// Brand list with icons (IDs match backend membershipBrandId)
 const BRANDS: Brand[] = [
-    { id: 'cjone', name: 'CJ ONE', icon: CJOneIcon },
-    { id: 'kt', name: 'KT', icon: KTIcon },
-    { id: 'skt', name: 'SKT', icon: SKTIcon },
-    { id: 'uplus', name: 'LG U+', icon: UplusIcon },
-    { id: 'ssg', name: '신세계 SSG', icon: SSGIcon },
-    { id: 'lpoint', name: 'L.POINT', icon: LpointIcon },
-    { id: 'okcashbag', name: 'OK캐쉬백', icon: OKcashIcon },
-    { id: 'happypoint', name: '해피포인트', icon: HappyPointIcon },
-    { id: 'naver', name: '네이버', icon: NaverIcon },
-    { id: 'kakaopay', name: '카카오페이', icon: KakaopayIcon },
+    { id: 1, name: 'CJ ONE', icon: CJOneIcon },
+    { id: 3, name: 'KT', icon: KTIcon },
+    { id: 5, name: 'SKT', icon: SKTIcon },
+    { id: 6, name: 'LG U+', icon: UplusIcon },
+    { id: 7, name: '신세계 SSG', icon: SSGIcon },
+    { id: 4, name: 'L.POINT', icon: LpointIcon },
+    { id: 8, name: 'OK캐쉬백', icon: OKcashIcon },
+    { id: 2, name: '해피포인트', icon: HappyPointIcon },
+    { id: 9, name: '네이버', icon: NaverIcon },
+    { id: 10, name: '카카오페이', icon: KakaopayIcon },
 ];
 
 // ============================================
@@ -75,7 +76,7 @@ function BrandItem({ brand, isSelected, hasSelection, onSelect }: BrandItemProps
 // ============================================
 interface BrandGridProps {
     brands: Brand[];
-    selectedBrandId: string | null;
+    selectedBrandId: number | null;
     onSelectBrand: (brand: Brand) => void;
 }
 
@@ -103,7 +104,7 @@ function BrandGrid({ brands, selectedBrandId, onSelectBrand }: BrandGridProps) {
 export default function SearchPage() {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null);
+    const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
     const [progress, setProgress] = useState(0);
 
     // Animate progress on mount
@@ -113,14 +114,23 @@ export default function SearchPage() {
     }, []);
 
     const { setBrand } = useOnboardingStore();
+    const [registeredBrandIds, setRegisteredBrandIds] = useState<number[]>([]);
 
-    // Filter brands by search query
+    // 이미 등록된 브랜드 ID 가져오기
+    useEffect(() => {
+        dashboardApi.getRegisteredBrandIds().then(setRegisteredBrandIds);
+    }, []);
+
+    // Filter brands by search query AND exclude already registered brands
     const filteredBrands = useMemo(() => {
-        if (!searchQuery.trim()) return BRANDS;
-        return BRANDS.filter((brand) =>
-            brand.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }, [searchQuery]);
+        let brands = BRANDS.filter((b) => !registeredBrandIds.includes(b.id));
+        if (searchQuery.trim()) {
+            brands = brands.filter((brand) =>
+                brand.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+        return brands;
+    }, [searchQuery, registeredBrandIds]);
 
     // Handle brand selection (single select)
     const handleSelectBrand = (brand: Brand) => {
@@ -132,7 +142,7 @@ export default function SearchPage() {
         const selectedBrand = BRANDS.find((b) => b.id === selectedBrandId);
         if (selectedBrand) {
             setBrand({
-                id: parseInt(selectedBrand.id, 36), // Convert string id to number
+                id: selectedBrand.id,
                 name: selectedBrand.name,
                 icon: selectedBrand.name.charAt(0),
                 color: '#00C7E2',
