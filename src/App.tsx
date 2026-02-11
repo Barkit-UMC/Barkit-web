@@ -272,7 +272,7 @@ function App() {
               }
             />
             <Route
-              path="/map/membership/:id"
+              path="/map/membership/:membershipId"
               element={
                 <ProtectedRoute>
                   <MapMembershipDetailPage />

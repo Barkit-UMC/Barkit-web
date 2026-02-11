@@ -81,7 +81,28 @@ export interface StoreSummary {
     directionUrl: string;
 }
 
+export interface MapMembershipResponse {
+    userMembershipBrandId: number;
+    membershipBrandName: string;
+    themeColor: string;
+    logoUrl: string;
+    membershipNumber: string;
+    storeBrands: {
+        storeBrandId: number;
+        name: string;
+        logoUrl: string;
+    }[];
+}
+
 export const mapApi = {
+    // 가게 멤버십 상세 조회
+    getMembershipDetail: async (userMembershipBrandId: string): Promise<CommonResponse<MapMembershipResponse>> => {
+        const response = await apiClient.get<CommonResponse<MapMembershipResponse>>(
+            `/api/user-membership-brands/${userMembershipBrandId}/detail`
+        );
+        return response.data;
+    },
+
     /**
      * 주변 매장 검색
      */
