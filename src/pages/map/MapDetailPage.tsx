@@ -167,8 +167,8 @@ export default function MapDetailPage() {
                             {/* 2. 요일 텍스트 출력 */}
                             {storeData.hourInfo.weekdayText.map((text, index) => (
                                 <React.Fragment key={index}>
-                                    {text}
                                     <br />
+                                    {text}
                                 </React.Fragment>
                             ))}
                         </span>
