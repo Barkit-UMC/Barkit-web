@@ -4,7 +4,7 @@ import koKR from 'antd-mobile/es/locales/ko-KR';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import CommonToast from '../../components/profile/CommonToast';
-import { userApi, type UserResponse } from '../../api/user';
+import { userApi, type changeBirthResponse, type UserResponse } from '../../api/user';
 
 export default function ChangeBirthdayPage() {
   const initialBirthday = new Date();
@@ -34,19 +34,28 @@ export default function ChangeBirthdayPage() {
   const handleConfirm = async (date: Date) => {
     setOpen(false);
 
-    if (birthday?.getTime() === date.getTime()) return;
+    // 날짜를 YYYY-MM-DD 형식으로 안전하게 변환
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // 이전과 날짜가 같다면 API 호출 안 함
+    const currentFormatted = birthday ? 
+      `${birthday.getFullYear()}-${String(birthday.getMonth() + 1).padStart(2, '0')}-${String(birthday.getDate()).padStart(2, '0')}` 
+      : null;
+
+    if (currentFormatted === formattedDate) return;
 
     setLoading(true);
 
     try {
-      // 서버에 변경 요청 → 반환된 UserResponse 사용
-      const updatedUser: UserResponse = await userApi.updateBirthDate(
-        date.toISOString().split('T')[0]
-      );
+      // 서버에 변경 요청
+      const updatedUser = await userApi.updateBirthDate(formattedDate);
 
       console.log('생년월일 변경 성공:', updatedUser.birthDate);
 
-      // 서버에서 받은 최신 birthDate로 상태 갱신
+      // 서버에서 받은 "2026-02-11" 문자열을 Date 객체로 변환
       setBirthday(new Date(updatedUser.birthDate));
       setShowToast(true);
     } catch (err) {

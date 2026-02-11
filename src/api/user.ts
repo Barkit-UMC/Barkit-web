@@ -13,6 +13,13 @@ interface ApiResponse<T> {
     result: T;
 }
 
+export interface changeBirthResponse {
+  name: string;
+    email: string;
+    phoneNumber: string;
+    birthDate: string;
+}
+
 export const userApi = {
     /**
      * 내 정보 조회
@@ -27,14 +34,15 @@ export const userApi = {
 
         return response.data.result;
     },
-    updateBirthDate: async (birthDate: string): Promise<UserResponse> => {
-        const response = await axiosInstance.put<ApiResponse<UserResponse>>(
+    updateBirthDate: async (birthDate: string): Promise<changeBirthResponse> => {
+        const response = await axiosInstance.patch<ApiResponse<changeBirthResponse>>(
             '/api/users/me/birth-date',
             { birthDate }
         );
         if (!response.data.isSuccess) {
             throw new Error(response.data.message || '생일 업데이트 실패');
         }
+
         return response.data.result;
     },
 };
