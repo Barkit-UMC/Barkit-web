@@ -8,6 +8,7 @@ import oliveyoung from '../../assets/icons/memberships/cjone.svg';
 import sampleimg from '../../assets/images/map_image_sample.png';
 import Header from '../../components/common/Header';
 import MapContainer from '../../components/map/MapContainer';
+import MapMarker from '../../components/map/MapMarker';
 
 export default function MapDetailPage() {
     const { googleId } = useParams<{ googleId: string }>();
@@ -201,10 +202,10 @@ export default function MapDetailPage() {
                                 showMyLocation={false}
                             >
                                 {/* 매장 위치 마커 */}
-                                {/* <MapMarker 
+                                <MapMarker 
                                     position={storeData.location} 
                                     title={storeData.name}
-                                /> */}
+                                />
                             </MapContainer>
 
                             {/* 우측 상단 확대 아이콘 버튼 (z-index를 주어 지도 위에 띄움) */}
