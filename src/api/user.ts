@@ -13,6 +13,12 @@ interface ApiResponse<T> {
     result: T;
 }
 
+export interface UpdatePasswordRequest {
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+}
+
 export const userApi = {
     /**
      * 내 정보 조회
@@ -26,5 +32,18 @@ export const userApi = {
         }
 
         return response.data.result;
-    }
+    },
+
+    /** 비밀번호 변경 */
+    updatePassword: async (data: UpdatePasswordRequest): Promise<string> => {
+        const response = await axiosInstance.put<ApiResponse<string>>(
+            '/api/users/me/password',
+            data
+        );
+        if (!response.data.isSuccess) {
+            throw new Error(response.data.message || '비밀번호 변경 실패');
+        }
+
+        return response.data.result;
+    },
 };

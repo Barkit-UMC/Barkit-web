@@ -4,12 +4,14 @@ import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import IconComplete from '../../assets/icons/toast/complete.svg';
+import usePassword from '../../hooks/usePassword';
 
 /**
  * [PAGE] 비밀번호 변경 페이지
  */
 export default function ChangePasswordPage() {
   const navigate = useNavigate();
+  const { changePassword, isLoading, error: serverError } = usePassword();
 
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
@@ -33,12 +35,9 @@ export default function ChangePasswordPage() {
     setErrors((prev) => {
       const newErrors = { ...prev };
 
+      // ✅ 현재 비밀번호는 클라이언트에서 체크하지 않고 서버 에러 활용
       if (field === 'currentPw') {
-        const pw = value ?? currentPw;
-        if (!pw) newErrors.currentPw = '';
-        else if (pw !== '1234')
-          newErrors.currentPw = '현재 비밀번호와 일치하지 않습니다';
-        else newErrors.currentPw = '';
+        newErrors.currentPw = '';
       }
 
       if (field === 'newPw') {
@@ -65,9 +64,13 @@ export default function ChangePasswordPage() {
     });
   };
 
-  /** 유효하면 체크 표시 */
-  const isFieldValid = (value: string, error: string) =>
-    value.length > 0 && !error;
+  /** 유효하면 체크 표시 (touched 된 후만 표시) */
+  const isFieldValid = (
+    field: keyof typeof errors,
+    value: string,
+    error: string,
+    isTouched: boolean
+  ) => value.length > 0 && !error && isTouched;
 
   const isValid =
     currentPw &&
@@ -85,8 +88,21 @@ export default function ChangePasswordPage() {
       ? 'border-red-500'
       : 'focus-within:border-[#00C0E8] border-gray-300';
 
-  const handleSubmit = () => {
-    navigate('/profile/edit', { state: { toast: 'password' } });
+  const handleSubmit = async () => {
+    try {
+      const success = await changePassword({
+        currentPassword: currentPw,
+        newPassword: newPw,
+        confirmNewPassword: confirmPw,
+      });
+
+      if (success) {
+        navigate('/profile/edit', { state: { toast: 'password' } });
+      }
+    } catch (err) {
+      // 서버에서 반환된 에러를 currentPw 필드에 표시
+      setErrors((prev) => ({ ...prev, currentPw: (err as Error).message }));
+    }
   };
 
   return (
@@ -106,12 +122,15 @@ export default function ChangePasswordPage() {
                 setCurrentPw(v);
                 validateField('currentPw', v);
               }}
-              onBlur={() =>
-                setTouched((p) => ({ ...p, currentPw: true }))
-              }
+              onBlur={() => setTouched((p) => ({ ...p, currentPw: true }))}
               className={`${inputBase} text-gray-800`}
             />
-            {isFieldValid(currentPw, errors.currentPw) && (
+            {isFieldValid(
+              'currentPw',
+              currentPw,
+              errors.currentPw,
+              touched.currentPw
+            ) && (
               <img
                 src={IconComplete}
                 alt="complete"
@@ -145,12 +164,10 @@ export default function ChangePasswordPage() {
                 setNewPw(v);
                 validateField('newPw', v);
               }}
-              onBlur={() =>
-                setTouched((p) => ({ ...p, newPw: true }))
-              }
+              onBlur={() => setTouched((p) => ({ ...p, newPw: true }))}
               className={`${inputBase} text-gray-800`}
             />
-            {isFieldValid(newPw, errors.newPw) && (
+            {isFieldValid('newPw', newPw, errors.newPw, touched.newPw) && (
               <img
                 src={IconComplete}
                 alt="complete"
@@ -160,10 +177,7 @@ export default function ChangePasswordPage() {
           </div>
 
           <div
-            className={`border-b ${getBorderColor(
-              errors.newPw,
-              touched.newPw
-            )}`}
+            className={`border-b ${getBorderColor(errors.newPw, touched.newPw)}`}
           />
           {touched.newPw && errors.newPw && (
             <p className="mt-1 text-right text-[12px] text-red-500">
@@ -184,12 +198,15 @@ export default function ChangePasswordPage() {
                 setConfirmPw(v);
                 validateField('confirmPw', v);
               }}
-              onBlur={() =>
-                setTouched((p) => ({ ...p, confirmPw: true }))
-              }
+              onBlur={() => setTouched((p) => ({ ...p, confirmPw: true }))}
               className={`${inputBase} text-gray-800`}
             />
-            {isFieldValid(confirmPw, errors.confirmPw) && (
+            {isFieldValid(
+              'confirmPw',
+              confirmPw,
+              errors.confirmPw,
+              touched.confirmPw
+            ) && (
               <img
                 src={IconComplete}
                 alt="complete"
@@ -213,7 +230,11 @@ export default function ChangePasswordPage() {
       </div>
 
       <div className="fixed bottom-10 left-0 right-0 px-6">
-        <Button onClick={handleSubmit} variant="secondary" disabled={!isValid}>
+        <Button
+          onClick={handleSubmit}
+          variant="secondary"
+          disabled={!isValid || isLoading}
+        >
           완료하기
         </Button>
       </div>
