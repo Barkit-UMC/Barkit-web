@@ -4,19 +4,47 @@ import apiClient from './client';
  * 지도/매장 데이터 API
  */
 
-interface Store {
-    id: number;
-    name: string;
-    brandId: number;
-    brandName: string;
-    address: string;
-    lat: number;
-    lng: number;
-    phone?: string;
-    openingHours?: string;
+export interface CommonResponse<T> {
+    isSuccess: boolean;
+    code: string;
+    message: string;
+    result: T;
 }
 
-interface SearchStoresRequest {
+// 매장 상세 dto
+export interface StoreDetail {
+  name: string;
+  distance: number;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  contact: {
+    address: string;
+    phoneNumber: string;
+    homepage: string;
+  };
+  hourInfo: {
+    weekdayText: string[];
+    isOpen: boolean;
+  };
+  membership: {
+    name: string;
+    logoUrl: string;
+  }[];
+  userMembership: {
+    name: string;
+    logoUrl: string;
+  }[];
+  photos: {
+    url: string;
+    width: number;
+    height: number;
+  }[];
+}
+
+// 매장 검색 dto
+export interface SearchStoresRequest {
     lat?: number;
     lng?: number;
     radius?: number; // meters
@@ -28,7 +56,7 @@ export const mapApi = {
     /**
      * 주변 매장 검색
      */
-    searchStores: async (params: SearchStoresRequest): Promise<Store[]> => {
+    searchStores: async (params: SearchStoresRequest): Promise<StoreDetail[]> => {
         const queryParams = new URLSearchParams();
 
         if (params.lat) queryParams.append('lat', params.lat.toString());
@@ -38,38 +66,20 @@ export const mapApi = {
         if (params.brandId) queryParams.append('brandId', params.brandId.toString());
 
         const endpoint = `/stores?${queryParams.toString()}`;
-        return await apiClient<Store[]>(endpoint);
+        return await apiClient<StoreDetail[]>(endpoint);
     },
 
     /**
      * 매장 상세 정보
      */
-    getStoreById: async (id: number): Promise<Store> => {
-        return await apiClient<Store>(`/stores/${id}`);
-    },
-
-    /**
-     * 즐겨찾기 매장 목록
-     */
-    getFavoriteStores: async (): Promise<Store[]> => {
-        return await apiClient<Store[]>('/stores/favorites');
-    },
-
-    /**
-     * 즐겨찾기 추가
-     */
-    addFavorite: async (storeId: number): Promise<void> => {
-        await apiClient(`/stores/${storeId}/favorite`, {
-            method: 'POST',
+    getStoreDetail: async (googleId: string, userLat: number, userLng: number): Promise<CommonResponse<StoreDetail>> => {
+        const queryParams = new URLSearchParams({
+            googleId,
+            userLat: userLat.toString(),
+            userLng: userLng.toString(),
         });
-    },
 
-    /**
-     * 즐겨찾기 제거
-     */
-    removeFavorite: async (storeId: number): Promise<void> => {
-        await apiClient(`/stores/${storeId}/favorite`, {
-            method: 'DELETE',
-        });
+        // 명세서의 Path인 /api/map/store 사용
+        return await apiClient<CommonResponse<StoreDetail>>(`/api/map/store?${queryParams.toString()}`);
     },
 };
