@@ -26,7 +26,7 @@ interface ApiResponse<T> {
 
 export const membershipApi = {
     /**
-     * 내 멤버십 목록 조회
+     * 사용자 보유 멤버십 브랜드 검색
      */
     getMyMemberships: async (): Promise<Membership[]> => {
         const response = await axiosInstance.get<ApiResponse<Membership[]>>('/api/memberships');
