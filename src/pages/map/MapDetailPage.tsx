@@ -22,7 +22,6 @@ export default function MapDetailPage() {
     useEffect(() => {
     const fetchDetail = async () => {
         if (!googleId) return;
-        console.log("1. 상세 데이터 호출 시작 - ID:", googleId);
 
         try {
             // 위치 정보를 못 가져올 상황을 대비해 기본값 설정
@@ -35,13 +34,12 @@ export default function MapDetailPage() {
                 });
                 lat = pos.coords.latitude;
                 lng = pos.coords.longitude;
-                console.log("2. 위치 정보 획득 성공:", lat, lng);
             } catch (e) {
+                alert(`위치 정보를 가져오지 못해 기본 좌표를 사용합니다.`);
                 console.warn("위치 정보를 가져오지 못해 기본 좌표를 사용합니다.");
             }
 
             const response = await mapApi.getStoreDetail(googleId, lat, lng);
-            console.log("3. API 응답 수신:", response);
 
             if (response.isSuccess) {
                 setStoreData(response.result);
