@@ -1,25 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import IconComplete from '../../assets/icons/toast/complete.svg';
+import { userApi, type UpdatePasswordRequest } from '../../api/user';
 
-/**
- * [PAGE] 비밀번호 변경 페이지
- */
+function usePassword() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const changePassword = async (data: UpdatePasswordRequest) => {
+    setIsLoading(true);
+    try {
+      // API가 POST로 수정되었음을 가정합니다.
+      const result = await userApi.updatePassword(data);
+      return result;
+    } catch (err: any) {
+      const serverMessage = err.response?.data?.message || err.message;
+      throw new Error(serverMessage || '비밀번호 변경에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { changePassword, isLoading };
+}
+
 export default function ChangePasswordPage() {
   const navigate = useNavigate();
+  const { changePassword, isLoading } = usePassword();
 
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
-
-  const [touched, setTouched] = useState({
-    currentPw: false,
-    newPw: false,
-    confirmPw: false,
-  });
 
   const [errors, setErrors] = useState({
     currentPw: '',
@@ -27,67 +40,99 @@ export default function ChangePasswordPage() {
     confirmPw: '',
   });
 
+  const [currentPwValid, setCurrentPwValid] = useState(false);
+  const [newPwValid, setNewPwValid] = useState(false);
+  const [confirmPwValid, setConfirmPwValid] = useState(false);
+
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,12}$/;
 
-  const validateField = (field: keyof typeof errors, value?: string) => {
-    setErrors((prev) => {
-      const newErrors = { ...prev };
+  // 1. 현재 비밀번호 실시간 검증 (Debounce)
+  useEffect(() => {
+    if (currentPw.length === 0) {
+      setCurrentPwValid(false);
+      setErrors(p => ({ ...p, currentPw: '' }));
+      return;
+    }
 
-      if (field === 'currentPw') {
-        const pw = value ?? currentPw;
-        if (!pw) newErrors.currentPw = '';
-        else if (pw !== '1234')
-          newErrors.currentPw = '현재 비밀번호와 일치하지 않습니다';
-        else newErrors.currentPw = '';
+    const timeout = setTimeout(async () => {
+      try {
+        const isValid = await userApi.validatePassword(currentPw);
+        if (isValid) {
+          setCurrentPwValid(true);
+          setErrors(p => ({ ...p, currentPw: '' }));
+        } else {
+          setCurrentPwValid(false);
+          setErrors(p => ({ ...p, currentPw: '현재 비밀번호가 일치하지 않습니다.' }) );
+        }
+      } catch (err: any) {
+        setCurrentPwValid(false);
+        setErrors(p => ({ 
+          ...p, 
+          currentPw: err.response?.data?.message || '현재 비밀번호가 일치하지 않습니다.' 
+        }));
       }
+    }, 500);
 
-      if (field === 'newPw') {
-        const pw = value ?? newPw;
-        if (!pw) newErrors.newPw = '';
-        else if (!passwordRegex.test(pw))
-          newErrors.newPw = '8~12자 영문 + 특수문자 조합으로 입력해주세요';
-        else newErrors.newPw = '';
+    return () => clearTimeout(timeout);
+  }, [currentPw]);
 
-        if (confirmPw && pw !== confirmPw)
-          newErrors.confirmPw = '입력하신 비밀번호와 일치하지 않습니다';
-        else newErrors.confirmPw = '';
-      }
+  // 2. 새 비밀번호 및 확인 실시간 검증 (Debounce)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setErrors(prev => {
+        const nextErrors = { ...prev };
+        
+        // 새 비밀번호 검사
+        if (newPw.length === 0) {
+          nextErrors.newPw = '';
+          setNewPwValid(false);
+        } else if (!passwordRegex.test(newPw)) {
+          nextErrors.newPw = '8~12자 영문 + 특수문자 조합으로 입력해주세요';
+          setNewPwValid(false);
+        } else {
+          nextErrors.newPw = '';
+          setNewPwValid(true);
+        }
 
-      if (field === 'confirmPw') {
-        const pw = value ?? confirmPw;
-        if (!pw) newErrors.confirmPw = '';
-        else if (pw !== newPw)
-          newErrors.confirmPw = '입력하신 비밀번호와 일치하지 않습니다';
-        else newErrors.confirmPw = '';
-      }
+        // 비밀번호 확인 검사
+        if (confirmPw.length === 0) {
+          nextErrors.confirmPw = '';
+          setConfirmPwValid(false);
+        } else if (confirmPw !== newPw) {
+          nextErrors.confirmPw = '입력하신 비밀번호와 일치하지 않습니다';
+          setConfirmPwValid(false);
+        } else {
+          nextErrors.confirmPw = '';
+          // 새 비밀번호 자체가 유효할 때만 확인 체크 표시
+          setConfirmPwValid(passwordRegex.test(newPw));
+        }
 
-      return newErrors;
-    });
+        return nextErrors;
+      });
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [newPw, confirmPw]);
+
+  const isValid = currentPwValid && newPwValid && confirmPwValid;
+
+  const handleSubmit = async () => {
+    if (!isValid) return;
+    try {
+      await changePassword({
+        currentPassword: currentPw,
+        newPassword: newPw,
+        confirmPassword: confirmPw,
+      });
+      navigate('/profile/edit', { state: { toast: 'password' } });
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
-  /** 유효하면 체크 표시 */
-  const isFieldValid = (value: string, error: string) =>
-    value.length > 0 && !error;
-
-  const isValid =
-    currentPw &&
-    newPw &&
-    confirmPw &&
-    !errors.currentPw &&
-    !errors.newPw &&
-    !errors.confirmPw;
-
-  const inputBase =
-    'w-full pb-2 pr-10 text-[16px] font-normal focus:outline-none';
-
-  const getBorderColor = (error: string, isTouched: boolean) =>
-    error && isTouched
-      ? 'border-red-500'
-      : 'focus-within:border-[#00C0E8] border-gray-300';
-
-  const handleSubmit = () => {
-    navigate('/profile/edit', { state: { toast: 'password' } });
-  };
+  const inputBase = 'w-full pb-2 pr-10 text-[16px] font-normal focus:outline-none bg-transparent';
+  const getBorderColor = (error: string) =>
+    error ? 'border-red-500' : 'focus-within:border-[#00C0E8] border-gray-300';
 
   return (
     <Layout>
@@ -101,36 +146,15 @@ export default function ChangePasswordPage() {
               type="password"
               placeholder="현재 비밀번호"
               value={currentPw}
-              onChange={(e) => {
-                const v = e.target.value;
-                setCurrentPw(v);
-                validateField('currentPw', v);
-              }}
-              onBlur={() =>
-                setTouched((p) => ({ ...p, currentPw: true }))
-              }
+              onChange={(e) => setCurrentPw(e.target.value)}
               className={`${inputBase} text-gray-800`}
             />
-            {isFieldValid(currentPw, errors.currentPw) && (
-              <img
-                src={IconComplete}
-                alt="complete"
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4"
-              />
+            {currentPwValid && (
+              <img src={IconComplete} alt="complete" className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4" />
             )}
           </div>
-
-          <div
-            className={`border-b ${getBorderColor(
-              errors.currentPw,
-              touched.currentPw
-            )}`}
-          />
-          {touched.currentPw && errors.currentPw && (
-            <p className="mt-1 text-right text-[12px] text-red-500">
-              {errors.currentPw}
-            </p>
-          )}
+          <div className={`border-b ${getBorderColor(errors.currentPw)}`} />
+          {errors.currentPw && <p className="mt-1 text-right text-[12px] text-red-500">{errors.currentPw}</p>}
         </div>
 
         {/* 새 비밀번호 */}
@@ -140,36 +164,15 @@ export default function ChangePasswordPage() {
               type="password"
               placeholder="새 비밀번호 (8~12자 영문+특수문자)"
               value={newPw}
-              onChange={(e) => {
-                const v = e.target.value;
-                setNewPw(v);
-                validateField('newPw', v);
-              }}
-              onBlur={() =>
-                setTouched((p) => ({ ...p, newPw: true }))
-              }
+              onChange={(e) => setNewPw(e.target.value)}
               className={`${inputBase} text-gray-800`}
             />
-            {isFieldValid(newPw, errors.newPw) && (
-              <img
-                src={IconComplete}
-                alt="complete"
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4"
-              />
+            {newPwValid && (
+              <img src={IconComplete} alt="complete" className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4" />
             )}
           </div>
-
-          <div
-            className={`border-b ${getBorderColor(
-              errors.newPw,
-              touched.newPw
-            )}`}
-          />
-          {touched.newPw && errors.newPw && (
-            <p className="mt-1 text-right text-[12px] text-red-500">
-              {errors.newPw}
-            </p>
-          )}
+          <div className={`border-b ${getBorderColor(errors.newPw)}`} />
+          {errors.newPw && <p className="mt-1 text-right text-[12px] text-red-500">{errors.newPw}</p>}
         </div>
 
         {/* 새 비밀번호 확인 */}
@@ -179,42 +182,21 @@ export default function ChangePasswordPage() {
               type="password"
               placeholder="새 비밀번호 확인"
               value={confirmPw}
-              onChange={(e) => {
-                const v = e.target.value;
-                setConfirmPw(v);
-                validateField('confirmPw', v);
-              }}
-              onBlur={() =>
-                setTouched((p) => ({ ...p, confirmPw: true }))
-              }
+              onChange={(e) => setConfirmPw(e.target.value)}
               className={`${inputBase} text-gray-800`}
             />
-            {isFieldValid(confirmPw, errors.confirmPw) && (
-              <img
-                src={IconComplete}
-                alt="complete"
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4"
-              />
+            {confirmPwValid && (
+              <img src={IconComplete} alt="complete" className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4" />
             )}
           </div>
-
-          <div
-            className={`border-b ${getBorderColor(
-              errors.confirmPw,
-              touched.confirmPw
-            )}`}
-          />
-          {touched.confirmPw && errors.confirmPw && (
-            <p className="mt-1 text-right text-[12px] text-[#ff2d55]">
-              {errors.confirmPw}
-            </p>
-          )}
+          <div className={`border-b ${getBorderColor(errors.confirmPw)}`} />
+          {errors.confirmPw && <p className="mt-1 text-right text-[12px] text-red-500">{errors.confirmPw}</p>}
         </div>
       </div>
 
       <div className="fixed bottom-10 left-0 right-0 px-6">
-        <Button onClick={handleSubmit} variant="secondary" disabled={!isValid}>
-          완료하기
+        <Button onClick={handleSubmit} variant="secondary" disabled={!isValid || isLoading}>
+          {isLoading ? '변경 중...' : '완료하기'}
         </Button>
       </div>
     </Layout>
