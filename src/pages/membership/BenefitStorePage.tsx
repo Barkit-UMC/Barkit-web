@@ -1,71 +1,75 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import StoreList from "../../components/benefit/StoreList";
 import Header from "../../components/common/Header";
 import Layout from "../../components/common/Layout";
-import MembershipSearchBar from "../../components/common/SearchBar";
 import LoadingDots from "../../components/common/LoadingDots";
-import useStore from "../../hooks/useStore";
+import useInfiniteStore from "../../hooks/useInfiniteStore";
+import SearchBar from "../../components/common/SearchBar";
 
 export default function BenefitStorePage() {
   const { id } = useParams<{ id: string }>();
-  const userMembershipBrandId = Number(id);
-  const isValidId = !!id && !Number.isNaN(userMembershipBrandId);
-
-
-  const { stores, loading, resetAndFetch } = useStore(isValidId ? userMembershipBrandId : 0);
+  const brandId = Number(id);
+  const isValidId = !!id && !Number.isNaN(brandId);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
-  // 디바운스 + 서버 요청
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  // debounce
   useEffect(() => {
-    if (!isValidId) return;
-    const query = searchQuery.trim();
-
-    // 입력이 비어있으면 전체 리스트 보여주기
-    if (query === "") {
-      void resetAndFetch(""); 
-      setIsTyping(false);
-      return;
-    }
-
-    setIsTyping(true);
-    const timer = setTimeout(async () => {
-      await resetAndFetch(query); // 서버 요청 완료까지 기다림
-      setIsTyping(false);
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery.trim());
     }, 500);
-
     return () => clearTimeout(timer);
-  }, [searchQuery, isValidId]);
+  }, [searchQuery]);
 
-  // 검색 버튼 클릭 시 즉시 검색
-  const handleSearchClick = async () => {
-    if (!isValidId) return;
-    setIsTyping(true);
-    await resetAndFetch(searchQuery.trim());
-    setIsTyping(false);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteStore(isValidId ? brandId : 0, debouncedQuery);
+
+  const stores = data?.pages.flatMap(page => page.stores) ?? [];
+
+  // infinite scroll
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        fetchNextPage();
+      }
+    });
+
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage]);
+
+    const handleSearchClick = () => {
+    setDebouncedQuery(searchQuery.trim());
   };
 
   if (!isValidId) {
     return (
-      <Layout showBottomNav={true}>
+      <Layout showBottomNav>
         <Header title="적립/할인 가능한 매장" />
-        <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] 
-                px-4 flex items-center justify-center text-gray-400">
+        <div className="pt-48 flex justify-center text-gray-400">
           잘못된 접근입니다
         </div>
       </Layout>
     );
   }
 
-  const showLoading = loading || isTyping;
-
   return (
-    <Layout showBottomNav={true}>
+    <Layout showBottomNav>
       <Header title="적립/할인 가능한 매장" />
+
       <div className="pt-24 pb-4 bg-gray-50 fixed w-full top-[20px] z-20">
-        <MembershipSearchBar
+        <SearchBar
           placeholder="올리브영"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -74,16 +78,27 @@ export default function BenefitStorePage() {
       </div>
 
       <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] px-4">
-        {showLoading ? (
+        {isLoading && (
           <div className="w-full h-[200px] flex items-center justify-center">
             <LoadingDots />
           </div>
-        ) : stores.length === 0 ? (
+        )}
+
+        {!isLoading && stores.length === 0 && (
           <div className="w-full h-[200px] flex items-center justify-center text-gray-400">
             검색 결과가 없습니다
           </div>
-        ) : (
-          <StoreList stores={stores} />
+        )}
+
+        <StoreList stores={stores} />
+
+        {hasNextPage && (
+          <div
+            ref={loadMoreRef}
+            className="w-full h-20 flex justify-center items-center"
+          >
+            <LoadingDots />
+          </div>
         )}
       </div>
     </Layout>
