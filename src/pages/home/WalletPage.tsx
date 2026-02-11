@@ -109,7 +109,7 @@ export default function WalletPage() {
     return (
         <Layout showBottomNav>
             {/* 1. 전체 컨테이너: app-main 내부에서 스크롤이 가능하도록 설정 */}
-            <div className="flex flex-col flex-1 bg-gray-50 overflow-y-auto scrollbar-hide pb-20">
+            <div className="flex flex-col h-full bg-gray-50 overflow-y-auto scrollbar-hide pb-20">
                 
                 {/* 2. 섹션별 컨테이너: max-width를 주어 태블릿/PC에서도 적절한 너비 유지 */}
                 <div className="w-full max-w-[430px] mx-auto">
