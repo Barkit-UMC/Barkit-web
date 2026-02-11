@@ -1,9 +1,8 @@
-import apiClient from './client';
-import type { Membership } from '../types/membership';
-
 /**
  * 멤버십 조회/등록 API
  */
+import axiosInstance from './axios';
+import type { Membership } from '../types/membership';
 
 interface RegisterMembershipRequest {
     brandId: number;
@@ -18,52 +17,62 @@ interface Brand {
     logo?: string;
 }
 
+interface ApiResponse<T> {
+    isSuccess: boolean;
+    code?: string;
+    message?: string;
+    result: T;
+}
+
 export const membershipApi = {
     /**
      * 내 멤버십 목록 조회
      */
     getMyMemberships: async (): Promise<Membership[]> => {
-        return await apiClient<Membership[]>('/memberships');
+        const response = await axiosInstance.get<ApiResponse<Membership[]>>('/api/memberships');
+        return response.data.result;
     },
 
     /**
      * 멤버십 상세 조회
      */
     getMembershipById: async (id: number): Promise<Membership> => {
-        return await apiClient<Membership>(`/memberships/${id}`);
+        const response = await axiosInstance.get<ApiResponse<Membership>>(`/api/memberships/${id}`);
+        return response.data.result;
     },
 
     /**
      * 멤버십 등록
      */
     registerMembership: async (data: RegisterMembershipRequest): Promise<Membership> => {
-        return await apiClient<Membership>('/memberships', {
-            method: 'POST',
-            body: data,
-        });
+        const response = await axiosInstance.post<ApiResponse<Membership>>('/api/memberships', data);
+        return response.data.result;
     },
 
     /**
      * 멤버십 삭제
      */
     deleteMembership: async (id: number): Promise<void> => {
-        await apiClient(`/memberships/${id}`, {
-            method: 'DELETE',
-        });
+        await axiosInstance.delete(`/api/memberships/${id}`);
     },
 
     /**
      * 브랜드 목록 조회
      */
     getBrands: async (query?: string): Promise<Brand[]> => {
-        const endpoint = query ? `/brands?q=${encodeURIComponent(query)}` : '/brands';
-        return await apiClient<Brand[]>(endpoint);
+        const response = await axiosInstance.get<ApiResponse<Brand[]>>('/api/brands', {
+            params: query ? { q: query } : undefined,
+        });
+        return response.data.result;
     },
 
     /**
      * 인기 브랜드 조회
      */
     getPopularBrands: async (): Promise<Brand[]> => {
-        return await apiClient<Brand[]>('/brands/popular');
+        const response = await axiosInstance.get<ApiResponse<Brand[]>>('/api/brands/popular');
+        return response.data.result;
     },
 };
+
+export type { RegisterMembershipRequest, Brand };

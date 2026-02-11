@@ -11,6 +11,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
+const KakaoCallbackPage = lazy(() => import('./pages/auth/KakaoCallbackPage'));
+const NaverCallbackPage = lazy(() => import('./pages/auth/NaverCallbackPage'));
 
 // Onboarding pages
 const IntroPage = lazy(() => import('./pages/onboarding/IntroPage'));
@@ -66,7 +68,7 @@ const isDev = import.meta.env.MODE === 'development';
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // TODO: Replace with actual auth check (e.g., from context or localStorage)
   if (isDev) return <>{children}</>;
-  const isAuthenticated = localStorage.getItem('authToken') !== null;
+  const isAuthenticated = localStorage.getItem('accessToken') !== null;
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
@@ -75,7 +77,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const RootRedirect = () => {
   // TODO: Replace with actual auth check
   if (isDev) return <Navigate to="/login" replace />;
-  const isAuthenticated = localStorage.getItem('authToken') !== null;
+  const isAuthenticated = localStorage.getItem('accessToken') !== null;
 
   return <Navigate to={isAuthenticated ? '/home' : '/login'} replace />;
 };
@@ -95,6 +97,10 @@ function App() {
             {/* Auth routes - public */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+
+            {/* OAuth callback routes - public */}
+            <Route path="/oauth/kakao/callback" element={<KakaoCallbackPage />} />
+            <Route path="/oauth/naver/callback" element={<NaverCallbackPage />} />
 
             {/* Onboarding routes - standalone (no shared layout) */}
             <Route path="/onboarding/intro" element={<IntroPage />} />

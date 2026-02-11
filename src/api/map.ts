@@ -1,8 +1,7 @@
-import apiClient from './client';
-
 /**
  * 지도/매장 데이터 API
  */
+import axiosInstance from './axios';
 
 export interface CommonResponse<T> {
     isSuccess: boolean;
@@ -52,10 +51,18 @@ export interface SearchStoresRequest {
     centerlng?: number;
 }
 
+interface ApiResponse<T> {
+    isSuccess: boolean;
+    code?: string;
+    message?: string;
+    result: T;
+}
+
 export const mapApi = {
     /**
      * 주변 매장 검색
      */
+
     searchStores: async (
         req: SearchStoresRequest, 
         cursor: number = 0,
@@ -95,3 +102,5 @@ export const mapApi = {
         return await apiClient<CommonResponse<StoreDetail>>(`/api/map/store?${queryParams.toString()}`);
     },
 };
+
+export type { Store, SearchStoresRequest };
