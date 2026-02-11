@@ -22,13 +22,6 @@ export default function EditProfilePage() {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
 
-  userApi.getMyInfo().then((userInfo) => {
-    if (userInfo) {
-      setName(userInfo.name);
-      setEmail(userInfo.email);
-    }
-  });
-
   useEffect(() => {
     userApi.getMyInfo().then((userInfo) => {
       if (userInfo) {

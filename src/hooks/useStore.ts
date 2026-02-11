@@ -8,14 +8,15 @@ export default function useStore(userMembershipBrandId: number) {
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const fetchStores = async (isReset = false) => {
+  const fetchStores = async (isReset = false, keyword?: string) => {
     if (loading) return;
     setLoading(true);
 
     try {
       const res = await getStoreList(
         userMembershipBrandId,
-        isReset ? undefined : cursor ?? undefined
+        isReset ? undefined : cursor ?? undefined,
+        keyword
       );
 
       setStores(prev => (isReset ? res.stores : [...prev, ...res.stores]));
@@ -26,10 +27,10 @@ export default function useStore(userMembershipBrandId: number) {
     }
   };
 
-  const resetAndFetch = () => {
+  const resetAndFetch = (keyword?: string) => {
     setCursor(null);
     setHasNext(true);
-    fetchStores(true);
+    fetchStores(true, keyword);
   };
 
   return {

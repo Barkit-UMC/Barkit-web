@@ -1,6 +1,5 @@
-
 import type { Store } from '../types/store';
-import { axiosInstance } from './axios';
+import axiosInstance from './axios';
 
 export interface GetStoreListResponse {
   stores: Store[];
@@ -10,18 +9,20 @@ export interface GetStoreListResponse {
 
 export const getStoreList = async (
   userMembershipBrandId: number,
-  cursor?: number
+  cursor?: number,
+  keyword?: string,
+  size: number = 20
 ): Promise<GetStoreListResponse> => {
   const res = await axiosInstance.get(`/api/user-membership-brands/${userMembershipBrandId}/stores`, {
-    params: { cursor },
+    params: { cursor, keyword, size },
   });
 
-  // API 응답 구조에 맞춰 변환
   const data = res.data.result;
+
   const stores: Store[] = data.stores.map((s: any) => ({
     storeId: s.storeId,
     brandName: s.brandName,
-    storeImageUrl: s.logoUrl, // logoUrl -> storeImageUrl
+    storeImageUrl: s.logoUrl,
   }));
 
   return {

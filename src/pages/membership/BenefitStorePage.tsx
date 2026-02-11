@@ -3,54 +3,47 @@ import { useParams } from "react-router-dom";
 import StoreList from "../../components/benefit/StoreList";
 import Header from "../../components/common/Header";
 import Layout from "../../components/common/Layout";
-import MembershipSearchBar from "../../components/common/MembershipSearchBar";
 import LoadingDots from "../../components/common/LoadingDots";
 import useStore from "../../hooks/useStore";
+import MembershipSearchBar from "../../components/common/MembershipSearchBar";
 
 export default function BenefitStorePage() {
-  // URL에서 brandId 파라미터 가져오기
-  const { brandId } = useParams<{ brandId: string }>();
-  const userMembershipBrandId = Number(brandId); // string → number 변환
+  const { id } = useParams<{ id: string }>();
+  const userMembershipBrandId = Number(id);
 
-  const { stores, loading, fetchStores } = useStore(userMembershipBrandId);
+  const { stores, loading, resetAndFetch } = useStore(userMembershipBrandId);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [appliedQuery, setAppliedQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [hasSearched, setHasSearched] = useState(true);
 
+  // 디바운스 + 서버 요청
   useEffect(() => {
-    if (!isNaN(userMembershipBrandId)) {
-      fetchStores();
+    const query = searchQuery.trim();
+
+    // 입력이 비어있으면 전체 리스트 보여주기
+    if (query === "") {
+      resetAndFetch(""); 
+      setIsTyping(false);
+      return;
     }
-  }, [userMembershipBrandId]);
 
-  useEffect(() => {
-    if (!hasSearched) return;
     setIsTyping(true);
-
-    const timer = setTimeout(() => {
-      setAppliedQuery(searchQuery.trim());
+    const timer = setTimeout(async () => {
+      await resetAndFetch(query); // 서버 요청 완료까지 기다림
       setIsTyping(false);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, hasSearched]);
+  }, [searchQuery]);
 
-  const onSearchClick = () => {
-    setHasSearched(true);
+  // 검색 버튼 클릭 시 즉시 검색
+  const handleSearchClick = async () => {
     setIsTyping(true);
-
-    setTimeout(() => {
-      setAppliedQuery(searchQuery.trim());
-      setIsTyping(false);
-    }, 500);
+    await resetAndFetch(searchQuery.trim());
+    setIsTyping(false);
   };
 
-  const filteredStores =
-    appliedQuery === ""
-      ? stores
-      : stores.filter(store => store.brandName.includes(appliedQuery));
+  const showLoading = loading || isTyping;
 
   return (
     <Layout showBottomNav={true}>
@@ -60,20 +53,21 @@ export default function BenefitStorePage() {
           placeholder="올리브영"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          onSearchClick={onSearchClick}
+          onSearchClick={handleSearchClick}
         />
       </div>
+
       <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] px-4">
-        {(loading || isTyping) ? (
+        {showLoading ? (
           <div className="w-full h-[200px] flex items-center justify-center">
             <LoadingDots />
           </div>
-        ) : hasSearched && filteredStores.length === 0 ? (
+        ) : stores.length === 0 ? (
           <div className="w-full h-[200px] flex items-center justify-center text-gray-400">
             검색 결과가 없습니다
           </div>
         ) : (
-          <StoreList stores={filteredStores} />
+          <StoreList stores={stores} />
         )}
       </div>
     </Layout>
