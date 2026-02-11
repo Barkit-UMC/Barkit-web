@@ -9,17 +9,17 @@ import { mapApi, type MapMembershipResponse } from "../../api/map";
 
 
 export default function MapMembershipDetailPage() {
-    const { membershipId } = useParams<{ membershipId: string }>();
+    const { userMembershipId } = useParams<{ userMembershipId: string }>();
     const [membershipData, setMembershipData] = useState<MapMembershipResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchMembership = async () => {
-            if (!membershipId) return;
+            if (!userMembershipId) return;
             
             try {
                 setLoading(true);
-                const data = await mapApi.getMembershipDetail(membershipId);
+                const data = await mapApi.getMembershipDetail(userMembershipId);
 
                 if (data.isSuccess) {
                     setMembershipData(data.result);
@@ -33,7 +33,7 @@ export default function MapMembershipDetailPage() {
         };
 
         fetchMembership();
-    }, [membershipId]);
+    }, [userMembershipId]);
 
     // 로딩 중이거나 데이터가 없을 때 처리
     if (loading) return <Layout><div className="pt-20 text-center">로딩 중...</div></Layout>;

@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { dashboardApi } from '../../api/dashboard';
+import { authApi } from '../../api/auth';
 
 const NaverCallbackPage = () => {
     const navigate = useNavigate();
@@ -34,6 +35,44 @@ const NaverCallbackPage = () => {
             if (!code || !state) {
                 console.error('No authorization code or state found');
                 navigate('/login', { replace: true });
+                return;
+            }
+
+            // --- [MODE: CONNECT] 계정 연동 ---
+            const authMode = localStorage.getItem('auth_mode');
+
+            if (authMode === 'connect') {
+                localStorage.removeItem('auth_mode');
+
+                try {
+                    const redirectUri = import.meta.env.VITE_NAVER_REDIRECT_URI;
+                    const response = await authApi.connectNaver(code, state, redirectUri);
+
+                    if (response.isSuccess) {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_naver' }
+                        });
+                    } else {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_already', provider: 'naver', errorMessage: response.message }
+                        });
+                    }
+                } catch (err: any) {
+                    console.error('Naver connect error:', err);
+                    if (err.response && err.response.status === 409) {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_already', provider: 'naver', errorMessage: err.response.data?.message }
+                        });
+                    } else {
+                        navigate('/profile/edit', {
+                            replace: true,
+                            state: { toast: 'connect_fail' }
+                        });
+                    }
+                }
                 return;
             }
 
