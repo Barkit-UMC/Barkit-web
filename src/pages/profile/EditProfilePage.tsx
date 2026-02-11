@@ -5,6 +5,7 @@ import iconNaver from '../../assets/icons/sns/naver.svg';
 import iconKakao from '../../assets/icons/sns/kakaotalk.svg';
 import CommonToast from '../../components/profile/CommonToast';
 import Header from '../../components/common/Header';
+import { userApi } from '../../api/user';
 
 type LocationState = {
   toast?: 'password';
@@ -18,9 +19,24 @@ export default function EditProfilePage() {
   const location = useLocation();
 
   // TODO: API에서 사용자 정보 가져오기
-  const [name] = useState('홍길동');
-  const [email] = useState('hong@example.com');
-  const [phone] = useState('010-1234-5678');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+
+  userApi.getMyInfo().then((userInfo) => {
+    if (userInfo) {
+      setName(userInfo.name);
+      setEmail(userInfo.email);
+    }
+  });
+
+  useEffect(() => {
+    userApi.getMyInfo().then((userInfo) => {
+      if (userInfo) {
+        setName(userInfo.name);
+        setEmail(userInfo.email);
+      }
+    });
+  }, []);
 
     // 토스트 상태 (보일 때만 값 존재)
   const [toast, setToast] = useState<'password' | null>(null);
@@ -52,11 +68,6 @@ export default function EditProfilePage() {
           <span className="text-[20px] text-gray-500">{email}</span>
         </div>
 
-        <div className="w-full h-18 bg-white flex items-center justify-between px-[25px]">
-          <span className="text-[20px] font-semibold">전화번호</span>
-          <span className="text-[20px] text-gray-500">{phone}</span>
-        </div>
-
         {/* 비밀번호 변경 */}
         <button
           onClick={() => navigate('/profile/edit/password')}
@@ -82,7 +93,7 @@ export default function EditProfilePage() {
 
       {/* 연동 */}
       <div className="flex-1 border-[4px] border-gray-100" />
-      
+
       <div className="px-[25px] pt-6 flex items-center gap-3">
         <span className="border-b border-gray-300 flex-1" />
         <h2 className="text-[16px] font-medium text-gray-300">연동하기</h2>
