@@ -17,6 +17,7 @@ interface MembershipSummary {
     membershipBrandId: number;
     name: string;
     logoUrl: string;
+    membershipNumber?: string;
 }
 
 interface DashboardResult {
@@ -41,6 +42,62 @@ export const dashboardApi = {
             '/api/home/dashboard'
         );
         return response.data;
+    },
+
+    /**
+     * 특정 멤버십 상세 정보 조회 (대시보드 데이터에서 추출)
+     * mainMemberships → memberships 순서로 검색
+     */
+    getMembershipDetail: async (userMembershipBrandId: number): Promise<MainMembership | null> => {
+        try {
+            const response = await axiosInstance.get<ApiResponse<DashboardResult>>(
+                '/api/home/dashboard'
+            );
+            if (!response.data.isSuccess) return null;
+
+            const { mainMemberships, memberships } = response.data.result;
+
+            // mainMemberships에서 먼저 찾기 (membershipNumber 포함)
+            const fromMain = mainMemberships.find(
+                (m) => m.userMembershipBrandId === userMembershipBrandId
+            );
+            if (fromMain) return fromMain;
+
+            // memberships에서 찾기
+            const fromList = memberships.find(
+                (m) => m.userMembershipBrandId === userMembershipBrandId
+            );
+            if (fromList) {
+                return {
+                    ...fromList,
+                    membershipNumber: fromList.membershipNumber || '',
+                };
+            }
+
+            return null;
+        } catch {
+            return null;
+        }
+    },
+
+    /**
+     * 이미 등록된 브랜드 ID 목록 조회 (SearchPage 필터링용)
+     */
+    getRegisteredBrandIds: async (): Promise<number[]> => {
+        try {
+            const response = await axiosInstance.get<ApiResponse<DashboardResult>>(
+                '/api/home/dashboard'
+            );
+            if (!response.data.isSuccess) return [];
+
+            const { mainMemberships, memberships } = response.data.result;
+            const ids = new Set<number>();
+            mainMemberships.forEach((m) => ids.add(m.membershipBrandId));
+            memberships.forEach((m) => ids.add(m.membershipBrandId));
+            return Array.from(ids);
+        } catch {
+            return [];
+        }
     },
 
     /**

@@ -24,6 +24,21 @@ interface ApiResponse<T> {
     result: T;
 }
 
+interface StoreBrand {
+    storeBrandId: number;
+    name: string;
+    logoUrl: string;
+}
+
+export interface UserMembershipDetail {
+    userMembershipBrandId: number;
+    membershipBrandName: string;
+    themeColor: string;
+    logoUrl: string;
+    membershipNumber: string;
+    storeBrands: StoreBrand[];
+}
+
 export const membershipApi = {
     /**
      * 내 멤버십 목록 조회
@@ -42,6 +57,32 @@ export const membershipApi = {
     },
 
     /**
+     * 사용자 멤버십 상세 조회 (NEW API)
+     * GET /api/user-membership-brands/{userMembershipBrandId}/detail
+     */
+    getUserMembershipDetail: async (
+        userMembershipBrandId: number
+    ): Promise<ApiResponse<UserMembershipDetail>> => {
+        const response = await axiosInstance.get<ApiResponse<UserMembershipDetail>>(
+            `/api/user-membership-brands/${userMembershipBrandId}/detail`
+        );
+        return response.data;
+    },
+
+    /**
+     * 대표 멤버십 설정/해제
+     * PATCH /api/user-membership-brands/{userMembershipBrandId}/main
+     */
+    toggleMainMembership: async (
+        userMembershipBrandId: number
+    ): Promise<ApiResponse<string>> => {
+        const response = await axiosInstance.patch<ApiResponse<string>>(
+            `/api/user-membership-brands/${userMembershipBrandId}/main`
+        );
+        return response.data;
+    },
+
+    /**
      * 멤버십 등록 (NEW API)
      * POST /api/user-membership-brands/{membershipBrandId}
      */
@@ -56,18 +97,30 @@ export const membershipApi = {
     },
 
     /**
-     * @deprecated 기존 멤버십 등록 API — 새 API(registerUserMembership) 사용 권장
+     * 멤버십 삭제 (NEW API)
+     * DELETE /api/user-membership-brands/{userMembershipBrandId}
      */
-    registerMembership: async (data: RegisterMembershipRequest): Promise<Membership> => {
-        const response = await axiosInstance.post<ApiResponse<Membership>>('/api/memberships', data);
-        return response.data.result;
+    deleteUserMembership: async (
+        userMembershipBrandId: number
+    ): Promise<ApiResponse<{ userMembershipBrandId: number; membershipNumber: string }>> => {
+        const response = await axiosInstance.delete<
+            ApiResponse<{ userMembershipBrandId: number; membershipNumber: string }>
+        >(`/api/user-membership-brands/${userMembershipBrandId}`);
+        return response.data;
     },
 
     /**
-     * 멤버십 삭제
+     * 멤버십 번호 변경 (NEW API)
+     * PATCH /api/user-membership-brands/{userMembershipBrandId}
      */
-    deleteMembership: async (id: number): Promise<void> => {
-        await axiosInstance.delete(`/api/memberships/${id}`);
+    updateMembershipNumber: async (
+        userMembershipBrandId: number,
+        membershipNumber: string
+    ): Promise<ApiResponse<{ userMembershipBrandId: number; membershipNumber: string }>> => {
+        const response = await axiosInstance.patch<
+            ApiResponse<{ userMembershipBrandId: number; membershipNumber: string }>
+        >(`/api/user-membership-brands/${userMembershipBrandId}`, { membershipNumber });
+        return response.data;
     },
 
     /**

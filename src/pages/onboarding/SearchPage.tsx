@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
+import { dashboardApi } from '../../api/dashboard';
 import searchIcon from '../../assets/icons/search/search_main.svg';
 
 // Brand icon imports
@@ -113,14 +114,23 @@ export default function SearchPage() {
     }, []);
 
     const { setBrand } = useOnboardingStore();
+    const [registeredBrandIds, setRegisteredBrandIds] = useState<number[]>([]);
 
-    // Filter brands by search query
+    // 이미 등록된 브랜드 ID 가져오기
+    useEffect(() => {
+        dashboardApi.getRegisteredBrandIds().then(setRegisteredBrandIds);
+    }, []);
+
+    // Filter brands by search query AND exclude already registered brands
     const filteredBrands = useMemo(() => {
-        if (!searchQuery.trim()) return BRANDS;
-        return BRANDS.filter((brand) =>
-            brand.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }, [searchQuery]);
+        let brands = BRANDS.filter((b) => !registeredBrandIds.includes(b.id));
+        if (searchQuery.trim()) {
+            brands = brands.filter((brand) =>
+                brand.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+        return brands;
+    }, [searchQuery, registeredBrandIds]);
 
     // Handle brand selection (single select)
     const handleSelectBrand = (brand: Brand) => {

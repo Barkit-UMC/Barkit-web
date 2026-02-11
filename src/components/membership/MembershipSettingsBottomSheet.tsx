@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import FavoriteMembershipToast from './MembershipToast';
 import { useNavigate } from 'react-router-dom';
 import MembershipDeleteModal from './MembershipDeleteModal';
+import { membershipApi } from '../../api/membership';
 
 interface MembershipSettingBottomSheetProps {
     isOpen: boolean;
@@ -12,6 +13,7 @@ interface MembershipSettingBottomSheetProps {
     brandName?: string;
     membershipNumber?: string;
     membershipId: string;
+    isMain?: boolean;
 }
 
 export default function MembershipSettingBottomSheet({
@@ -19,18 +21,25 @@ export default function MembershipSettingBottomSheet({
     onClose,
     onSetFavorite,
     onDelete,
-    brandName = 'CJ ONE',
-    membershipNumber = '1234-5678-9123-8284',
+    brandName = '',
+    membershipNumber = '',
     membershipId,
+    isMain = false,
 }: MembershipSettingBottomSheetProps) {
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(isMain);
     const [showToast, setShowToast] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isToggling, setIsToggling] = useState(false);
     const navigate = useNavigate();
+
+    // isMain prop이 바뀌면 동기화
+    useEffect(() => {
+        setIsFavorite(isMain);
+    }, [isMain]);
 
     useEffect(() => {
         if (isOpen) {
-            // 스크롤 방지
             document.body.style.overflow = 'hidden';
         }
 
@@ -39,32 +48,60 @@ export default function MembershipSettingBottomSheet({
         };
     }, [isOpen]);
 
-    // 바텀시트와 토스트 중 하나라도 표시되어야 함
     if (!isOpen && !showToast) return null;
 
-    const handleToggleFavorite = () => {
-        const newValue = !isFavorite;
-        setIsFavorite(newValue);
-        setShowToast(true);
-        onSetFavorite?.(newValue);
-        onClose();
+    const handleToggleFavorite = async () => {
+        if (!membershipId || isToggling) return;
+
+        setIsToggling(true);
+        try {
+            const response = await membershipApi.toggleMainMembership(Number(membershipId));
+            if (response.isSuccess) {
+                const newValue = !isFavorite;
+                setIsFavorite(newValue);
+                setShowToast(true);
+                onSetFavorite?.(newValue);
+                onClose();
+            } else {
+                alert(response.message || '대표 멤버십 설정에 실패했습니다.');
+            }
+        } catch (err) {
+            console.error('Toggle main membership error:', err);
+            alert('대표 멤버십 설정 중 오류가 발생했습니다.');
+        } finally {
+            setIsToggling(false);
+        }
     };
 
-    const handleDeleteConfirm = () => {
-        // TODO: API 연결 후 삭제 완료/실패 결과 페이지로 라우팅 처리
-        onDelete?.();
-        setShowDeleteModal(false);
-        onClose();
+    const handleDeleteConfirm = async () => {
+        if (!membershipId || isDeleting) return;
 
-        // 홈으로 라우팅 추가
-        navigate('/home');
+        setIsDeleting(true);
+        try {
+            const response = await membershipApi.deleteUserMembership(Number(membershipId));
+            if (response.isSuccess) {
+                onDelete?.();
+                setShowDeleteModal(false);
+                onClose();
+                navigate('/home', { replace: true });
+            } else {
+                alert(response.message || '멤버십 삭제에 실패했습니다.');
+                setShowDeleteModal(false);
+            }
+        } catch (err) {
+            console.error('Delete membership error:', err);
+            alert('멤버십 삭제 중 오류가 발생했습니다.');
+            setShowDeleteModal(false);
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
         <>
             {/* 배경 오버레이 */}
             {!showDeleteModal && isOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/50 z-40"
                     onClick={onClose}
                 />
@@ -88,6 +125,7 @@ export default function MembershipSettingBottomSheet({
                                     w-[46px] h-[26px] rounded-full
                                     cursor-pointer transition-colors duration-300
                                     ${isFavorite ? 'bg-green-500' : 'bg-gray-300'}
+                                    ${isToggling ? 'opacity-50 pointer-events-none' : ''}
                                     relative
                                 `}
                             >
@@ -106,9 +144,8 @@ export default function MembershipSettingBottomSheet({
                         <button
                             onClick={() => {
                                 if (!membershipId) return;
-
                                 navigate(`/membership/${membershipId}/change/select-method`);
-                                onClose();  
+                                onClose();
                             }}
                             className="flex items-center gap-3 w-full py-3"
                         >
