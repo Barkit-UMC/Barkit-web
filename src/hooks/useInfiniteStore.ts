@@ -7,9 +7,9 @@ export default function useInfiniteStore(
 ) {
   return useInfiniteQuery({
     queryKey: ['stores', brandId, keyword],
-    queryFn: ({ pageParam = 0 }) =>
-      getStoreList(brandId, pageParam, keyword),
-    initialPageParam: 0,
+    queryFn: ({ pageParam }) =>
+      getStoreList(brandId, pageParam ?? undefined, keyword),
+    initialPageParam: undefined as number | undefined,
     getNextPageParam: lastPage =>
       lastPage.hasNext ? lastPage.nextCursor : undefined,
     enabled: !!brandId,

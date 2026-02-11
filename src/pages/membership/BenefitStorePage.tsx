@@ -37,17 +37,17 @@ export default function BenefitStorePage() {
 
   // infinite scroll
   useEffect(() => {
-    if (!loadMoreRef.current || !hasNextPage) return;
+    if (!loadMoreRef.current || !hasNextPage || isFetchingNextPage) return;
 
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && !isFetchingNextPage) {
         fetchNextPage();
       }
     });
 
     observer.observe(loadMoreRef.current);
     return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
     const handleSearchClick = () => {
     setDebouncedQuery(searchQuery.trim());
