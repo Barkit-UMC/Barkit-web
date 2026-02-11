@@ -31,10 +31,12 @@ export interface StoreDetail {
   membership: {
     name: string;
     logoUrl: string;
+    id: string;
   }[];
   userMembership: {
     name: string;
     logoUrl: string;
+    id: string;
   }[];
   photos: {
     url: string;
