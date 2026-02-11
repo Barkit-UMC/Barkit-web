@@ -6,6 +6,7 @@ import oliveyoung from '../../assets/icons/memberships/cjone.svg'
 import { useNavigate } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { mapApi, SearchStoresRequest, StoreSummary } from '../../api/map';
+import iconPlus from '../../assets/icons/map/plus.svg'
 
 const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading }: any) => {
   const navigate = useNavigate();
@@ -50,15 +51,24 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
                 <div className="flex flex-col gap-2">
                     <span className="text-[12px] text-gray-500 font-medium">사용 가능 멤버십</span>
                     <div className="flex gap-1.5">
-                        {/* 멤버십 아이콘 이미지들 */}
-                        {store.memberships?.map((m: any) => (
-                          <img 
-                            key={m.id} 
-                            src={m.logoUrl} 
-                            alt={m.name} 
-                            className="w-7 h-7 object-contain rounded-lg" 
-                          />
+                        {/* 최대 5개만 노출 */}
+                        {store.memberships?.slice(0, 5).map((m: any) => (
+                            <img 
+                                key={m.id} 
+                                src={m.logoUrl} 
+                                alt={m.name} 
+                                className="w-7 h-7 object-contain rounded-lg border border-gray-50" 
+                            />
                         ))}
+
+                        {/* 5개가 넘어갈 경우 남은 개수 표시 */}
+                        {store.memberships && store.memberships.length > 5 && (
+                            <img 
+                              src={iconPlus} 
+                              alt="더보기" 
+                              className="w-7 h-7 object-contain rounded-lg"
+                            />
+                        )}
                     </div>
                 </div>
 

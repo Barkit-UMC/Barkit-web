@@ -32,7 +32,7 @@ const render = (status: Status) => {
     // 2. 로딩 중일 때 (검색 중 포함)
     if (status === Status.LOADING) {
         return (
-            <div className="flex items-center justify-center py-20">
+            <div className="flex flex-col items-center justify-center w-full h-[calc(100dvh-64px)]">
                 <LoadingDots />
             </div>
         );
