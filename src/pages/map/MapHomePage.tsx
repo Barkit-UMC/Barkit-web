@@ -91,7 +91,7 @@ export default function MapHomePage() {
                 const newPos = { lat: latitude, lng: longitude };
                 
                 // latestCoords.current = newPos; // Ref에 실시간 좌표 저장
-+               setUserLocation(newPos);
+                setUserLocation(newPos);
                 
                 // 앱 처음 실행 시에만 지도를 내 위치로 이동
                 if (!currentLocation) {
@@ -242,25 +242,40 @@ export default function MapHomePage() {
                     </div>
                 </div>
 
-                {/* 3. 검색 결과 바텀시트 */}
-                <div 
-                    className={`absolute inset-x-0 bottom-0 z-30 bg-white rounded-t-[32px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-out
-                        ${isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}
-                    style={{ height: '55%' }} // 화면의 55% 높이 차지
-                >
-                    {/* 바텀시트 핸들러 (노란색 바) */}
-                    <div className="flex justify-center !pt-3 !pb-3" onClick={() => setIsBottomSheetOpen(false)}>
-                        <div className="w-14 h-3 bg-gray-200 rounded-full" />
-                    </div>
+                {/* 3. 검색 결과 바텀시트 영역 */}
+                <div className="fixed inset-0 z-30 pointer-events-none"> {/* 부모 컨테이너는 클릭 통과 */}
+                    
+                    {/* 배경 오버레이: 시트가 열렸을 때만 나타나며, 클릭 시 시트를 닫음 */}
+                    {isBottomSheetOpen && (
+                        <div 
+                            className="absolute inset-0 bg-black/10 pointer-events-auto" // 투명도 조절 가능 (bg-transparent도 가능)
+                            onClick={() => setIsBottomSheetOpen(false)}
+                        />
+                    )}
 
-                    {/* 분리한 리스트 컴포넌트 삽입 */}
-                    <SearchResultList 
-                        results={allStores} 
-                        fetchNextPage={fetchNextPage}
-                        hasNextPage={hasNextPage}
-                        isFetchingNextPage={isFetchingNextPage}
-                        isLoading={isLoading}
-                    />
+                    {/* 바텀시트 본체 */}
+                    <div 
+                        className={`absolute inset-x-0 bottom-0 bg-white rounded-t-[32px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] 
+                            transition-transform duration-300 ease-out pointer-events-auto
+                            ${isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                        style={{ height: '55%' }}
+                    >
+                        {/* 바텀시트 핸들러 (노란색 바 영역) */}
+                        <div className="flex justify-center !pt-3 !pb-3 cursor-pointer" onClick={() => setIsBottomSheetOpen(false)}>
+                            <div className="w-14 h-3 bg-gray-200 rounded-full" />
+                        </div>
+
+                        {/* 리스트 컴포넌트 */}
+                        <div className="h-full overflow-hidden pb-10"> {/* 내부 스크롤을 위해 높이 확보 */}
+                            <SearchResultList 
+                                results={allStores} 
+                                fetchNextPage={fetchNextPage}
+                                hasNextPage={hasNextPage}
+                                isFetchingNextPage={isFetchingNextPage}
+                                isLoading={isLoading}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* 3. 현재 위치 버튼 (우측 하단) */}

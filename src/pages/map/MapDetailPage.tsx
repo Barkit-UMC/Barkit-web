@@ -9,6 +9,7 @@ import sampleimg from '../../assets/images/map_image_sample.png';
 import Header from '../../components/common/Header';
 import MapContainer from '../../components/map/MapContainer';
 import MapMarker from '../../components/map/MapMarker';
+import LoadingDots from '../../components/common/LoadingDots';
 
 export default function MapDetailPage() {
     const { googleId } = useParams<{ googleId: string }>();
@@ -56,7 +57,13 @@ export default function MapDetailPage() {
     fetchDetail();
 }, [googleId]);
 
-    if (loading) return <Layout showBottomNav={false}><div className="flex h-full items-center justify-center">로딩 중...</div></Layout>;
+    if (loading) 
+        return 
+            <Layout showBottomNav={false}>
+                <div className="flex items-center justify-center py-20">
+                    <LoadingDots />
+                </div>
+            </Layout>;
     if (!storeData) return <Layout showBottomNav={false}><div className="flex h-full items-center justify-center">데이터가 없습니다.</div></Layout>;
 
     // 상세 페이지 네비게이션
