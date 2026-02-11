@@ -203,7 +203,7 @@ export default function WalletPage() {
                                 <p className="text-gray-500 text-sm mb-6">첫 멤버십을 등록해보세요</p>
                                 <button
                                     onClick={() => navigate('/onboarding/search')}
-                                    className="px-8 py-3 bg-blue-600 text-white rounded-xl font-medium active:scale-95 transition-all shadow-md"
+                                    className="px-8 py-3 bg-[#00BCD4] text-white rounded-xl font-medium active:scale-95 transition-all"
                                 >
                                     멤버십 등록하기
                                 </button>
