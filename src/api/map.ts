@@ -36,7 +36,8 @@ export interface StoreDetail {
   userMembership: {
     name: string;
     logoUrl: string;
-    id: string;
+    userMembershipId: string;
+    membershipBrandId: string;
   }[];
   photos: {
     url: string;
