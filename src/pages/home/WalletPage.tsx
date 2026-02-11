@@ -202,7 +202,7 @@ export default function WalletPage() {
                                 <h3 className="text-lg font-semibold text-gray-900">등록된 멤버십이 없습니다</h3>
                                 <p className="text-gray-500 text-sm mb-6">첫 멤버십을 등록해보세요</p>
                                 <button
-                                    onClick={() => navigate('/membership/select')}
+                                    onClick={() => navigate('/onboarding/search')}
                                     className="px-8 py-3 bg-blue-600 text-white rounded-xl font-medium active:scale-95 transition-all shadow-md"
                                 >
                                     멤버십 등록하기
