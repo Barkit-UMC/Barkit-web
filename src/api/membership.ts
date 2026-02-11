@@ -40,9 +40,6 @@ export interface UserMembershipDetail {
 }
 
 export const membershipApi = {
-    /**
-     * 사용자 보유 멤버십 브랜드 검색
-     */
     getMyMemberships: async (): Promise<Membership[]> => {
         const response = await axiosInstance.get<ApiResponse<Membership[]>>('/api/memberships');
         return response.data.result;
@@ -140,6 +137,31 @@ export const membershipApi = {
         const response = await axiosInstance.get<ApiResponse<Brand[]>>('/api/brands/popular');
         return response.data.result;
     },
+
+    /**
+     * 사용자 보유 멤버십 브랜드 검색
+     * GET /api/user-membership-brands/search
+     */
+    searchUserMembershipBrands: async (
+        keyword: string,
+        cursor: number = 0,
+        limit: number = 20
+    ): Promise<{
+        brands: {
+            userMembershipBrandId: number;
+            name: string;
+            logoUrl: string;
+        }[];
+        nextCursor: number;
+        hasNext: boolean;
+    }> => {
+        const response = await axiosInstance.get('/api/user-membership-brands/search', {
+            params: { keyword, cursor, limit },
+        });
+
+        return response.data.result;
+    },
+
 };
 
 export type { RegisterMembershipRequest, Brand };
