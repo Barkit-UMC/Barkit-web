@@ -56,10 +56,18 @@ export const useAuth = (): UseAuthReturn => {
                     setError(response.message || '로그인에 실패했습니다.');
                     return null;
                 }
-            } catch (err) {
-                const errorMessage =
-                    err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.';
-                setError(errorMessage);
+            } catch (err: any) {
+                // 1. 서버가 응답을 보냈고, 그 상태 코드가 404인 경우
+                if (err.response && err.response.status === 404) {
+                    setError('존재하지 않는 계정입니다.');
+                } 
+                // 2. 그 외의 에러 처리
+                else {
+                    const errorMessage =
+                    err.response?.data?.message || // 서버에서 보내준 에러 메시지가 있다면 우선 사용
+                    (err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.');
+                    setError(errorMessage);
+                }
                 return null;
             } finally {
                 setIsLoading(false);
