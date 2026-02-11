@@ -11,6 +11,18 @@ export default function BenefitStorePage() {
   const { id } = useParams<{ id: string }>();
   const userMembershipBrandId = Number(id);
 
+  if (!id || isNaN(userMembershipBrandId)) {
+    return (
+      <Layout showBottomNav={true}>
+        <Header title="적립/할인 가능한 매장" />
+        <div className="pt-48 bg-gray-50 min-h-[calc(100vh-66px)] 
+                px-4 flex items-center justify-center text-gray-400">
+          잘못된 접근입니다
+        </div>
+      </Layout>
+    );
+  }
+
   const { stores, loading, resetAndFetch } = useStore(userMembershipBrandId);
 
   const [searchQuery, setSearchQuery] = useState("");

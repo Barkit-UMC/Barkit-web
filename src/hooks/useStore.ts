@@ -27,10 +27,10 @@ export default function useStore(userMembershipBrandId: number) {
     }
   };
 
-  const resetAndFetch = (keyword?: string) => {
+  const resetAndFetch = async(keyword?: string) => {
     setCursor(null);
     setHasNext(true);
-    fetchStores(true, keyword);
+    await fetchStores(true, keyword);
   };
 
   return {
