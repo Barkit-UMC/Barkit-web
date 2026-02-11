@@ -60,9 +60,9 @@ export default function MapDetailPage() {
     if (!storeData) return <Layout showBottomNav={false}><div className="flex h-full items-center justify-center">데이터가 없습니다.</div></Layout>;
 
     // 상세 페이지 네비게이션
-    const handleMembershipClick = (membershipId: string) => {
+    const handleMembershipClick = (userMembershipId: string) => {
         // 멤버십 상세 페이지로 이동 (ID를 경로 파라미터로 전달)
-        navigate(`/map/membership/${membershipId}`);
+        navigate(`/map/membership/${userMembershipId}`);
     };
 
     // 복사 함수 추가
@@ -126,7 +126,7 @@ export default function MapDetailPage() {
                     <div className="flex gap-3">
                         {storeData.userMembership.map((m, i) => (
                             <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl border" alt={m.name} title={m.name} 
-                                onClick={() => handleMembershipClick(m.id)}/>
+                                onClick={() => handleMembershipClick(m.userMembershipId)}/>
                         ))}
                     </div>
                 </div>
