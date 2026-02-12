@@ -4,6 +4,7 @@ import { Loader2 } from 'lucide-react';
 import Barcode from 'react-barcode';
 import Header from '../../../components/common/Header';
 import { useBarcodeScanner } from '../../../hooks/useBarcodeScanner';
+import { membershipApi } from '../../../api/membership';
 
 type StepType = 'initial' | 'preview';
 
@@ -11,6 +12,8 @@ export default function AddBarcodePhotoPage() {
     const navigate = useNavigate();
     const [step, setStep] = useState<StepType>('initial');
     const { id } = useParams<{ id: string }>();
+    const [isRegistering, setIsRegistering] = useState(false);
+    const [registerError, setRegisterError] = useState<string | null>(null);
 
     // 바코드 스캐너 훅
     const { scannedValue, isScanning, error, scanFromFile, reset } = useBarcodeScanner();
@@ -59,17 +62,25 @@ export default function AddBarcodePhotoPage() {
     };
 
     // 완료하기 버튼
-    const handleComplete = () => {
-        // TODO: scannedValue를 서버에 저장
-        const isSuccess = true; // 임시로 성공으로 설정
-
-        if (isSuccess) {
-            navigate(`/membership/${id}/change/complete`);
-        } else {
-            // 실패 시 changeMethod 전달
+    const handleComplete = async () => {
+        if (!scannedValue || !id) return;
+        setIsRegistering(true);
+        setRegisterError(null);
+        try {
+            const response = await membershipApi.updateMembershipNumber(Number(id), scannedValue);
+            if (response.isSuccess) {
+                navigate(`/membership/${id}/change/complete`);
+            } else {
+                navigate(`/membership/${id}/change/failure`, {
+                    state: { changeMethod: 'barcode' }
+                });
+            }
+        } catch {
             navigate(`/membership/${id}/change/failure`, {
                 state: { changeMethod: 'barcode' }
             });
+        } finally {
+            setIsRegistering(false);
         }
     };
 
@@ -136,14 +147,15 @@ export default function AddBarcodePhotoPage() {
                     )}
                 </div>
 
+                {/* 등록 에러 메시지 */}
+                {registerError && (
+                    <div className="mt-4 bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl">
+                        {registerError}
+                    </div>
+                )}
+
                 {/* 정보 영역 */}
                 <div className="mt-8 space-y-4">
-                    {/* 브랜드 */}
-                    <div className="flex items-center justify-between py-3 border-b border-gray-200">
-                        <span className="text-base font-semibold text-gray-900">브랜드</span>
-                        <span className="text-base text-gray-600">CJ ONE</span>
-                    </div>
-
                     {/* 멤버십 번호 */}
                     <div className="flex items-center justify-between py-3 border-b border-gray-200">
                         <span className="text-base font-semibold text-gray-900">멤버십 번호</span>
@@ -174,10 +186,10 @@ export default function AddBarcodePhotoPage() {
                     {/* 완료하기 버튼 */}
                     <button
                         onClick={handleComplete}
-                        disabled={!scannedValue || isScanning}
+                        disabled={!scannedValue || isScanning || isRegistering}
                         className="w-full py-4 rounded-full bg-[#00C7E2] text-white font-semibold text-base shadow-lg transition-all hover:bg-[#00B7D2] active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none"
                     >
-                        완료하기
+                        {isRegistering ? '변경 중...' : '완료하기'}
                     </button>
                 </div>
             )}

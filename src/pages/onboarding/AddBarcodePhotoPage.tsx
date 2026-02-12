@@ -4,15 +4,24 @@ import { Loader2 } from 'lucide-react';
 import Barcode from 'react-barcode';
 import Header from '../../components/common/Header';
 import { useBarcodeScanner } from '../../hooks/useBarcodeScanner';
+import { useOnboardingStore } from '../../store/useOnboardingStore';
+import { useMembershipRegister } from '../../hooks/useMembershipRegister';
 
 type StepType = 'initial' | 'preview';
 
 export default function AddBarcodePhotoPage() {
     const navigate = useNavigate();
     const [step, setStep] = useState<StepType>('initial');
+    const { selectedBrand } = useOnboardingStore();
 
     // 바코드 스캐너 훅
     const { scannedValue, isScanning, error, scanFromFile, reset } = useBarcodeScanner();
+
+    // 멤버십 등록 훅
+    const { register, isLoading: isRegistering, error: registerError } = useMembershipRegister({
+        onSuccess: () => navigate('/onboarding/complete'),
+        onError: () => navigate('/onboarding/failure'),
+    });
 
     // 파일 input ref
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,9 +67,9 @@ export default function AddBarcodePhotoPage() {
     };
 
     // 완료하기 버튼
-    const handleComplete = () => {
-        // TODO: scannedValue를 서버에 저장하거나 다음 페이지로 전달
-        navigate('/onboarding/complete');
+    const handleComplete = async () => {
+        if (!scannedValue || !selectedBrand) return;
+        await register(selectedBrand.id, scannedValue);
     };
 
     return (
@@ -126,12 +135,19 @@ export default function AddBarcodePhotoPage() {
                     )}
                 </div>
 
+                {/* 등록 에러 메시지 */}
+                {registerError && (
+                    <div className="mt-4 bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl">
+                        {registerError}
+                    </div>
+                )}
+
                 {/* 정보 영역 */}
                 <div className="mt-8 space-y-4">
                     {/* 브랜드 */}
                     <div className="flex items-center justify-between py-3 border-b border-gray-200">
                         <span className="text-base font-semibold text-gray-900">브랜드</span>
-                        <span className="text-base text-gray-600">CJ ONE</span>
+                        <span className="text-base text-gray-600">{selectedBrand?.name ?? '—'}</span>
                     </div>
 
                     {/* 멤버십 번호 */}
@@ -164,10 +180,10 @@ export default function AddBarcodePhotoPage() {
                     {/* 완료하기 버튼 */}
                     <button
                         onClick={handleComplete}
-                        disabled={!scannedValue || isScanning}
+                        disabled={!scannedValue || isScanning || isRegistering || !selectedBrand}
                         className="w-full py-4 rounded-full bg-[#00C7E2] text-white font-semibold text-base shadow-lg transition-all hover:bg-[#00B7D2] active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none"
                     >
-                        완료하기
+                        {isRegistering ? '등록 중...' : '완료하기'}
                     </button>
                 </div>
             )}
