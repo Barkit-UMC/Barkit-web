@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/common/Layout";
 import Header from "../../components/common/Header";
+import type { ReactNode } from "react";
 
 /**
  * [PAGE 20] 홈 화면에 추가 페이지
  */
 export default function AddToHomePage() {
     const navigate = useNavigate();
-    function StepItem({ num, children }: { num: number; children: React.ReactNode }) {
+    function StepItem({ num, children }: { num: number; children: ReactNode }) {
         return (
             <div className="flex items-center gap-3">
                 <div className="w-5 h-5 flex items-center justify-center rounded-full 
