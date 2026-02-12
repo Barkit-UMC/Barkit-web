@@ -25,10 +25,10 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
     <div className="flex flex-col !px-6 h-full pb-20 overflow-y-auto">
       {/* 매장 리스트 반복 */}
       {results.map((store: StoreSummary) => (
-        <div 
-            key={store.googleId} 
-            className="!py-5 border-b border-gray-100 last:border-0"
-            onClick={() => navigate(`/map/${store.googleId}`)}
+        <div
+          key={store.googleId}
+          className="!py-5 border-b border-gray-100 last:border-0"
+          onClick={() => navigate(`/map/${store.googleId}`, { state: { membershipIds: store.membershipIds || [] } })}
         >
           <div className="flex justify-between items-start">
             <div className="flex-1">
@@ -37,44 +37,44 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
               </div>
               <p className="text-sm text-gray-500 !mt-1">
                 <span className="font-semibold text-gray-700">
-                  {store.distanceKm < 1 
-                    ? `${Math.round(store.distanceKm * 1000)}m` 
+                  {store.distanceKm < 1
+                    ? `${Math.round(store.distanceKm * 1000)}m`
                     : `${store.distanceKm.toFixed(1)}km`}
                 </span>
                 <span className="!mx-1 text-gray-300">|</span>
                 {store.address}
               </p>
-              
+
               {/* 보유 멤버십 아이콘 (예시) */}
               <div className="flex justify-between items-end !mt-4">
                 {/* 왼쪽: 멤버십 정보 부문 */}
                 <div className="flex flex-col gap-2">
-                    <span className="text-[12px] text-gray-500 font-medium">사용 가능 멤버십</span>
-                    <div className="flex gap-1.5">
-                        {/* 최대 5개만 노출 */}
-                        {store.memberships?.slice(0, 5).map((m: any) => (
-                            <img 
-                                key={m.id} 
-                                src={m.logoUrl} 
-                                alt={m.name} 
-                                className="w-7 h-7 object-contain rounded-lg border border-gray-50" 
-                            />
-                        ))}
+                  <span className="text-[12px] text-gray-500 font-medium">사용 가능 멤버십</span>
+                  <div className="flex gap-1.5">
+                    {/* 최대 5개만 노출 */}
+                    {store.memberships?.slice(0, 5).map((m: any) => (
+                      <img
+                        key={m.id}
+                        src={m.logoUrl}
+                        alt={m.name}
+                        className="w-7 h-7 object-contain rounded-lg border border-gray-50"
+                      />
+                    ))}
 
-                        {/* 5개가 넘어갈 경우 남은 개수 표시 */}
-                        {store.memberships && store.memberships.length > 5 && (
-                            <img 
-                              src={iconPlus} 
-                              alt="더보기" 
-                              className="w-7 h-7 object-contain rounded-lg"
-                            />
-                        )}
-                    </div>
+                    {/* 5개가 넘어갈 경우 남은 개수 표시 */}
+                    {store.memberships && store.memberships.length > 5 && (
+                      <img
+                        src={iconPlus}
+                        alt="더보기"
+                        className="w-7 h-7 object-contain rounded-lg"
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {/* 우측 액션 버튼들 */}
                 <div className="flex gap-3">
-                  <button onClick={(e) => { e.stopPropagation(); window.location.href=`tel:${store.phone}` }}>
+                  <button onClick={(e) => { e.stopPropagation(); window.location.href = `tel:${store.phone}` }}>
                     <img src={call} alt="전화" className="w-12 h-12 object-contain" />
                   </button>
                   <button onClick={(e) => { e.stopPropagation(); window.open(store.directionUrl, '_blank') }}>
@@ -89,7 +89,7 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
 
       {/* 3. 무한 스크롤 "더보기" 버튼 또는 트리거 */}
       {hasNextPage && (
-        <button 
+        <button
           onClick={() => fetchNextPage()}
           disabled={isFetchingNextPage}
           className="w-full py-4 text-gray-400 text-sm"

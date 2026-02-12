@@ -5,9 +5,10 @@ interface MapMarkerProps {
     position: { lat: number; lng: number };
     title?: string;
     map?: google.maps.Map;
+    onClick?: () => void;
 }
 
-export default function MapMarker({ position, title, map }: MapMarkerProps) {
+export default function MapMarker({ position, title, map, onClick }: MapMarkerProps) {
     // 1. useState 대신 useRef를 사용합니다.
     const markerRef = useRef<google.maps.Marker | null>(null);
 
@@ -28,11 +29,16 @@ export default function MapMarker({ position, title, map }: MapMarkerProps) {
                 },
                 animation: window.google.maps.Animation.DROP,
             });
+
+            if (onClick) {
+                markerRef.current.addListener("click", onClick);
+            }
         }
 
         // 클린업: 마커 제거
         return () => {
             if (markerRef.current) {
+                window.google.maps.event.clearListeners(markerRef.current, 'click');
                 markerRef.current.setMap(null);
                 markerRef.current = null;
             }

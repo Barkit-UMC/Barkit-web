@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
 import MapContainer from '../../components/map/MapContainer';
 import iconSearch from '../../assets/icons/map/search.svg';
@@ -36,6 +37,8 @@ const CATEGORIES = Object.keys(CATEGORY_MAP);
  */
 export default function MapHomePage() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
+
+    const navigate = useNavigate();
 
     // 1. 지도 중심 좌표를 State로 관리 (초기값: 서울 시청)
     const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>(null);
@@ -130,6 +133,40 @@ export default function MapHomePage() {
         }
     };
 
+    // 바텀시트 드래그 관련 상태
+    const [sheetY, setSheetY] = useState(0); // 드래그에 따른 Y축 이동 거리
+    const [isDragging, setIsDragging] = useState(false); // 드래그 중 여부
+    const startY = useRef(0); // 드래그 시작 Y 좌표
+
+    // 터치 시작
+    const handleTouchStart = (e: React.TouchEvent) => {
+        startY.current = e.touches[0].clientY;
+        setIsDragging(true);
+    };
+
+    // 터치 이동
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return;
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY.current;
+
+        // 아래로 드래그(deltaY > 0)할 때만 이동
+        if (deltaY > 0) {
+            setSheetY(deltaY);
+        }
+    };
+
+    // 터치 끝
+    const handleTouchEnd = () => {
+        setIsDragging(false);
+        // 50px 이상 내렸으면 닫기
+        if (sheetY > 50) {
+            setIsBottomSheetOpen(false);
+        }
+        // 초기화 (닫히든 안 닫히든 위치는 리셋해둬야 다음 열 때 정상)
+        setSheetY(0);
+    };
+
     // 위치 정보가 올 때까지 '로딩'을 보여주어 지도가 0px로 튀는 것을 방지
     if (!currentLocation) {
         return (
@@ -153,6 +190,8 @@ export default function MapHomePage() {
             icon: myLocIcon
         },
     ];
+
+
 
     return (
         <Layout showBottomNav>
@@ -178,6 +217,7 @@ export default function MapHomePage() {
                                     lng: store.location.lng
                                 }}
                                 title={store.name.text}
+                                onClick={() => navigate(`/map/${store.googleId}`, { state: { membershipIds: store.membershipIds || [] } })}
                             />
                         ))}
                     </MapContainer>
@@ -198,8 +238,8 @@ export default function MapHomePage() {
                             <input
                                 type="text"
                                 value={searchText}
-                                placeholder="매장명을 입력하세요"
-                                className="w-full ml-3 text-base bg-transparent outline-none text-gray-700"
+                                placeholder="멤버십 혹은 매장명을 입력하세요"
+                                className="w-full ml-3 text-sm bg-transparent outline-none text-gray-700"
                                 onChange={(e) => {
                                     setSearchText(e.target.value);
                                     // 글자를 입력하면 바텀시트를 엽니다.
@@ -258,9 +298,16 @@ export default function MapHomePage() {
                     {/* 바텀시트 본체 */}
                     <div
                         className={`absolute inset-x-0 bottom-0 bg-white rounded-t-[32px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] 
-                            transition-transform duration-300 ease-out pointer-events-auto
-                            ${isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}
-                        style={{ height: '55%' }}
+                            ease-out pointer-events-auto
+                            ${isBottomSheetOpen ? '' : 'translate-y-full'}`}
+                        style={{
+                            height: '55%',
+                            transform: isBottomSheetOpen ? `translateY(${sheetY}px)` : undefined,
+                            transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+                        }}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
                     >
                         {/* 바텀시트 핸들러 (노란색 바 영역) */}
                         <div className="flex justify-center !pt-3 !pb-3 cursor-pointer" onClick={() => setIsBottomSheetOpen(false)}>

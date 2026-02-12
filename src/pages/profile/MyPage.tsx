@@ -26,7 +26,7 @@ export default function MyPage() {
 
   // 토스트 상태 (보일 때만 값 존재)
   const [toast, setToast] = useState<{
-    type: 'notification' | 'location' ;
+    type: 'notification' | 'location';
     status: 'on' | 'off';
   } | null>(null);
 
@@ -40,34 +40,34 @@ export default function MyPage() {
 
   return (
     <Layout showBottomNav>
-      <Header title="프로필" showBackButton={false}  />
+      <Header title="마이" showBackButton={false} />
 
-    <main className="flex-1 overflow-y-auto scrollbar-hide pb-20">
-      {/* 메뉴 리스트 */}
-      <div className="mt-20">
-        {menuItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => {
-              if (item.path) {
-                navigate(item.path);
-              }
-            }}
-            className="
+      <main className="flex-1 overflow-y-auto scrollbar-hide pb-20">
+        {/* 메뉴 리스트 */}
+        <div className="mt-20">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                if (item.path) {
+                  navigate(item.path);
+                }
+              }}
+              className="
               w-full h-18
               bg-white
               flex items-center justify-between
               px-[25px]
             "
-          >
-            {/* 왼쪽 텍스트 */}
-            <span className="text-[20px] font-semibold">
-              {item.label}
-            </span>
-          </button>
-        ))}
-      </div>
-    </main>
+            >
+              {/* 왼쪽 텍스트 */}
+              <span className="text-[20px] font-semibold">
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </main>
 
       {/* 토스트 조건부 렌더링 */}
       {toast && (

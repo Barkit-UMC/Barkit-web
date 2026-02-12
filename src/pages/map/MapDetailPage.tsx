@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { mapApi, type StoreDetail } from '../../api/map';
-import { useAuthStore } from '../../store/useAuthStore';
-import { membershipApi } from '../../api/membership';
+import { userApi } from '../../api/user'; // 디버깅용 추가
 import Layout from '../../components/common/Layout';
 import iconShare from '../../assets/icons/map/navigation.svg'; // 공유 아이콘 경로 확인 필요
 import kt from '../../assets/icons/memberships/kt.svg';
@@ -22,7 +21,8 @@ export default function MapDetailPage() {
 
     const navigate = useNavigate();
 
-    const { isAuthenticated } = useAuthStore();
+    const location = useLocation();
+    const membershipIds = location.state?.membershipIds || [];
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -42,17 +42,6 @@ export default function MapDetailPage() {
                 } catch (e) {
                     alert(`위치 정보를 가져오지 못해 기본 좌표를 사용합니다.`);
                     console.warn("위치 정보를 가져오지 못해 기본 좌표를 사용합니다.");
-                }
-
-                // 멤버십 ID 목록 가져오기
-                let membershipIds: number[] = [];
-                if (isAuthenticated) {
-                    try {
-                        const memberships = await membershipApi.getMyMemberships();
-                        membershipIds = memberships.map(m => m.id);
-                    } catch (e) {
-                        console.error("멤버십 목록 조회 실패:", e);
-                    }
                 }
 
                 const response = await mapApi.getStoreDetail({
@@ -75,7 +64,7 @@ export default function MapDetailPage() {
         };
 
         fetchDetail();
-    }, [googleId, isAuthenticated]);
+    }, [googleId, membershipIds]);
 
     if (loading)
         return
