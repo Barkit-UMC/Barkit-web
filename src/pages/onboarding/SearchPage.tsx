@@ -202,15 +202,25 @@ export default function SearchPage() {
             </main>
 
             {/* Bottom Button - 하단 고정 */}
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-                <Button
-                    onClick={handleNext}
-                    disabled={!isButtonActive}
-                    variant="cyan"
-                >
-                    다음
-                </Button>
+            <div className="fixed bottom-0 left-0 right-0 z-40">
+                {/* 버튼 영역 기준 그라데이션 */}
+                <div className="relative mx-6">
+                    <div className="absolute inset-x-0 bottom-0 h-[120px] 
+                        bg-gradient-to-t from-white via-white to-white/0 
+                        pointer-events-none" />
+        
+                    <div className="relative pb-8 pt-6">
+                        <Button
+                            onClick={handleNext}
+                            disabled={!isButtonActive}
+                            variant="cyan"
+                        >
+                            다음
+                        </Button>
+                    </div>
+                </div>
             </div>
+
         </div>
     );
 }

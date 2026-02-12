@@ -129,7 +129,7 @@ export default function MembershipDetailPage() {
                     </div>
 
                     {/* 3. 적립/할인 가능한 매장 */}
-                    <div className="px-6 mt-10">
+                    <div className="px-6 mt-10 mb-10">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold text-gray-800">적립 / 할인 가능한 매장</h3>
                             <button

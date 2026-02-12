@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import FavoriteMembershipToast from './MembershipToast';
 import { useNavigate } from 'react-router-dom';
@@ -31,24 +31,46 @@ export default function MembershipSettingBottomSheet({
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isToggling, setIsToggling] = useState(false);
+
+    const [isVisible, setIsVisible] = useState(false);
+    const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
+    const raf1 = useRef<number | null>(null);
+    const raf2 = useRef<number | null>(null);
+
     const navigate = useNavigate();
 
-    // isMain prop이 바뀌면 동기화
     useEffect(() => {
         setIsFavorite(isMain);
     }, [isMain]);
 
     useEffect(() => {
         if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        }
+            setIsVisible(true);
 
+            raf1.current = requestAnimationFrame(() => {
+                raf2.current = requestAnimationFrame(() => {
+                    setIsAnimatingOpen(true);
+                });
+            });
+        } else {
+            setIsAnimatingOpen(false);
+            const timer = !isOpen ? window.setTimeout(() => setIsVisible(false), 300) : null;
+            return () => {
+                if (raf1.current) cancelAnimationFrame(raf1.current);
+                if (raf2.current) cancelAnimationFrame(raf2.current);
+                if (timer !== null) clearTimeout(timer);
+            }
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (isVisible) document.body.style.overflow = 'hidden';
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen]);
+    }, [isVisible]);
 
-    if (!isOpen && !showToast) return null;
+    if (!isVisible && !showToast) return null;
 
     const handleToggleFavorite = async () => {
         if (!membershipId || isToggling) return;
@@ -99,73 +121,89 @@ export default function MembershipSettingBottomSheet({
 
     return (
         <>
-            {/* 배경 오버레이 */}
-            {!showDeleteModal && isOpen && (
+            {/* overlay */}
+            {!showDeleteModal && isVisible && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-40"
+                    className={`
+                        fixed inset-0 bg-black z-40
+                        transition-opacity duration-300
+                        ${isAnimatingOpen ? 'opacity-50' : 'opacity-0'}
+                    `}
                     onClick={onClose}
                 />
             )}
 
-            {/* 바텀시트 */}
-            {!showDeleteModal && isOpen && (
-                <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[393px] h-[346px] bg-white rounded-t-[24px] z-50 pb-8">
+            {/* bottom sheet */}
+            {!showDeleteModal && isVisible && (
+                <div
+                    className={`
+                        fixed bottom-0 left-1/2 -translate-x-1/2
+                        w-full h-[346px] bg-white rounded-t-[24px]
+                        z-50 pb-8
+                        transform transition-transform duration-300 ease-out
+                        ${isAnimatingOpen ? 'translate-y-0' : 'translate-y-full'}
+                    `}
+                >
                     <div className="p-6 space-y-4">
-                        {/* 대표 멤버십 설정하기 */}
+                        {/* 대표 멤버십 */}
                         <div className="flex items-center justify-between w-full py-3">
                             <div className="flex items-center gap-3">
                                 <Icon icon="mynaui:star-solid" width={24} height={24} className="text-gray-500" />
-                                <span className="text-[20px] font-semibold text-gray-500">대표 멤버십 설정하기</span>
+                                <span className="text-[20px] font-semibold text-gray-500">
+                                    대표 멤버십 설정하기
+                                </span>
                             </div>
 
-                            {/* 온오프 버튼 */}
                             <div
                                 onClick={handleToggleFavorite}
                                 className={`
-                                    w-[46px] h-[26px] rounded-full
-                                    cursor-pointer transition-colors duration-300
+                                    w-[46px] h-[26px] rounded-full cursor-pointer
+                                    transition-colors duration-300 relative
                                     ${isFavorite ? 'bg-green-500' : 'bg-gray-300'}
                                     ${isToggling ? 'opacity-50 pointer-events-none' : ''}
-                                    relative
                                 `}
                             >
                                 <div
                                     className={`
                                         absolute top-1/2 -translate-y-1/2
                                         w-[20px] h-[20px] bg-white rounded-full shadow-sm
-                                        transform transition-transform duration-300
+                                        transition-transform duration-300
                                         ${isFavorite ? 'translate-x-[22px]' : 'translate-x-[4px]'}
                                     `}
                                 />
                             </div>
                         </div>
 
-                        {/* 바코드 변경하기 */}
+                        {/* 바코드 변경 */}
                         <button
                             onClick={() => {
-                                if (!membershipId) return;
                                 navigate(`/membership/${membershipId}/change/select-method`);
                                 onClose();
                             }}
                             className="flex items-center gap-3 w-full py-3"
                         >
                             <Icon icon="fa7-solid:repeat" width={24} height={24} className="text-gray-500" />
-                            <span className="text-[20px] font-semibold text-gray-500">바코드 변경하기</span>
+                            <span className="text-[20px] font-semibold text-gray-500">
+                                바코드 변경하기
+                            </span>
                         </button>
 
-                        {/* 멤버십 삭제하기 */}
+                        {/* 삭제 */}
                         <button
                             onClick={() => setShowDeleteModal(true)}
                             className="flex items-center gap-3 w-full py-3"
                         >
                             <Icon icon="tabler:trash" width={24} height={24} className="text-gray-500" />
-                            <span className="text-[20px] font-semibold text-gray-500">멤버십 삭제하기</span>
+                            <span className="text-[20px] font-semibold text-gray-500">
+                                멤버십 삭제하기
+                            </span>
                         </button>
 
-                        {/* 취소 버튼 */}
+                        {/* 취소 */}
                         <button
                             onClick={onClose}
-                            className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px] text-[#00C0E8] text-[16px] font-semibold mt-6"
+                            className="w-full h-[54px] bg-[#00C0E8]/5 rounded-[28px]
+                                       text-[#00C0E8] text-[16px] font-semibold mt-6"
                         >
                             취소
                         </button>
@@ -173,10 +211,13 @@ export default function MembershipSettingBottomSheet({
                 </div>
             )}
 
-            {/* 토스트 */}
-            {showToast && <FavoriteMembershipToast isFavorite={isFavorite} onClose={() => setShowToast(false)} />}
+            {showToast && (
+                <FavoriteMembershipToast
+                    isFavorite={isFavorite}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
 
-            {/* 삭제 확인 모달 */}
             <MembershipDeleteModal
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
