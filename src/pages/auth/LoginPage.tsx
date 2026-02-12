@@ -35,7 +35,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6 overflow-hidden">
 
             {/* 1. 로고 영역 - mb-20 (80px) */}
             <div className="mb-20 w-full flex justify-center">
@@ -116,11 +116,11 @@ export default function LoginPage() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <span className="text-sm text-gray-500">자동 로그인</span>
+                        <span className="text-sm text-gray-500 font-regular">자동 로그인</span>
                     </label>
                     <button
                         onClick={() => navigate('/signup')}
-                        className="text-sm text-gray-500 hover:text-gray-800 font-medium"
+                        className="text-sm text-gray-500 hover:text-gray-800 font-regular"
                     >
                         회원가입
                     </button>

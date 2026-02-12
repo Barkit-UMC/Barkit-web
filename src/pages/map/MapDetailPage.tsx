@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { mapApi, type StoreDetail } from '../../api/map';
+import { useAuthStore } from '../../store/useAuthStore';
+import { membershipApi } from '../../api/membership';
 import Layout from '../../components/common/Layout';
 import iconShare from '../../assets/icons/map/navigation.svg'; // 공유 아이콘 경로 확인 필요
 import kt from '../../assets/icons/memberships/kt.svg';
@@ -20,54 +22,72 @@ export default function MapDetailPage() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-    const fetchDetail = async () => {
-        if (!googleId) return;
+    const { isAuthenticated } = useAuthStore();
 
-        try {
-            // 위치 정보를 못 가져올 상황을 대비해 기본값 설정
-            let lat = 37.5445;
-            let lng = 127.0560;
+    useEffect(() => {
+        const fetchDetail = async () => {
+            if (!googleId) return;
 
             try {
-                const pos: any = await new Promise((res, rej) => {
-                    navigator.geolocation.getCurrentPosition(res, rej, { timeout: 3000 });
+                // 위치 정보를 못 가져올 상황을 대비해 기본값 설정
+                let lat = 37.5445;
+                let lng = 127.0560;
+
+                try {
+                    const pos: any = await new Promise((res, rej) => {
+                        navigator.geolocation.getCurrentPosition(res, rej, { timeout: 3000 });
+                    });
+                    lat = pos.coords.latitude;
+                    lng = pos.coords.longitude;
+                } catch (e) {
+                    alert(`위치 정보를 가져오지 못해 기본 좌표를 사용합니다.`);
+                    console.warn("위치 정보를 가져오지 못해 기본 좌표를 사용합니다.");
+                }
+
+                // 멤버십 ID 목록 가져오기
+                let membershipIds: number[] = [];
+                if (isAuthenticated) {
+                    try {
+                        const memberships = await membershipApi.getMyMemberships();
+                        membershipIds = memberships.map(m => m.id);
+                    } catch (e) {
+                        console.error("멤버십 목록 조회 실패:", e);
+                    }
+                }
+
+                const response = await mapApi.getStoreDetail({
+                    googleId,
+                    userLat: lat,
+                    userLng: lng,
+                    membershipIds
                 });
-                lat = pos.coords.latitude;
-                lng = pos.coords.longitude;
-            } catch (e) {
-                alert(`위치 정보를 가져오지 못해 기본 좌표를 사용합니다.`);
-                console.warn("위치 정보를 가져오지 못해 기본 좌표를 사용합니다.");
+
+                if (response.isSuccess) {
+                    setStoreData(response.result);
+                } else {
+                    alert(`에러 발생: ${response.message}`);
+                }
+            } catch (error) {
+                console.error("4. 치명적 에러 발생:", error);
+            } finally {
+                setLoading(false);
             }
+        };
 
-            const response = await mapApi.getStoreDetail(googleId, lat, lng);
+        fetchDetail();
+    }, [googleId, isAuthenticated]);
 
-            if (response.isSuccess) {
-                setStoreData(response.result);
-            } else {
-                alert(`에러 발생: ${response.message}`);
-            }
-        } catch (error) {
-            console.error("4. 치명적 에러 발생:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    fetchDetail();
-}, [googleId]);
-
-    if (loading) 
-        return 
-            <Layout showBottomNav={false}>
-                <div className="flex items-center justify-center py-20">
-                    <LoadingDots />
-                </div>
-            </Layout>;
+    if (loading)
+        return
+    <Layout showBottomNav={false}>
+        <div className="flex items-center justify-center py-20">
+            <LoadingDots />
+        </div>
+    </Layout>;
     if (!storeData) return <Layout showBottomNav={false}><div className="flex h-full items-center justify-center">데이터가 없습니다.</div></Layout>;
 
     // 상세 페이지 네비게이션
-    const handleMembershipClick = (userMembershipId: string) => {
+    const handleMembershipClick = (userMembershipId: string | number) => {
         // 멤버십 상세 페이지로 이동 (ID를 경로 파라미터로 전달)
         navigate(`/map/membership/${userMembershipId}`);
     };
@@ -86,15 +106,15 @@ export default function MapDetailPage() {
     return (
         <Layout showBottomNav={false}>
             <div className="flex flex-col h-full bg-white overflow-y-auto scrollbar-hide pb-10">
-                
-               {/* 2. 공통 Header 사용 */}
-                <Header 
+
+                {/* 2. 공통 Header 사용 */}
+                <Header
                     showBackButton={true}
                     rightAction={
-                        <button 
+                        <button
                             className="p-2 rounded-full transition-transform active:scale-95"
                             onClick={() => window.open(`https://map.kakao.com/link/to/${storeData.name},${storeData.location.lat},${storeData.location.lng}`)}
-                            aria-label = "길찾기"
+                            aria-label="길찾기"
                         >
                             <img src={iconShare} alt="공유" className="w-8 h-8" />
                         </button>
@@ -116,11 +136,11 @@ export default function MapDetailPage() {
                 {/* 3. 이미지 갤러리 (가로 스크롤) */}
                 <div className="flex gap-3 overflow-x-auto px-6 scrollbar-hide h-48 min-h-[12rem] mb-2">
                     {storeData.photos.map((photo, idx) => (
-                        <img 
-                            key={idx} 
-                            src={photo.url} 
-                            className="w-72 h-48 object-cover rounded-2xl" 
-                            alt={`store-${idx}`} 
+                        <img
+                            key={idx}
+                            src={photo.url}
+                            className="w-72 h-48 object-cover rounded-2xl"
+                            alt={`store-${idx}`}
                         />
                     ))}
                 </div>
@@ -132,14 +152,14 @@ export default function MapDetailPage() {
                     <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">보유 멤버십</h2>
                     <div className="flex gap-3">
                         {storeData.userMembership.map((m, i) => (
-                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl" alt={m.name} title={m.name} 
-                                onClick={() => handleMembershipClick(m.userMembershipId)}/>
+                            <img key={i} src={m.logoUrl} className="w-14 h-14 rounded-xl" alt={m.name} title={m.name}
+                                onClick={() => handleMembershipClick(m.userMembershipId)} />
                         ))}
                     </div>
                 </div>
 
                 <hr className="my-4 border-gray-100 border-[6px]" />
-                
+
                 <div className="px-6">
                     <h2 className="text-xl font-bold text-gray-900 mb-3 pt-1">전체 멤버십</h2>
                     <div className="flex gap-3">
@@ -154,7 +174,7 @@ export default function MapDetailPage() {
                 {/* 5. 상세 정보 리스트 */}
                 <div className="px-6 space-y-3">
                     <h2 className="text-xl font-bold text-black mb-3">기본 정보</h2>
-                    
+
                     <div className="flex gap-4">
                         <span className="w-20 text-black font-medium">영업시간</span>
                         <span className="flex-1 text-gray-800">
@@ -163,7 +183,7 @@ export default function MapDetailPage() {
                                     {storeData.hourInfo.isOpen ? "영업중" : "영업종료"}
                                 </span>
                             )}
-                            
+
                             {/* 2. 요일 텍스트 출력 */}
                             {storeData.hourInfo.weekdayText.map((text, index) => (
                                 <React.Fragment key={index}>
@@ -178,7 +198,7 @@ export default function MapDetailPage() {
                         <span className="w-20 text-black font-medium">전화번호</span>
                         <div className="flex-1 flex items-center gap-2 text-gray-800">
                             {storeData.contact.phoneNumber}
-                            <button 
+                            <button
                                 className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-400"
                                 onClick={() => handleCopyPhone(storeData.contact.phoneNumber)}
                             >
@@ -202,16 +222,16 @@ export default function MapDetailPage() {
                         {/* 지도 이미지 영역 */}
                         {/* overflow-hidden과 rounded-2xl을 주어 지도가 둥글게 잘리도록 함 */}
                         <div className="relative w-full h-40 bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                            
+
                             {/* 구글 지도 컴포넌트 삽입 */}
-                            <MapContainer 
-                                center={storeData.location} 
+                            <MapContainer
+                                center={storeData.location}
                                 zoom={17} // 상세 페이지니까 조금 더 확대
                                 showMyLocation={false}
                             >
                                 {/* 매장 위치 마커 */}
-                                <MapMarker 
-                                    position={storeData.location} 
+                                <MapMarker
+                                    position={storeData.location}
                                     title={storeData.name}
                                 />
                             </MapContainer>

@@ -51,7 +51,7 @@ export default function IntroPage() {
                         className="absolute top-[30%] left-10 z-0 animate-float w-16 h-16"
                         style={{ animationDuration: '3.5s', animationDelay: '0s' }}
                     >
-                        <HyundaiIcon className="w-full h-full drop-shadow-md" />
+                        <HyundaiIcon className="w-full h-full" />
                     </div>
 
                     {/* KT (우측 상단) */}
@@ -59,7 +59,7 @@ export default function IntroPage() {
                         className="absolute top-[25%] right-10 z-0 animate-float w-16 h-16"
                         style={{ animationDuration: '4.2s', animationDelay: '1s' }}
                     >
-                        <KTIcon className="w-full h-full drop-shadow-md" />
+                        <KTIcon className="w-full h-full" />
                     </div>
 
                     {/* Olive Young (좌측 하단) */}
@@ -67,7 +67,7 @@ export default function IntroPage() {
                         className="absolute bottom-[35%] left-5 z-0 animate-float w-16 h-16"
                         style={{ animationDuration: '3.8s', animationDelay: '0.5s' }}
                     >
-                        <OliveYoungIcon className="w-full h-full drop-shadow-md" />
+                        <OliveYoungIcon className="w-full h-full" />
                     </div>
 
                     {/* Happy Point (우측 하단) */}
@@ -75,7 +75,7 @@ export default function IntroPage() {
                         className="absolute bottom-[30%] right-5 z-0 animate-float w-16 h-16"
                         style={{ animationDuration: '3s', animationDelay: '1.5s' }}
                     >
-                        <HappyPointIcon className="w-full h-full drop-shadow-md" />
+                        <HappyPointIcon className="w-full h-full" />
                     </div>
                 </div>
 

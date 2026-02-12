@@ -5,10 +5,10 @@ import apiClient from './axios';
  */
 
 export interface CommonResponse<T> {
-    isSuccess: boolean;
-    code: string;
-    message: string;
-    result: T;
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: T;
 }
 
 // 매장 상세 응답 dto
@@ -31,13 +31,12 @@ export interface StoreDetail {
   membership: {
     name: string;
     logoUrl: string;
-    id: string;
   }[];
   userMembership: {
     name: string;
     logoUrl: string;
-    userMembershipId: string;
-    membershipBrandId: string;
+    userMembershipId: number;
+    membershipBrandId: number;
   }[];
   photos: {
     url: string;
@@ -48,11 +47,11 @@ export interface StoreDetail {
 
 // 매장 검색 dto
 export interface SearchStoresRequest {
-    query?: string;
-    userlat?: number;
-    userlng?: number;
-    centerlat?: number;
-    centerlng?: number;
+  query?: string;
+  userlat?: number;
+  userlng?: number;
+  centerlat?: number;
+  centerlng?: number;
 }
 
 export interface SearchStoresResponse {
@@ -62,89 +61,85 @@ export interface SearchStoresResponse {
 }
 
 export interface StoreSummary {
-    storeId: number;
-    googleId: string;
-    name: {
-        text: string;
-    };
-    location: {
-        lat: number;
-        lng: number;
-    };
-    address: string;
-    phone: string;
-    memberships: {
-        id: number;
-        name: string;
-        logoUrl: string;
-    }[];
-    distanceKm: number;
-    directionUrl: string;
+  googleId: string;
+  name: {
+    text: string;
+  };
+  location: {
+    lat: number;
+    lng: number;
+  };
+  address: string;
+  phone: string;
+  memberships: {
+    id: number;
+    name: string;
+    logoUrl: string;
+  }[];
+  membershipIds: number[];
+  distanceKm: number;
+  directionUrl: string;
 }
 
 export interface MapMembershipResponse {
-    userMembershipBrandId: number;
-    membershipBrandName: string;
-    themeColor: string;
+  userMembershipBrandId: number;
+  membershipBrandName: string;
+  themeColor: string;
+  logoUrl: string;
+  membershipNumber: string;
+  storeBrands: {
+    storeBrandId: number;
+    name: string;
     logoUrl: string;
-    membershipNumber: string;
-    storeBrands: {
-        storeBrandId: number;
-        name: string;
-        logoUrl: string;
-    }[];
+  }[];
 }
 
 export const mapApi = {
-    // 가게 멤버십 상세 조회
-    getMembershipDetail: async (userMembershipBrandId: string): Promise<CommonResponse<MapMembershipResponse>> => {
-        const response = await apiClient.get<CommonResponse<MapMembershipResponse>>(
-            `/api/user-membership-brands/${userMembershipBrandId}/detail`
-        );
-        return response.data;
-    },
+  // 가게 멤버십 상세 조회
+  getMembershipDetail: async (userMembershipBrandId: string): Promise<CommonResponse<MapMembershipResponse>> => {
+    const response = await apiClient.get<CommonResponse<MapMembershipResponse>>(
+      `/api/user-membership-brands/${userMembershipBrandId}/detail`
+    );
+    return response.data;
+  },
 
-    /**
-     * 주변 매장 검색
-     */
-    searchStores: async (
-        req: SearchStoresRequest, 
-        cursor: number = 0,
-        distanceType: 'CURRENT' | 'CENTER' = 'CURRENT',
-        category: string,
-        sort: 'DISTANCE' | 'POPULAR' = 'DISTANCE',
-        size: number = 20
-    ): Promise<CommonResponse<SearchStoresResponse>> => {
-        const queryParams = new URLSearchParams({
-            ...(req.query && { query: req.query }), // 'req.' 제거
-            ...(req.userlat && { userLat: req.userlat.toString() }),
-            ...(req.userlng && { userLng: req.userlng.toString() }),
-            ...(req.centerlat && { centerLat: req.centerlat.toString() }),
-            ...(req.centerlng && { centerLng: req.centerlng.toString() }),
-            distanceType,
-            category,
-            sort,
-            cursor: cursor.toString(),
-            size: size.toString(),
-        });
+  /**
+   * 주변 매장 검색
+   */
+  searchStores: async (
+    req: SearchStoresRequest,
+    cursor: number = 0,
+    distanceType: 'CURRENT' | 'CENTER' = 'CURRENT',
+    category: string,
+    size: number = 20
+  ): Promise<CommonResponse<SearchStoresResponse>> => {
+    const queryParams = new URLSearchParams({
+      ...(req.query && { query: req.query }),
+      ...(req.userlat && { userLat: req.userlat.toString() }),
+      ...(req.userlng && { userLng: req.userlng.toString() }),
+      ...(req.centerlat && { centerLat: req.centerlat.toString() }),
+      ...(req.centerlng && { centerLng: req.centerlng.toString() }),
+      distanceType,
+      category,
+      cursor: cursor.toString(),
+      size: size.toString(),
+    });
 
-        const response = await apiClient.get<CommonResponse<SearchStoresResponse>>(`/api/map/search?${queryParams.toString()}`);
-        return response.data;    
-    },
+    const response = await apiClient.get<CommonResponse<SearchStoresResponse>>(`/api/map/search?${queryParams.toString()}`);
+    return response.data;
+  },
 
-    /**
-     * 매장 상세 정보
-     */
-    getStoreDetail: async (googleId: string, userLat: number, userLng: number): Promise<CommonResponse<StoreDetail>> => {
-        const queryParams = new URLSearchParams({
-            googleId,
-            userLat: userLat.toString(),
-            userLng: userLng.toString(),
-        });
-
-        // 명세서의 Path인 /api/map/store 사용
-        const response = await apiClient.get<CommonResponse<StoreDetail>>(`/api/map/store?${queryParams.toString()}`);
-        console.log("API 전체 응답:", response);
-        return response.data;    
-    },
+  /**
+   * 매장 상세 정보 조회
+   * POST /api/map/store
+   */
+  getStoreDetail: async (data: {
+    userLat: number;
+    userLng: number;
+    googleId: string;
+    membershipIds: number[];
+  }): Promise<CommonResponse<StoreDetail>> => {
+    const response = await apiClient.post<CommonResponse<StoreDetail>>(`/api/map/store`, data);
+    return response.data;
+  },
 };

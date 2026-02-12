@@ -14,7 +14,7 @@ import { mapApi } from '../../api/map';
 import MapMarker from '../../components/map/MapMarker';
 import LoadingDots from '../../components/common/LoadingDots';
 
-const search_icon = iconSearch; 
+const search_icon = iconSearch;
 const filter_icon = iconFilter;
 const loc_icon = iconLoc;
 const loc_icon_on = iconLocOn;
@@ -38,39 +38,37 @@ export default function MapHomePage() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
 
     // 1. 지도 중심 좌표를 State로 관리 (초기값: 서울 시청)
-    const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
-    
+    const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>(null);
+
     // 2. 추적 상태 관리
     const [isTracking, setIsTracking] = useState(false);
 
     const [isSortModalOpen, setIsSortModalOpen] = useState(false);
     const [currentSort, setCurrentSort] = useState('distance');
 
-    
+
     const [searchText, setSearchText] = useState(''); // 검색어 상태
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀시트 열림 상태
 
     // const latestCoords = useRef<{lat: number, lng: number} | null>(null);
-    const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+    const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
         // queryKey에 좌표값들을 개별적으로 포함시켜 값이 변할 때마다 트리거
         queryKey: ['stores', searchText, selectedCategory, currentSort, currentLocation?.lat, currentLocation?.lng, userLocation?.lat, userLocation?.lng],
-        queryFn: ({ pageParam = 0 }) => 
+        queryFn: ({ pageParam = 0 }) =>
             mapApi.searchStores(
-                { 
-                    query: searchText, 
+                {
+                    query: searchText,
                     userlat: userLocation?.lat, // useRef.current 대신 state 사용
                     userlng: userLocation?.lng,
-                    centerlat: currentLocation?.lat, 
+                    centerlat: currentLocation?.lat,
                     centerlng: currentLocation?.lng,
-                }, 
+                },
                 pageParam as number,
                 // distanceType 결정 (내 위치 기준인지 지도 중심 기준인지)
                 currentSort === 'distance' ? 'CURRENT' : 'CENTER',
                 // 카테고리: image_992e58 매핑 값 전달
-                CATEGORY_MAP[selectedCategory], 
-                // 정렬: image_99803b 매핑 값 전달
-                'DISTANCE', 
+                CATEGORY_MAP[selectedCategory],
                 20
             ),
         initialPageParam: 0,
@@ -90,10 +88,10 @@ export default function MapHomePage() {
             (position) => {
                 const { latitude, longitude } = position.coords;
                 const newPos = { lat: latitude, lng: longitude };
-                
+
                 // latestCoords.current = newPos; // Ref에 실시간 좌표 저장
                 setUserLocation(newPos);
-                
+
                 // 앱 처음 실행 시에만 지도를 내 위치로 이동
                 if (!currentLocation) {
                     setCurrentLocation(newPos);
@@ -101,10 +99,10 @@ export default function MapHomePage() {
                 }
             },
             (error) => console.error("위치 추적 오류:", error),
-            { 
+            {
                 enableHighAccuracy: false, // 속도를 위해 처음엔 false, 필요시 true
                 maximumAge: 1000,          // 1초 이내 캐시된 위치 사용 (매우 빠름)
-                timeout: 5000 
+                timeout: 5000
             }
         );
 
@@ -113,24 +111,24 @@ export default function MapHomePage() {
 
     // 3. 현재 위치로 이동하는 함수
     const handleMoveToCurrentLocation = () => {
-    // state인 userLocation에 값이 있다면 바로 이동
-    if (userLocation) {
-        setCurrentLocation({ ...userLocation }); 
-        setIsTracking(true);
-    } else {
-        // 만약 watchPosition에서 아직 값을 못 잡았다면 단발성으로 요청
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
-                setUserLocation(newPos); // 상태 업데이트
-                setCurrentLocation(newPos); // 지도 중심 이동
-                setIsTracking(true);
-            },
-            (error) => console.error("위치 획득 실패:", error),
-            { enableHighAccuracy: true, timeout: 5000 }
-        );
-    }
-};
+        // state인 userLocation에 값이 있다면 바로 이동
+        if (userLocation) {
+            setCurrentLocation({ ...userLocation });
+            setIsTracking(true);
+        } else {
+            // 만약 watchPosition에서 아직 값을 못 잡았다면 단발성으로 요청
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const newPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    setUserLocation(newPos); // 상태 업데이트
+                    setCurrentLocation(newPos); // 지도 중심 이동
+                    setIsTracking(true);
+                },
+                (error) => console.error("위치 획득 실패:", error),
+                { enableHighAccuracy: true, timeout: 5000 }
+            );
+        }
+    };
 
     // 위치 정보가 올 때까지 '로딩'을 보여주어 지도가 0px로 튀는 것을 방지
     if (!currentLocation) {
@@ -144,37 +142,37 @@ export default function MapHomePage() {
     }
 
     const sortOptions = [
-        { 
+        {
             id: 'popular', // 정렬 방식 아이디 수정
-            label: '지도 중심 거리순', 
+            label: '지도 중심 거리순',
             icon: mapPinIcon
         },
-        { 
-            id: 'distance', 
-            label: '현재 내 위치 거리순', 
-            icon: myLocIcon  
+        {
+            id: 'distance',
+            label: '현재 내 위치 거리순',
+            icon: myLocIcon
         },
     ];
-    
+
     return (
         <Layout showBottomNav>
             <div className="relative flex-1 w-full h-full min-h-[calc(100dvh-64px)] bg-gray-100 overflow-hidden">
                 {/* 1. 지도 배경 */}
                 {/* z-0으로 설정하여 다른 UI들이 위에 뜨도록 함 */}
                 <div className="absolute inset-0 z-0">
-                    <MapContainer 
-                        center={currentLocation} 
-                        zoom={15} 
+                    <MapContainer
+                        center={currentLocation}
+                        zoom={15}
                         onDragStart={() => {
-                            setIsTracking(false); 
+                            setIsTracking(false);
                         }}
-                        onCenterChanged={(newPos: {lat: number, lng: number}) => {
+                        onCenterChanged={(newPos: { lat: number, lng: number }) => {
                             setCurrentLocation(newPos);
                         }}
-                        >
+                    >
                         {allStores.map((store) => (
                             <MapMarker
-                                key={store.storeId}
+                                key={store.googleId}
                                 position={{
                                     lat: store.location.lat,
                                     lng: store.location.lng
@@ -187,42 +185,42 @@ export default function MapHomePage() {
 
                 {/* 2. 상단 플로팅 UI (검색창 + 카테고리) */}
                 <div className="absolute top-3 left-0 right-0 z-31 flex flex-col gap-4 pt-14 pb-4">
-                    
+
                     {/* 검색바 & 필터 버튼 Row */}
                     <div className="flex items-center pl-5 pr-5 gap-3">
                         {/* 검색 입력창 */}
                         <div className="flex-1 h-12 bg-white rounded-xl shadow-md flex items-center px-4 transition-transform active:scale-[0.98]">
-                            <img 
-                                src={search_icon} 
-                                alt="검색" 
+                            <img
+                                src={search_icon}
+                                alt="검색"
                                 className="w-10 h-5 object-contain opacity-60" // 이미지 크기 및 투명도 조절
                             />
-                            <input 
+                            <input
                                 type="text"
                                 value={searchText}
-                                placeholder="매장명을 입력하세요" 
+                                placeholder="매장명을 입력하세요"
                                 className="w-full ml-3 text-base bg-transparent outline-none text-gray-700"
                                 onChange={(e) => {
                                     setSearchText(e.target.value);
                                     // 글자를 입력하면 바텀시트를 엽니다.
-                                    if(e.target.value.length > 0) setIsBottomSheetOpen(true);
+                                    if (e.target.value.length > 0) setIsBottomSheetOpen(true);
                                     else setIsBottomSheetOpen(false);
                                 }}
                                 onFocus={() => {
-                                    if(searchText.length > 0) setIsBottomSheetOpen(true);
+                                    if (searchText.length > 0) setIsBottomSheetOpen(true);
                                 }}
                             />
                         </div>
 
                         {/* 필터 버튼 */}
-                        <button 
+                        <button
                             className="h-12 w-12 bg-white rounded-xl shadow-md flex items-center justify-center flex-shrink-0 active:bg-gray-50"
                             onClick={() => setIsSortModalOpen(true)}
                         >
-                            <img 
-                                src={filter_icon} 
-                                alt="필터" 
-                                className="w-6 h-6 object-contain" 
+                            <img
+                                src={filter_icon}
+                                alt="필터"
+                                className="w-6 h-6 object-contain"
                             />
                         </button>
                     </div>
@@ -235,8 +233,8 @@ export default function MapHomePage() {
                                 onClick={() => setSelectedCategory(category)}
                                 className={`flex-shrink-0
                                     !px-5 !py-1.5 text-base rounded-full font-medium whitespace-nowrap transition-colors
-                                    ${selectedCategory === category 
-                                        ? 'bg-white text-gray-900 ring-1 ring-gray-200' 
+                                    ${selectedCategory === category
+                                        ? 'bg-white text-gray-900 ring-1 ring-gray-200'
                                         : 'bg-white text-gray-500 hover:bg-gray-50'}
                                 `}
                             >
@@ -248,17 +246,17 @@ export default function MapHomePage() {
 
                 {/* 3. 검색 결과 바텀시트 영역 */}
                 <div className="fixed inset-0 z-30 pointer-events-none"> {/* 부모 컨테이너는 클릭 통과 */}
-                    
+
                     {/* 배경 오버레이: 시트가 열렸을 때만 나타나며, 클릭 시 시트를 닫음 */}
                     {isBottomSheetOpen && (
-                        <div 
+                        <div
                             className="absolute inset-0 bg-black/10 pointer-events-auto" // 투명도 조절 가능 (bg-transparent도 가능)
                             onClick={() => setIsBottomSheetOpen(false)}
                         />
                     )}
 
                     {/* 바텀시트 본체 */}
-                    <div 
+                    <div
                         className={`absolute inset-x-0 bottom-0 bg-white rounded-t-[32px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] 
                             transition-transform duration-300 ease-out pointer-events-auto
                             ${isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}
@@ -271,8 +269,8 @@ export default function MapHomePage() {
 
                         {/* 리스트 컴포넌트 */}
                         <div className="h-full overflow-hidden pb-10"> {/* 내부 스크롤을 위해 높이 확보 */}
-                            <SearchResultList 
-                                results={allStores} 
+                            <SearchResultList
+                                results={allStores}
                                 fetchNextPage={fetchNextPage}
                                 hasNextPage={hasNextPage}
                                 isFetchingNextPage={isFetchingNextPage}

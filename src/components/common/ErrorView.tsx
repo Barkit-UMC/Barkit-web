@@ -26,7 +26,7 @@ export default function ErrorView({
     onSecondaryClick,
 }: ErrorViewProps) {
     return (
-        <div className="flex flex-col w-full h-full mx-auto bg-white flex flex-col">
+        <div className="flex flex-col w-full h-full mx-auto bg-white flex flex-col overflow-hidden">
             {/* Boing Animation Style */}
             <style>{`
                 @keyframes boing {
