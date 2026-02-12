@@ -113,7 +113,7 @@ export default function MembershipSearchPage() {
                                     </div>
                                 </div>
 
-                                <div className="mt-auto pb-10 space-y-3">
+                                <div className="fixed bottom-8 left-0 right-0 px-6 mt-auto space-y-3">
                                     <button
                                         onClick={handleGoHome}
                                         className="w-full h-14 bg-[#00C0E8]/5 rounded-[28px] text-[#00C0E8] text-[16px] font-semibold"
@@ -139,7 +139,7 @@ export default function MembershipSearchPage() {
                                     </p>
                                 </div>
 
-                                <div className="w-full mb-8">
+                                <div className="fixed bottom-8 left-0 right-0 px-6">
                                     <button
                                         onClick={handleGoHome}
                                         className="w-full h-[54px] bg-[#00C0E8] text-white rounded-[28px] text-[16px] font-semibold"

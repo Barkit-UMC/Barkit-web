@@ -12,7 +12,6 @@ function usePassword() {
   const changePassword = async (data: UpdatePasswordRequest) => {
     setIsLoading(true);
     try {
-      // API가 POST로 수정되었음을 가정합니다.
       const result = await userApi.updatePassword(data);
       return result;
     } catch (err: any) {
@@ -194,7 +193,7 @@ export default function ChangePasswordPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-10 left-0 right-0 px-6">
+      <div className="fixed bottom-8 left-0 right-0 px-6">
         <Button onClick={handleSubmit} variant="secondary" disabled={!isValid || isLoading}>
           {isLoading ? '변경 중...' : '완료하기'}
         </Button>
