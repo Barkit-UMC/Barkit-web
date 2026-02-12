@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import FavoriteMembershipToast from './MembershipToast';
 import { useNavigate } from 'react-router-dom';
@@ -34,6 +34,8 @@ export default function MembershipSettingBottomSheet({
 
     const [isVisible, setIsVisible] = useState(false);
     const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
+    const raf1 = useRef<number | null>(null);
+    const raf2 = useRef<number | null>(null);
 
     const navigate = useNavigate();
 
@@ -45,27 +47,28 @@ export default function MembershipSettingBottomSheet({
         if (isOpen) {
             setIsVisible(true);
 
-            // 🔥 핵심: double RAF
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
+            raf1.current = requestAnimationFrame(() => {
+                raf2.current = requestAnimationFrame(() => {
                     setIsAnimatingOpen(true);
                 });
             });
         } else {
             setIsAnimatingOpen(false);
-            const timer = setTimeout(() => {
-                setIsVisible(false);
-            }, 300);
-            return () => clearTimeout(timer);
+            const timer = !isOpen ? window.setTimeout(() => setIsVisible(false), 300) : null;
+            return () => {
+                if (raf1.current) cancelAnimationFrame(raf1.current);
+                if (raf2.current) cancelAnimationFrame(raf2.current);
+                if (timer !== null) clearTimeout(timer);
+            }
         }
     }, [isOpen]);
 
     useEffect(() => {
-        if (isOpen) document.body.style.overflow = 'hidden';
+        if (isVisible) document.body.style.overflow = 'hidden';
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen]);
+    }, [isVisible]);
 
     if (!isVisible && !showToast) return null;
 
