@@ -7,6 +7,18 @@ import Header from "../../components/common/Header";
  */
 export default function AddToHomePage() {
     const navigate = useNavigate();
+    function StepItem({ num, children }: { num: number; children: React.ReactNode }) {
+        return (
+            <div className="flex items-center gap-3">
+                <div className="w-5 h-5 flex items-center justify-center rounded-full 
+                    bg-black text-white text-[12px] font-semibold shrink-0">
+                    {num}
+                </div>
+                <p className="text-[15px] leading-relaxed">{children}</p>
+            </div>
+        );
+    }
+
     return (
         <Layout>
             <Header title="홈 화면에 추가" />  
@@ -23,18 +35,25 @@ export default function AddToHomePage() {
                     <span className="text-[20px] font-semibold">아이폰(iOS)</span>
                 </div>
                 {/* 설명 */}
-                <div className="min-h-[260px] h-auto w-[90%] rounded-xl bg-gray-100 mx-auto flex flex-col">
-                    <p className="p-5 text-[16px]">
-                        Safari 브라우저로 접속<br/>
-                        BarKit 주소로 접속해주세요 (Safari만 가능)<br/>
-                        공유 버튼 클릭<br/>
-                        화면 하단의 공유 버튼을 눌러주세요<br/>
-                        "홈 화면에 추가" 선택<br/>
-                        메뉴를 스크롤해서 "홈 화면에 추가"를 찾아 눌러주세요<br/>
-                        설치 완료!<br/>
-                        홈 화면에 Barkit 앱 아이콘이 추가됩니다
-                    </p>
+                <div className="min-h-[260px] w-[90%] rounded-xl bg-gray-100 mx-auto p-5 
+                    flex flex-col justify-center gap-4">
+                    <StepItem num={1}>
+                        <b>Safari 브라우저</b>에서 <b>https://www.barkit.site/</b> 접속
+                    </StepItem>
+
+                    <StepItem num={2}>
+                        화면 하단 <b>공유 버튼</b> 클릭
+                    </StepItem>
+
+                    <StepItem num={3}>
+                        메뉴에서 <b>"홈 화면에 추가"</b> 선택
+                    </StepItem>
+
+                    <StepItem num={4}>
+                        <b>설치 완료</b> → 홈 화면에 Barkit 앱 아이콘 생성
+                    </StepItem>
                 </div>
+
 
                 <div
                     className="
@@ -47,18 +66,25 @@ export default function AddToHomePage() {
                     <span className="text-[20px] font-semibold">안드로이드(Android)</span>
                 </div>
                 {/* 설명 */}
-                <div className="min-h-[260px] h-auto w-[90%] rounded-xl bg-gray-100 mx-auto flex flex-col">
-                    <p className="p-5 text-[16px]">
-                        Chrome 브라우저로 접속<br/>
-                        BarKit 주소로 접속해주세요<br/>
-                        메뉴 버튼 클릭<br/>
-                        화면 우측 상단의 점 3개(:) 버튼을 눌러주세요<br/>
-                        "홈 화면에 추가" 선택<br/>
-                        메뉴에서 "홈 화면에 추가" 또는 "앱 설치"를 눌러주세요<br/>
-                        설치 완료!<br/>
-                        홈 화면에 Barkit 앱 아이콘이 추가됩니다<br/>
-                    </p>
+                <div className="min-h-[260px] w-[90%] rounded-xl bg-gray-100 mx-auto p-5 
+                    flex flex-col justify-center gap-4">
+                    <StepItem num={1}>
+                        <b>Chrome 브라우저</b>에서 <b>https://www.barkit.site/</b> 접속
+                    </StepItem>
+
+                    <StepItem num={2}>
+                        우측 상단 <b>⋮ 메뉴 버튼</b> 클릭
+                    </StepItem>
+
+                    <StepItem num={3}>
+                        <b>"홈 화면에 추가"</b> 또는 <b>"앱 설치"</b> 선택
+                    </StepItem>
+
+                    <StepItem num={4}>
+                        <b>설치 완료</b> → 홈 화면에 Barkit 앱 아이콘 생성
+                    </StepItem>
                 </div>
+
             </div>
         </Layout>
     );
