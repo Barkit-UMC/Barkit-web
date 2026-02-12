@@ -49,7 +49,7 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
               <div className="flex justify-between items-end !mt-4">
                 {/* 왼쪽: 멤버십 정보 부문 */}
                 <div className="flex flex-col gap-2">
-                  <span className="text-[12px] text-gray-500 font-medium">사용 가능 멤버십</span>
+                  <span className="text-[12px] text-gray-500 font-medium">보유 멤버십</span>
                   <div className="flex gap-1.5">
                     {/* 최대 5개만 노출 */}
                     {store.memberships?.slice(0, 5).map((m: any) => (
