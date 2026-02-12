@@ -83,7 +83,7 @@ export default function MembershipDetailPage() {
 
     return (
         <Layout showBottomNav={!isBottomSheetOpen}>
-            <div className="flex flex-col h-full bg-white overflow-y-auto scollbar-hide">
+            <div className="flex flex-col h-full bg-gray-50 overflow-y-auto scrollbar-hide">
 
                 {/* 공통 Header 사용 */}
                 <Header
@@ -119,7 +119,7 @@ export default function MembershipDetailPage() {
                                 <img src={iconEdit} alt="수정" className="w-6 h-6" />
                             </button>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 w-full h-28 bg-white rounded-xl px-4 items-center">
                             {numberChunks.map((chunk, idx) => (
                                 <div key={idx} className="flex-1 bg-gray-100 py-3 rounded-lg text-center font-semibold text-gray-600">
                                     {chunk}
@@ -138,11 +138,11 @@ export default function MembershipDetailPage() {
                             </button>
                         </div>
                         {detail.storeBrands && detail.storeBrands.length > 0 ? (
-                            <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+                            <div className="flex justify-between items-center gap-4 overflow-x-auto scrollbar-hide w-full h-28 bg-white rounded-xl px-4 py-3">
                                 {detail.storeBrands.map((store) => (
                                     <div key={store.storeBrandId} className="flex-shrink-0 flex flex-col items-center gap-1">
-                                        <div className="w-14 h-14 rounded-xl border border-gray-100 shadow-sm overflow-hidden bg-white flex items-center justify-center">
-                                            <img src={store.logoUrl} alt={store.name} className="w-10 h-10 object-contain" />
+                                        <div className="w-14 h-14 rounded-xl border border-gray-100 overflow-hidden bg-white flex items-center justify-center">
+                                            <img src={store.logoUrl} alt={store.name} className="w-14 h-14 object-contain" />
                                         </div>
                                         <span className="text-xs text-gray-500 truncate max-w-[56px]">{store.name}</span>
                                     </div>
