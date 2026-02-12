@@ -166,9 +166,12 @@ export default function MapHomePage() {
                         center={currentLocation} 
                         zoom={15} 
                         onDragStart={() => {
-                            console.log("지도 드래그 감지됨 -> 추적 종료"); // 콘솔로 확인해보세요
                             setIsTracking(false); 
-                        }}>
+                        }}
+                        onCenterChanged={(newPos: {lat: number, lng: number}) => {
+                            setCurrentLocation(newPos);
+                        }}
+                        >
                         {allStores.map((store) => (
                             <MapMarker
                                 key={store.storeId}
@@ -183,7 +186,7 @@ export default function MapHomePage() {
                 </div>
 
                 {/* 2. 상단 플로팅 UI (검색창 + 카테고리) */}
-                <div className="absolute top-3 left-0 right-0 z-10 flex flex-col gap-4 pt-14 pb-4">
+                <div className="absolute top-3 left-0 right-0 z-31 flex flex-col gap-4 pt-14 pb-4">
                     
                     {/* 검색바 & 필터 버튼 Row */}
                     <div className="flex items-center pl-5 pr-5 gap-3">

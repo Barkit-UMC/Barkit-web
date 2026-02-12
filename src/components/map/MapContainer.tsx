@@ -10,6 +10,7 @@ interface MapContainerProps {
     zoom?: number;
     children?: React.ReactNode;
     onDragStart?: () => void; // 지도를 드래그하기 시작할 때 실행될 함수
+    onCenterChanged?: (pos: { lat: number; lng: number }) => void
     showMyLocation?: boolean;
 }
 
@@ -46,6 +47,7 @@ export default function MapContainer({
     zoom = 15,
     children,
     onDragStart,
+    onCenterChanged,
     showMyLocation = true
 }: MapContainerProps) {
     return (
@@ -56,7 +58,7 @@ export default function MapContainer({
                     render={render}
                     libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
                 >
-                    <MapComponent center={center} zoom={zoom} onDragStart={onDragStart} showMyLocation={showMyLocation}>
+                    <MapComponent center={center} zoom={zoom} onDragStart={onDragStart} onCenterChanged={onCenterChanged} showMyLocation={showMyLocation}>
                         {children}
                     </MapComponent>
                 </Wrapper>
@@ -65,12 +67,11 @@ export default function MapContainer({
     );
 }
 
-function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode, onDragStart?: () => void, showMyLocation : boolean; }) {
+function MapComponent({ center, zoom, children, onDragStart, onCenterChanged, showMyLocation}: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode, onDragStart?: () => void, onCenterChanged?: (pos: { lat: number; lng: number }) => void, showMyLocation : boolean; }) {
     const ref = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
 
-    // 내 위치 마커를 저장할 State
-    const [myLocationMarker, setMyLocationMarker] = useState<google.maps.Marker | null>(null);
+    const myLocationMarkerRef = useRef<google.maps.Marker | null>(null);
 
     useEffect(() => {
         if (ref.current && !map) {
@@ -89,23 +90,23 @@ function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { 
     // 내 위치가 변할 때마다 마커 표시/업데이트
     useEffect(() => {
         if (map && center) {
+            // 위치 표시를 꺼야 할 때
             if (!showMyLocation) {
-                if (myLocationMarker) {
-                    myLocationMarker.setMap(null); // 기존 마커가 있다면 제거
-                    setMyLocationMarker(null);
+                if (myLocationMarkerRef.current) {
+                    myLocationMarkerRef.current.setMap(null);
+                    myLocationMarkerRef.current = null;
                 }
-                return; 
+                return;
             }
-    
-            // 기존 마커가 있으면 위치만 업데이트, 없으면 생성
-            if (myLocationMarker) {
-                myLocationMarker.setPosition(center);
+
+            // 마커 업데이트 또는 생성
+            if (myLocationMarkerRef.current) {
+                myLocationMarkerRef.current.setPosition(center);
             } else {
-                const marker = new window.google.maps.Marker({
+                myLocationMarkerRef.current = new window.google.maps.Marker({
                     position: center,
                     map: map,
                     title: "내 위치",
-                    // 원하는 경우 커스텀 아이콘 설정 가능
                     icon: {
                         path: window.google.maps.SymbolPath.CIRCLE,
                         scale: 10,
@@ -115,11 +116,10 @@ function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { 
                         strokeWeight: 2,
                     },
                 });
-                setMyLocationMarker(marker);
             }
-            map.panTo(center); // 위치 변경 시 부드럽게 이동
+            map.panTo(center);
         }
-    }, [center, map]);
+    }, [center, map, showMyLocation]); // showMyLocation 의존성 추가
 
     useEffect(() => {
         if (map && onDragStart) {
@@ -141,6 +141,23 @@ function MapComponent({ center, zoom, children, onDragStart, showMyLocation}: { 
             map.panTo(center);
         }
     }, [center, map]);
+
+    useEffect(() => {
+        if (!map) return;
+
+        // 지도의 움직임이 멈췄을 때(idle) 최종 중심 좌표를 부모에게 전달
+        const idleListener = map.addListener('idle', () => {
+            const newCenter = map.getCenter();
+            if (newCenter && onCenterChanged) {
+                onCenterChanged({
+                    lat: newCenter.lat(),
+                    lng: newCenter.lng()
+                });
+            }
+        });
+
+        return () => window.google.maps.event.removeListener(idleListener);
+    }, [map, onCenterChanged]);
 
     return (
 
