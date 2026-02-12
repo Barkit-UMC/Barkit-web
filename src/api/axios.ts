@@ -6,8 +6,8 @@
 import axios from 'axios';
 import type { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-//  const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://43.200.164.91:8080').replace(/\/$/, '');
-const API_BASE_URL = '';
+ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://43.200.164.91:8080').replace(/\/$/, '');
+//const API_BASE_URL = '';
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
