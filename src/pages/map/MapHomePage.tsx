@@ -70,7 +70,7 @@ export default function MapHomePage() {
                 // 카테고리: image_992e58 매핑 값 전달
                 CATEGORY_MAP[selectedCategory], 
                 // 정렬: image_99803b 매핑 값 전달
-                currentSort === 'popular' ? 'POPULAR' : 'DISTANCE', 
+                'DISTANCE', 
                 20
             ),
         initialPageParam: 0,
@@ -145,13 +145,13 @@ export default function MapHomePage() {
 
     const sortOptions = [
         { 
-            id: 'distance', // 정렬 방식 아이디 수정
-            label: '거리순', 
+            id: 'popular', // 정렬 방식 아이디 수정
+            label: '지도 중심 거리순', 
             icon: mapPinIcon
         },
         { 
-            id: 'popular', 
-            label: '인기순', 
+            id: 'distance', 
+            label: '현재 내 위치 거리순', 
             icon: myLocIcon  
         },
     ];
