@@ -108,7 +108,15 @@ function MapComponent({
                 myLocationMarkerRef.current = new window.google.maps.Marker({
                     position: userLocation,
                     map: map,
-                    // ... 스타일 생략
+                    title: "내 위치",
+                    icon: {
+                        path: window.google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: "#4285F4",
+                        fillOpacity: 1,
+                        strokeColor: "white",
+                        strokeWeight: 2,
+                    },
                 });
             }
             // map.panTo(center); -> 이 부분은 제거하거나 필요시에만 사용
