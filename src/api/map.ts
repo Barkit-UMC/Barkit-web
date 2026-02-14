@@ -48,10 +48,10 @@ export interface StoreDetail {
 // 매장 검색 dto
 export interface SearchStoresRequest {
   query?: string;
-  userlat?: number;
-  userlng?: number;
-  centerlat?: number;
-  centerlng?: number;
+  userLat?: number;
+  userLng?: number;
+  centerLat?: number;
+  centerLng?: number;
 }
 
 export interface SearchStoresResponse {
@@ -117,10 +117,10 @@ export const mapApi = {
       params: {
         // req 객체 안의 필드들을 펼쳐서 전달
         query: req.query,
-        userLat: req.userlat,   // 서버가 대문자 L을 기대하는지 확인
-        userLng: req.userlng,
-        centerLat: req.centerlat,
-        centerLng: req.centerlng,
+        userLat: req.userLat,
+        userLng: req.userLng,
+        centerLat: req.centerLat,
+        centerLng: req.centerLng,
         distanceType,
         category,
         cursor,
