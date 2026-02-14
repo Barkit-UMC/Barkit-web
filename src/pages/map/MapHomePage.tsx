@@ -60,8 +60,6 @@ export default function MapHomePage() {
             mapApi.searchStores(
                 {
                     query: searchText,
-                    // 백엔드가 4개 좌표를 모두 필수로 요구하므로, 
-                    // userLocation이 없으면 center 좌표를 백업으로 넣어 빈 값을 방지합니다.
                     userlat: userLocation?.lat ?? currentLocation?.lat,
                     userlng: userLocation?.lng ?? currentLocation?.lng,
                     centerlat: currentLocation?.lat,
@@ -75,7 +73,6 @@ export default function MapHomePage() {
             ),
         initialPageParam: 0,
         getNextPageParam: (lastPage) => lastPage.result.hasNext ? lastPage.result.nextCursor : undefined,
-        // currentLocation(지도 중심)만 있어도 일단 조회가 가능하도록 조건을 완화합니다.
         enabled: !!currentLocation, 
     });
 
