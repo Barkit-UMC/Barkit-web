@@ -107,8 +107,8 @@ export default function MapHomePage() {
             (error) => console.error("위치 추적 오류:", error),
             {
                 enableHighAccuracy: false, 
-                maximumAge: 10000,          // 5초 이내 캐시 허용
-                timeout: 15000            // 10초 대기
+                maximumAge: 5000,          // 5초 이내 캐시 허용
+                timeout: 10000            // 10초 대기
             }
         );
 
