@@ -60,10 +60,10 @@ export default function MapHomePage() {
             mapApi.searchStores(
                 {
                     query: searchText,
-                    userlat: userLocation?.lat ?? currentLocation?.lat,
-                    userlng: userLocation?.lng ?? currentLocation?.lng,
-                    centerlat: currentLocation?.lat,
-                    centerlng: currentLocation?.lng,
+                    userLat: userLocation?.lat ?? currentLocation?.lat,
+                    userLng: userLocation?.lng ?? currentLocation?.lng,
+                    centerLat: currentLocation?.lat,
+                    centerLng: currentLocation?.lng,
                 },
                 pageParam as number,
                 // currentSort 값에 따라 정렬 타입 결정
