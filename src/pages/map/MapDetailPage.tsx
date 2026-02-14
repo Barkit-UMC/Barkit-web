@@ -18,6 +18,7 @@ export default function MapDetailPage() {
     const navigate = useNavigate();
 
     const location = useLocation();
+    const userLocationFromState = location.state?.userLocation;
     const membershipIds = location.state?.membershipIds || [];
 
     useEffect(() => {
@@ -29,15 +30,23 @@ export default function MapDetailPage() {
                 let lat = 37.5445;
                 let lng = 127.0560;
 
-                try {
-                    const pos: any = await new Promise((res, rej) => {
-                        navigator.geolocation.getCurrentPosition(res, rej, { timeout: 3000 });
-                    });
-                    lat = pos.coords.latitude;
-                    lng = pos.coords.longitude;
-                } catch (e) {
-                    alert(`위치 정보를 가져오지 못해 기본 좌표를 사용합니다.`);
-                    console.warn("위치 정보를 가져오지 못해 기본 좌표를 사용합니다.");
+                if (userLocationFromState) {
+                    lat = userLocationFromState.lat;
+                    lng = userLocationFromState.lng;
+                } else {
+                    // 2. 없다면 새로 요청 (타임아웃을 10초로 늘림)
+                    try {
+                        const pos: any = await new Promise((res, rej) => {
+                            navigator.geolocation.getCurrentPosition(res, rej, { 
+                                enableHighAccuracy: true, 
+                                timeout: 10000 
+                            });
+                        });
+                        lat = pos.coords.latitude;
+                        lng = pos.coords.longitude;
+                    } catch (e) {
+                        console.warn("위치 획득 실패, 기본값 사용");
+                    }
                 }
 
                 const response = await mapApi.getStoreDetail({

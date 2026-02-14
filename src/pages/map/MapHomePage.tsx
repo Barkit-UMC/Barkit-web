@@ -224,7 +224,10 @@ export default function MapHomePage() {
                                     lng: store.location.lng
                                 }}
                                 title={store.name.text}
-                                onClick={() => navigate(`/map/${store.googleId}`, { state: { membershipIds: store.membershipIds || [] } })}
+                                onClick={() => navigate(`/map/${store.googleId}`, { 
+                                    state: { membershipIds: store.membershipIds || [],
+                                    userLocation: userLocation
+                                } })}
                             />
                         ))}
                     </MapContainer>
