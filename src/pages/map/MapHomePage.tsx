@@ -39,7 +39,10 @@ export default function MapHomePage() {
     const navigate = useNavigate();
 
     // 1. 지도 중심 좌표를 State로 관리 (초기값: 서울 시청)
-    const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>(null);
+    const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>({ 
+        lat: 37.5665, 
+        lng: 126.9780 
+    });
 
     // 2. 추적 상태 관리
     const [isTracking, setIsTracking] = useState(false);
@@ -80,7 +83,7 @@ export default function MapHomePage() {
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage) => lastPage.result.hasNext ? lastPage.result.nextCursor : undefined,
-        enabled: !!currentLocation, 
+        enabled: !!currentLocation?.lat && !!currentLocation?.lng,
     });
 
     // 데이터 추출
@@ -106,7 +109,7 @@ export default function MapHomePage() {
             },
             (error) => console.error("위치 추적 오류:", error),
             {
-                enableHighAccuracy: true, // PWA/모바일에서는 정확도를 높여야 GPS를 더 잘 잡습니다.
+                enableHighAccuracy: false, // PWA/모바일에서는 정확도를 높여야 GPS를 더 잘 잡습니다.
                 maximumAge: 5000,          // 5초 이내 캐시 허용
                 timeout: 10000            // 10초 대기
             }

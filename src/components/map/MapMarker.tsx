@@ -9,14 +9,13 @@ interface MapMarkerProps {
 }
 
 export default function MapMarker({ position, title, map, onClick }: MapMarkerProps) {
-    // 1. useState 대신 useRef를 사용합니다.
     const markerRef = useRef<google.maps.Marker | null>(null);
 
     useEffect(() => {
-        if (!map) return;
+        if (!map || !position) return;
 
-        // 2. 마커가 아직 생성되지 않았을 때만 새로 만듭니다.
         if (!markerRef.current) {
+            // 1. 마커가 없으면 새로 생성
             markerRef.current = new window.google.maps.Marker({
                 position,
                 map,
@@ -29,28 +28,30 @@ export default function MapMarker({ position, title, map, onClick }: MapMarkerPr
                 },
                 animation: window.google.maps.Animation.DROP,
             });
-
-            if (onClick) {
-                markerRef.current.addListener("click", onClick);
-            }
+        } else {
+            // 2. 마커가 이미 있다면 위치와 지도 참조만 갱신 (모바일 최적화)
+            markerRef.current.setMap(map);
+            markerRef.current.setPosition(position);
         }
 
-        // 클린업: 마커 제거
+        // 3. 클릭 이벤트 리스너 처리
+        if (onClick) {
+            const listener = markerRef.current.addListener("click", onClick);
+            return () => {
+                window.google.maps.event.removeListener(listener);
+            };
+        }
+    }, [map, position, onClick]); // onClick도 의존성에 추가하여 최신 핸들러 유지
+
+    // 4. 컴포넌트 언마운트 시 마커 제거 (필수)
+    useEffect(() => {
         return () => {
             if (markerRef.current) {
-                window.google.maps.event.clearListeners(markerRef.current, 'click');
                 markerRef.current.setMap(null);
                 markerRef.current = null;
             }
         };
-    }, [map]); // map 객체가 준비되면 한 번 실행
+    }, []);
 
-    useEffect(() => {
-        // 3. 좌표(position)가 바뀔 때만 마커의 위치를 업데이트합니다.
-        if (markerRef.current) {
-            markerRef.current.setPosition(position);
-        }
-    }, [position]);
-
-    return null; // 화면에 그릴 것은 없습니다.
+    return null;
 }
