@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { mapApi, type StoreDetail } from '../../api/map';
-import { userApi } from '../../api/user'; // 디버깅용 추가
 import Layout from '../../components/common/Layout';
 import iconShare from '../../assets/icons/map/navigation.svg'; // 공유 아이콘 경로 확인 필요
-import kt from '../../assets/icons/memberships/kt.svg';
-import oliveyoung from '../../assets/icons/memberships/cjone.svg';
-import sampleimg from '../../assets/images/map_image_sample.png';
 import Header from '../../components/common/Header';
 import MapContainer from '../../components/map/MapContainer';
 import MapMarker from '../../components/map/MapMarker';
@@ -215,8 +211,7 @@ export default function MapDetailPage() {
                             {/* 구글 지도 컴포넌트 삽입 */}
                             <MapContainer
                                 center={storeData.location}
-                                zoom={17} // 상세 페이지니까 조금 더 확대
-                                showMyLocation={false}
+                                zoom={17}
                             >
                                 {/* 매장 위치 마커 */}
                                 <MapMarker
