@@ -17,8 +17,6 @@ import LoadingDots from '../../components/common/LoadingDots';
 
 const search_icon = iconSearch;
 const filter_icon = iconFilter;
-const loc_icon = iconLoc;
-const loc_icon_on = iconLocOn;
 const mapPinIcon = iconMapPin;
 const myLocIcon = iconMyLoc;
 
@@ -56,28 +54,33 @@ export default function MapHomePage() {
     // const latestCoords = useRef<{lat: number, lng: number} | null>(null);
     const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-        // queryKey에 좌표값들을 개별적으로 포함시켜 값이 변할 때마다 트리거
         queryKey: ['stores', searchText, selectedCategory, currentSort, currentLocation?.lat, currentLocation?.lng, userLocation?.lat, userLocation?.lng],
-        queryFn: ({ pageParam = 0 }) =>
-            mapApi.searchStores(
+        queryFn: ({ pageParam = 0 }) => {
+            // 정렬 기준에 따른 좌표 결정
+            const isDistanceSort = currentSort === 'distance';
+            
+            return mapApi.searchStores(
                 {
                     query: searchText,
-                    userlat: userLocation?.lat, // useRef.current 대신 state 사용
-                    userlng: userLocation?.lng,
-                    centerlat: currentLocation?.lat,
-                    centerlng: currentLocation?.lng,
+                    // [수정] distance일 때는 내 위치(user), popular일 때는 지도 중심(center)을 최우선으로 보냄
+                    userLat: isDistanceSort 
+                        ? (userLocation?.lat ?? currentLocation?.lat) 
+                        : currentLocation?.lat,
+                    userLng: isDistanceSort 
+                        ? (userLocation?.lng ?? currentLocation?.lng) 
+                        : currentLocation?.lng,
+                    centerLat: currentLocation?.lat,
+                    centerLng: currentLocation?.lng,
                 },
                 pageParam as number,
-                // distanceType 결정 (내 위치 기준인지 지도 중심 기준인지)
-                currentSort === 'distance' ? 'CURRENT' : 'CENTER',
-                // 카테고리: image_992e58 매핑 값 전달
+                isDistanceSort ? 'CURRENT' : 'CENTER',
                 CATEGORY_MAP[selectedCategory],
                 20
-            ),
+            );
+        },
         initialPageParam: 0,
         getNextPageParam: (lastPage) => lastPage.result.hasNext ? lastPage.result.nextCursor : undefined,
-        // 두 좌표가 모두 있을 때만 쿼리 실행
-        enabled: !!currentLocation && !!userLocation,
+        enabled: !!currentLocation?.lat && !!currentLocation?.lng,
     });
 
     // 데이터 추출
@@ -103,14 +106,14 @@ export default function MapHomePage() {
             },
             (error) => console.error("위치 추적 오류:", error),
             {
-                enableHighAccuracy: false, // 속도를 위해 처음엔 false, 필요시 true
-                maximumAge: 1000,          // 1초 이내 캐시된 위치 사용 (매우 빠름)
-                timeout: 5000
+                enableHighAccuracy: false, 
+                maximumAge: 5000,          // 5초 이내 캐시 허용
+                timeout: 10000            // 10초 대기
             }
         );
 
         return () => navigator.geolocation.clearWatch(watchId); // 언마운트 시 해제
-    }, [currentLocation]);
+    }, []); // currentLocation 의존성을 제거하여 무한 루프 방지
 
     // 3. 현재 위치로 이동하는 함수
     const handleMoveToCurrentLocation = () => {
@@ -144,13 +147,13 @@ export default function MapHomePage() {
         setIsDragging(true);
     };
 
-    // 터치 이동
+    // handleTouchMove 수정
     const handleTouchMove = (e: React.TouchEvent) => {
         if (!isDragging) return;
         const currentY = e.touches[0].clientY;
         const deltaY = currentY - startY.current;
 
-        // 아래로 드래그(deltaY > 0)할 때만 이동
+        // 위로 드래그해서 시트가 화면 밖으로 올라가는 것 방지
         if (deltaY > 0) {
             setSheetY(deltaY);
         }
@@ -201,13 +204,17 @@ export default function MapHomePage() {
                 <div className="absolute inset-0 z-0">
                     <MapContainer
                         center={currentLocation}
+                        userLocation={userLocation}
                         zoom={15}
                         onDragStart={() => {
                             setIsTracking(false);
                         }}
                         onCenterChanged={(newPos: { lat: number, lng: number }) => {
-                            setCurrentLocation(newPos);
+                            if (!isTracking) {
+                                setCurrentLocation(newPos);
+                            }
                         }}
+                        isTracking={isTracking}
                     >
                         {allStores.map((store) => (
                             <MapMarker
@@ -217,7 +224,10 @@ export default function MapHomePage() {
                                     lng: store.location.lng
                                 }}
                                 title={store.name.text}
-                                onClick={() => navigate(`/map/${store.googleId}`, { state: { membershipIds: store.membershipIds || [] } })}
+                                onClick={() => navigate(`/map/${store.googleId}`, { 
+                                    state: { membershipIds: store.membershipIds || [],
+                                    userLocation: userLocation
+                                } })}
                             />
                         ))}
                     </MapContainer>
@@ -309,8 +319,13 @@ export default function MapHomePage() {
                         onTouchMove={handleTouchMove}
                         onTouchEnd={handleTouchEnd}
                     >
-                        {/* 바텀시트 핸들러 (노란색 바 영역) */}
-                        <div className="flex justify-center !pt-3 !pb-3 cursor-pointer" onClick={() => setIsBottomSheetOpen(false)}>
+                        {/* 바텀시트 핸들러 영역 */}
+                        <div 
+                            className="flex justify-center !pt-3 !pb-3 cursor-pointer touch-none" // touch-none 추가
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
+                        >
                             <div className="w-14 h-3 bg-gray-200 rounded-full" />
                         </div>
 

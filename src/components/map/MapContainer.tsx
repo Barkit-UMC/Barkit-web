@@ -7,11 +7,12 @@ console.log("내 API 키:", GOOGLE_MAP_KEY);
 
 interface MapContainerProps {
     center?: { lat: number; lng: number };
+    userLocation?: { lat: number; lng: number } | null;
     zoom?: number;
     children?: React.ReactNode;
     onDragStart?: () => void; // 지도를 드래그하기 시작할 때 실행될 함수
-    onCenterChanged?: (pos: { lat: number; lng: number }) => void
-    showMyLocation?: boolean;
+    onCenterChanged?: (pos: { lat: number; lng: number }) => void,
+    isTracking?: boolean
 }
 
 /**
@@ -44,21 +45,29 @@ const render = (status: Status) => {
 
 export default function MapContainer({
     center = { lat: 37.5665, lng: 126.9780 }, // 서울 기본 좌표
+    userLocation,
     zoom = 15,
     children,
     onDragStart,
     onCenterChanged,
-    showMyLocation = true
+    isTracking
 }: MapContainerProps) {
     return (
         <div className="relative w-full h-full">
             <div className="relative w-full h-full">
                 <Wrapper 
-                    apiKey={GOOGLE_MAP_KEY} // 여기에 실제 API 키를 넣으세요
+                    apiKey={GOOGLE_MAP_KEY}
                     render={render}
-                    libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
+                    libraries={["places"]}
                 >
-                    <MapComponent center={center} zoom={zoom} onDragStart={onDragStart} onCenterChanged={onCenterChanged} showMyLocation={showMyLocation}>
+                    <MapComponent 
+                        center={center} 
+                        userLocation={userLocation}
+                        zoom={zoom} 
+                        onDragStart={onDragStart} 
+                        onCenterChanged={onCenterChanged} 
+                        isTracking={isTracking}
+                    >
                         {children}
                     </MapComponent>
                 </Wrapper>
@@ -67,7 +76,14 @@ export default function MapContainer({
     );
 }
 
-function MapComponent({ center, zoom, children, onDragStart, onCenterChanged, showMyLocation}: { center: google.maps.LatLngLiteral, zoom: number, children?: React.ReactNode, onDragStart?: () => void, onCenterChanged?: (pos: { lat: number; lng: number }) => void, showMyLocation : boolean; }) {
+function MapComponent({ 
+    center, 
+    userLocation, 
+    zoom, children, 
+    onDragStart, 
+    onCenterChanged,
+    isTracking
+}: MapContainerProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
 
@@ -89,22 +105,12 @@ function MapComponent({ center, zoom, children, onDragStart, onCenterChanged, sh
 
     // 내 위치가 변할 때마다 마커 표시/업데이트
     useEffect(() => {
-        if (map && center) {
-            // 위치 표시를 꺼야 할 때
-            if (!showMyLocation) {
-                if (myLocationMarkerRef.current) {
-                    myLocationMarkerRef.current.setMap(null);
-                    myLocationMarkerRef.current = null;
-                }
-                return;
-            }
-
-            // 마커 업데이트 또는 생성
+        if (map && userLocation) { // center 대신 userLocation 사용
             if (myLocationMarkerRef.current) {
-                myLocationMarkerRef.current.setPosition(center);
+                myLocationMarkerRef.current.setPosition(userLocation);
             } else {
                 myLocationMarkerRef.current = new window.google.maps.Marker({
-                    position: center,
+                    position: userLocation,
                     map: map,
                     title: "내 위치",
                     icon: {
@@ -117,9 +123,9 @@ function MapComponent({ center, zoom, children, onDragStart, onCenterChanged, sh
                     },
                 });
             }
-            map.panTo(center);
+            // map.panTo(center); -> 이 부분은 제거하거나 필요시에만 사용
         }
-    }, [center, map, showMyLocation]); // showMyLocation 의존성 추가
+    }, [userLocation, map]);
 
     useEffect(() => {
         if (map && onDragStart) {
@@ -134,13 +140,6 @@ function MapComponent({ center, zoom, children, onDragStart, onCenterChanged, sh
             };
         }
     }, [map, onDragStart]);
-
-    // 위치 변경 시 지도 중심 이동
-    useEffect(() => {
-        if (map) {
-            map.panTo(center);
-        }
-    }, [center, map]);
 
     useEffect(() => {
         if (!map) return;
@@ -158,6 +157,13 @@ function MapComponent({ center, zoom, children, onDragStart, onCenterChanged, sh
 
         return () => window.google.maps.event.removeListener(idleListener);
     }, [map, onCenterChanged]);
+
+    // 위치 변경 시 지도 중심 이동
+    useEffect(() => {
+        if (map && center && isTracking) {
+            map.panTo(center);
+        }
+    }, [center, map, isTracking]);
 
     return (
 

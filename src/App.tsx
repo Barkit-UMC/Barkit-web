@@ -7,6 +7,7 @@ import AddToHomePage from './pages/profile/AddToHomePage';
 import LogoutPage from './pages/profile/LogoutPage';
 import UnscribePage from './pages/profile/UnscribePage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import SplashPage from './pages/onboarding/SplashPage';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -95,7 +96,7 @@ function App() {
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               {/* Root - redirect based on auth status */}
-              <Route path="/" element={<RootRedirect />} />
+              <Route path="/" element={<SplashPage />} />
 
               {/* Auth routes - public */}
               <Route path="/login" element={<LoginPage />} />

@@ -48,10 +48,10 @@ export interface StoreDetail {
 // 매장 검색 dto
 export interface SearchStoresRequest {
   query?: string;
-  userlat?: number;
-  userlng?: number;
-  centerlat?: number;
-  centerlng?: number;
+  userLat?: number;
+  userLng?: number;
+  centerLat?: number;
+  centerLng?: number;
 }
 
 export interface SearchStoresResponse {
@@ -109,23 +109,24 @@ export const mapApi = {
   searchStores: async (
     req: SearchStoresRequest,
     cursor: number = 0,
-    distanceType: 'CURRENT' | 'CENTER' = 'CURRENT',
+    distanceType: string,
     category: string,
     size: number = 20
   ): Promise<CommonResponse<SearchStoresResponse>> => {
-    const queryParams = new URLSearchParams({
-      ...(req.query && { query: req.query }),
-      ...(req.userlat && { userLat: req.userlat.toString() }),
-      ...(req.userlng && { userLng: req.userlng.toString() }),
-      ...(req.centerlat && { centerLat: req.centerlat.toString() }),
-      ...(req.centerlng && { centerLng: req.centerlng.toString() }),
-      distanceType,
-      category,
-      cursor: cursor.toString(),
-      size: size.toString(),
+    const response = await apiClient.get<CommonResponse<SearchStoresResponse>>(`/api/map/search`, {
+      params: {
+        // req 객체 안의 필드들을 펼쳐서 전달
+        query: req.query,
+        userLat: req.userLat,
+        userLng: req.userLng,
+        centerLat: req.centerLat,
+        centerLng: req.centerLng,
+        distanceType,
+        category,
+        cursor,
+        size,
+      },
     });
-
-    const response = await apiClient.get<CommonResponse<SearchStoresResponse>>(`/api/map/search?${queryParams.toString()}`);
     return response.data;
   },
 
