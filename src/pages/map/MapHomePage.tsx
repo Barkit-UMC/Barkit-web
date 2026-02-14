@@ -197,6 +197,7 @@ export default function MapHomePage() {
                 <div className="absolute inset-0 z-0">
                     <MapContainer
                         center={currentLocation}
+                        userLocation={currentLocation}
                         zoom={15}
                         onDragStart={() => {
                             setIsTracking(false);
