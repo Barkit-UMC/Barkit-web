@@ -35,10 +35,10 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6 overflow-hidden">
+        <div className="h-full flex flex-col items-center bg-white px-6 overflow-hidden py-8">
 
             {/* 1. 로고 영역 - mb-20 (80px) */}
-            <div className="mb-20 w-full flex justify-center">
+            <div className="py-15 flex items-center w-full justify-center">
                 <img
                     src="/BarKit-logo.svg"
                     alt="BarKit"
@@ -86,7 +86,7 @@ export default function LoginPage() {
                 <button
                     onClick={handleEmailLogin}
                     disabled={isLoading || !email || !password}
-                    className="w-full h-14 mt-4 bg-[#00BCD4] text-white rounded-3xl font-bold text-lg hover:bg-[#00ACC1] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full h-14 bg-[#00BCD4] text-white rounded-3xl font-bold text-lg hover:bg-[#00ACC1] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                     {isLoading ? (
                         <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -128,9 +128,9 @@ export default function LoginPage() {
             </div>
 
             {/* 4. 소셜 로그인 - mt-6 (24px) */}
-            <div className="w-full max-w-[400px] mt-10">
+            <div className="flex-1 flex flex-col justify-center w-full max-w-[400px] mt-4">
                 {/* Divider - mb-6 (24px) */}
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-4 pb-4">
                     <div className="flex-1 h-[1px] bg-gray-200"></div>
                     <span className="text-md text-gray-400"> 간편로그인 </span>
                     <div className="flex-1 h-[1px] bg-gray-200"></div>
@@ -142,7 +142,7 @@ export default function LoginPage() {
                     <button
                         onClick={startKakaoLogin}
                         disabled={isLoading}
-                        className="w-15 h-15 rounded-full overflow-hidden shadow-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                        className="w-15 h-15 rounded-full overflow-hidden hover:opacity-90 transition-opacity disabled:opacity-50"
                     >
                         <img src={kakaoIcon} alt="Kakao" className="w-full h-full object-cover" />
                     </button>
@@ -151,7 +151,7 @@ export default function LoginPage() {
                     <button
                         onClick={startNaverLogin}
                         disabled={isLoading}
-                        className="w-15 h-15 rounded-full overflow-hidden shadow-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                        className="w-15 h-15 rounded-full overflow-hidden hover:opacity-90 transition-opacity disabled:opacity-50"
                     >
                         <img src={naverIcon} alt="Naver" className="w-full h-full object-cover" />
                     </button>

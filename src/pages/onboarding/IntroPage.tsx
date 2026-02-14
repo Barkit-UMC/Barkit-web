@@ -11,7 +11,7 @@ export default function IntroPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="w-[390px] min-h-screen mx-auto bg-white flex flex-col">
+        <div className="flex flex-col w-full h-full mx-auto bg-white flex flex-col">
             {/* 0. 애니메이션 스타일 주입 */}
             <style>{`
                 @keyframes float {
