@@ -210,8 +210,11 @@ export default function MapHomePage() {
                             setIsTracking(false);
                         }}
                         onCenterChanged={(newPos: { lat: number, lng: number }) => {
-                            setCurrentLocation(newPos);
+                            if (!isTracking) {
+                                setCurrentLocation(newPos);
+                            }
                         }}
+                        isTracking={isTracking}
                     >
                         {allStores.map((store) => (
                             <MapMarker

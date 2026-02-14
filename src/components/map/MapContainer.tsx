@@ -11,7 +11,8 @@ interface MapContainerProps {
     zoom?: number;
     children?: React.ReactNode;
     onDragStart?: () => void; // 지도를 드래그하기 시작할 때 실행될 함수
-    onCenterChanged?: (pos: { lat: number; lng: number }) => void
+    onCenterChanged?: (pos: { lat: number; lng: number }) => void,
+    isTracking?: boolean
 }
 
 /**
@@ -49,14 +50,15 @@ export default function MapContainer({
     children,
     onDragStart,
     onCenterChanged,
+    isTracking
 }: MapContainerProps) {
     return (
         <div className="relative w-full h-full">
             <div className="relative w-full h-full">
                 <Wrapper 
-                    apiKey={GOOGLE_MAP_KEY} // 여기에 실제 API 키를 넣으세요
+                    apiKey={GOOGLE_MAP_KEY}
                     render={render}
-                    libraries={["places"]} // 향후 장소 검색 기능을 위해 미리 추가
+                    libraries={["places"]}
                 >
                     <MapComponent 
                         center={center} 
@@ -64,6 +66,7 @@ export default function MapContainer({
                         zoom={zoom} 
                         onDragStart={onDragStart} 
                         onCenterChanged={onCenterChanged} 
+                        isTracking={isTracking}
                     >
                         {children}
                     </MapComponent>
@@ -78,7 +81,8 @@ function MapComponent({
     userLocation, 
     zoom, children, 
     onDragStart, 
-    onCenterChanged
+    onCenterChanged,
+    isTracking
 }: MapContainerProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -137,13 +141,6 @@ function MapComponent({
         }
     }, [map, onDragStart]);
 
-    // 위치 변경 시 지도 중심 이동
-    useEffect(() => {
-        if (map && center) {
-            map.panTo(center);
-        }
-    }, [center, map]);
-
     useEffect(() => {
         if (!map) return;
 
@@ -160,6 +157,13 @@ function MapComponent({
 
         return () => window.google.maps.event.removeListener(idleListener);
     }, [map, onCenterChanged]);
+
+    // 위치 변경 시 지도 중심 이동
+    useEffect(() => {
+        if (map && center && isTracking) {
+            map.panTo(center);
+        }
+    }, [center, map, isTracking]);
 
     return (
 
