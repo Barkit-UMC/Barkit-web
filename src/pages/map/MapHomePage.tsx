@@ -54,23 +54,30 @@ export default function MapHomePage() {
     // const latestCoords = useRef<{lat: number, lng: number} | null>(null);
     const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-        // queryKey에 currentSort가 포함되어 있으므로, 옵션 변경 시 자동으로 refetch됩니다.
         queryKey: ['stores', searchText, selectedCategory, currentSort, currentLocation?.lat, currentLocation?.lng, userLocation?.lat, userLocation?.lng],
-        queryFn: ({ pageParam = 0 }) =>
-            mapApi.searchStores(
+        queryFn: ({ pageParam = 0 }) => {
+            // 정렬 기준에 따른 좌표 결정
+            const isDistanceSort = currentSort === 'distance';
+            
+            return mapApi.searchStores(
                 {
                     query: searchText,
-                    userLat: userLocation?.lat ?? currentLocation?.lat,
-                    userLng: userLocation?.lng ?? currentLocation?.lng,
+                    // [수정] distance일 때는 내 위치(user), popular일 때는 지도 중심(center)을 최우선으로 보냄
+                    userLat: isDistanceSort 
+                        ? (userLocation?.lat ?? currentLocation?.lat) 
+                        : currentLocation?.lat,
+                    userLng: isDistanceSort 
+                        ? (userLocation?.lng ?? currentLocation?.lng) 
+                        : currentLocation?.lng,
                     centerLat: currentLocation?.lat,
                     centerLng: currentLocation?.lng,
                 },
                 pageParam as number,
-                // currentSort 값에 따라 정렬 타입 결정
-                currentSort === 'distance' ? 'CURRENT' : 'CENTER',
+                isDistanceSort ? 'CURRENT' : 'CENTER',
                 CATEGORY_MAP[selectedCategory],
                 20
-            ),
+            );
+        },
         initialPageParam: 0,
         getNextPageParam: (lastPage) => lastPage.result.hasNext ? lastPage.result.nextCursor : undefined,
         enabled: !!currentLocation, 
