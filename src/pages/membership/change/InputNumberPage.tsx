@@ -4,6 +4,7 @@ import Header from "../../../components/common/Header";
 import MembershipNumberInput, { type MembershipNumberInputRef } from "../../../components/onboarding/MembershipNumberInput";
 import { useNavigate, useParams } from "react-router-dom";
 import { membershipApi } from "../../../api/membership";
+import Layout from "../../../components/common/Layout";
 
 export default function InputNumberPage() {
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ export default function InputNumberPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F5F5F5] flex flex-col">
+        <Layout showBottomNav={false}>
             {/* Header */}
             <Header title="멤버십 번호 입력" showBackButton={true} />
 
@@ -81,6 +82,6 @@ export default function InputNumberPage() {
                     완료하기
                 </Button>
             </div>
-        </div>
+        </Layout>
     );
 }
