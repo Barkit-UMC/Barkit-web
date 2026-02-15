@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface SortOption {
   id: string;
@@ -54,7 +55,7 @@ const SortBottomSheet = ({
 
   if (!isVisible) return null;
 
-  return (
+  return createPortal(
     <>
       {/* overlay */}
       <div
