@@ -21,10 +21,10 @@ export default function FailurePage() {
                     다시 해볼까요?
                 </>
             }
-            primaryButtonText="방법 선택하기"
-            onPrimaryClick={handleStep1}
+            primaryButtonText="방식 선택하기"
+            onPrimaryClick={handleStep2}
             secondaryButtonText="다시하기"
-            onSecondaryClick={handleStep2}
+            onSecondaryClick={handleStep1}
         />
     );
 }
