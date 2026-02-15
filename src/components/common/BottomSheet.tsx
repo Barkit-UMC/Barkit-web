@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
 
 interface SortOption {
   id: string;
@@ -31,7 +30,7 @@ const SortBottomSheet = ({
     setIsVisible(true);
 
     raf1Ref.current = requestAnimationFrame(() => {
-        raf2Ref.current = requestAnimationFrame(() => {
+      raf2Ref.current = requestAnimationFrame(() => {
         setIsAnimatingOpen(true);
       });
     });
@@ -39,14 +38,17 @@ const SortBottomSheet = ({
     return () => {
       if (raf1Ref.current !== null) cancelAnimationFrame(raf1Ref.current);
       if (raf2Ref.current !== null) cancelAnimationFrame(raf2Ref.current);
-      if (closeTimeoutRef.current !== null) clearTimeout(closeTimeoutRef.current);
+      if (closeTimeoutRef.current !== null)
+        clearTimeout(closeTimeoutRef.current);
     };
   }, []);
 
   const handleClose = () => {
     if (isClosingRef.current) return;
     isClosingRef.current = true;
+
     setIsAnimatingOpen(false);
+
     closeTimeoutRef.current = window.setTimeout(() => {
       setIsVisible(false);
       onClose();
@@ -55,14 +57,14 @@ const SortBottomSheet = ({
 
   if (!isVisible) return null;
 
-  return createPortal(
-    <>
+  return (
+    <div className="fixed inset-0 z-[99999]">
       {/* overlay */}
       <div
         className={`
-          fixed inset-0 bg-black z-40
+          absolute inset-0 bg-black
           transition-opacity duration-300
-          ${isAnimatingOpen ? 'opacity-40' : 'opacity-0'}
+          ${isAnimatingOpen ? 'opacity-50' : 'opacity-0'}
         `}
         onClick={handleClose}
       />
@@ -70,17 +72,15 @@ const SortBottomSheet = ({
       {/* bottom sheet */}
       <div
         className={`
-          fixed bottom-0 left-1/2 -translate-x-1/2
-          w-full bg-white rounded-t-[32px] pt-8 pb-10 px-6 shadow-2xl
-          z-[9999]
+          absolute bottom-0 left-1/2 -translate-x-1/2 w-full
+          bg-white rounded-t-[32px] pt-8 pb-10 px-6 shadow-2xl
           transform transition-transform duration-300 ease-out
           ${isAnimatingOpen ? 'translate-y-0' : 'translate-y-full'}
         `}
         style={{
           paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom))',
-          // iOS Safari에서 쌓임 맥락을 강제로 최상단으로 올리는 팁
-          WebkitTransform: isAnimatingOpen ? 'translate3d(-50%, 0, 9999px)' : 'translate3d(-50%, 100%, 9999px)',
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col mb-6">
           {options.map((option) => {
@@ -101,6 +101,11 @@ const SortBottomSheet = ({
                   className={`w-6 h-6 transition-all ${
                     isSelected ? 'opacity-100' : 'grayscale opacity-30'
                   }`}
+                  style={
+                    isSelected
+                      ? { filter: 'drop-shadow(0px 0px 1px #00C0E8)' }
+                      : {}
+                  }
                 />
 
                 <span
@@ -122,8 +127,7 @@ const SortBottomSheet = ({
           취소
         </button>
       </div>
-    </>,
-    document.body // body 바로 아래에 렌더링
+    </div>
   );
 };
 
