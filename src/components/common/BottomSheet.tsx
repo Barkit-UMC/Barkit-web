@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface SortOption {
   id: string;
@@ -13,21 +13,62 @@ interface SortModalProps {
   onClose: () => void;
 }
 
-const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModalProps) => {
+const SortBottomSheet = ({
+  options,
+  selectedValue,
+  onSelect,
+  onClose,
+}: SortModalProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+
+    const raf1 = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsAnimatingOpen(true);
+      });
+    });
+
+    return () => cancelAnimationFrame(raf1);
+  }, []);
+
+  const handleClose = () => {
+    setIsAnimatingOpen(false);
+    setTimeout(() => {
+      setIsVisible(false);
+      onClose();
+    }, 300);
+  };
+
+  if (!isVisible) return null;
+
   return (
-    /* 1. fixed로 변경하여 화면 전체를 덮고 z-index 최상단 확보 */
-    <div className="fixed inset-0 z-[9999] flex items-end justify-center">
-      
-      {/* 2. 배경 (딤 처리): 뒷 배경을 어둡게 하여 바텀시트 강조 */}
-      <div 
-        className="absolute inset-0 bg-black/40" 
-        onClick={onClose} 
+    <>
+      {/* overlay */}
+      <div
+        className={`
+          fixed inset-0 bg-black z-50
+          transition-opacity duration-300
+          ${isAnimatingOpen ? 'opacity-40' : 'opacity-0'}
+        `}
+        onClick={handleClose}
       />
 
-      {/* 3. 바텀시트 컨테이너: 너비 반응형 처리 */}
-      <div className="relative w-full bg-white rounded-t-[32px] pt-8 pb-10 px-6 shadow-2xl animate-slide-up-simple">
-        
-        {/* 옵션 리스트 영역 */}
+      {/* bottom sheet */}
+      <div
+        className={`
+          fixed bottom-0 left-1/2 -translate-x-1/2
+          w-full bg-white rounded-t-[32px] pt-8 pb-10 px-6 shadow-2xl
+          z-60
+          transform transition-transform duration-300 ease-out
+          ${isAnimatingOpen ? 'translate-y-0' : 'translate-y-full'}
+        `}
+        style={{
+          paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom))',
+        }}
+      >
         <div className="flex flex-col mb-6">
           {options.map((option) => {
             const isSelected = selectedValue === option.id;
@@ -37,24 +78,28 @@ const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModa
                 key={option.id}
                 onClick={() => {
                   onSelect(option.id);
-                  onClose();
+                  handleClose();
                 }}
                 className="w-full flex items-center gap-4 py-4 transition-all active:bg-gray-50 rounded-xl px-2"
               >
-                {/* 아이콘: 색상 필터링 대신 투명도와 그레이스케일 활용 */}
                 <img
                   src={option.icon}
                   alt={option.label}
-                  className={`w-6 h-6 object-contain transition-all ${
+                  className={`w-6 h-6 transition-all ${
                     isSelected ? 'opacity-100' : 'grayscale opacity-30'
                   }`}
-                  style={isSelected ? { filter: 'drop-shadow(0px 0px 1px #00C0E8)' } : {}}
+                  style={
+                    isSelected
+                      ? { filter: 'drop-shadow(0px 0px 1px #00C0E8)' }
+                      : {}
+                  }
                 />
 
-                {/* 텍스트: text-base(16px)를 기본으로 하고 굵기 조절 */}
-                <span className={`text-[18px] font-medium tracking-tight transition-colors ${
-                  isSelected ? 'text-[#00C0E8]' : 'text-gray-400'
-                }`}>
+                <span
+                  className={`text-[18px] font-medium tracking-tight transition-colors ${
+                    isSelected ? 'text-[#00C0E8]' : 'text-gray-400'
+                  }`}
+                >
                   {option.label}
                 </span>
               </button>
@@ -62,18 +107,14 @@ const SortBottomSheet = ({ options, selectedValue, onSelect, onClose }: SortModa
           })}
         </div>
 
-        {/* 취소 버튼: 터치 영역 확보 및 배경색 조정 */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="w-full bg-cyan-50 py-4 rounded-2xl text-[#00C0E8] text-[16px] font-medium active:scale-[0.98] transition-all"
         >
           취소
         </button>
-        
-        {/* iOS 홈 바 여백 대응 (safe-area) */}
-        <div className="h-[var(--safe-area-inset-bottom)]" />
       </div>
-    </div>
+    </>
   );
 };
 
