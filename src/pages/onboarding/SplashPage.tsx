@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logoTxt from '../../assets/icons/splash/logo_txt.svg';
 import logoImg from '../../assets/icons/splash/logo_img.svg';
-import chacBasic from '../../assets/icons/Barkit_icon_default.svg';
+import chacBasic from '../../assets/icons/splash/chac_basic.svg';
 import chacCong from '../../assets/icons/splash/chac_cong.svg';
 
 export default function SplashPage() {
@@ -45,10 +45,10 @@ export default function SplashPage() {
       </div>
 
       {/* 하단 캐릭터 구역: 오른쪽 하단 배치 */}
-      <div className="absolute bottom-0 right-[-20%] w-[500px] h-[500px] pointer-events-none animate-bounce-in">
+      <div className="absolute bottom-0 right-[-20%] w-[500px] h-[500px] pointer-events-none">
         <img
           src={chacBasic}
-          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 -rotate-45 translate-x-20 translate-y-20 ${step === 0 ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${step === 0 ? 'opacity-100' : 'opacity-0'}`}
           alt="Character Basic"
         />
         <img
