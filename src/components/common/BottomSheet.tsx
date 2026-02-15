@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface SortOption {
   id: string;
@@ -21,22 +21,32 @@ const SortBottomSheet = ({
 }: SortModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
+  const raf1Ref = useRef<number | null>(null);
+  const raf2Ref = useRef<number | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
+  const isClosingRef = useRef(false);
 
   useEffect(() => {
     setIsVisible(true);
 
-    const raf1 = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+    raf1Ref.current = requestAnimationFrame(() => {
+        raf2Ref.current = requestAnimationFrame(() => {
         setIsAnimatingOpen(true);
       });
     });
 
-    return () => cancelAnimationFrame(raf1);
+    return () => {
+      if (raf1Ref.current !== null) cancelAnimationFrame(raf1Ref.current);
+      if (raf2Ref.current !== null) cancelAnimationFrame(raf2Ref.current);
+      if (closeTimeoutRef.current !== null) clearTimeout(closeTimeoutRef.current);
+    };
   }, []);
 
   const handleClose = () => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
     setIsAnimatingOpen(false);
-    setTimeout(() => {
+    closeTimeoutRef.current = window.setTimeout(() => {
       setIsVisible(false);
       onClose();
     }, 300);
@@ -49,7 +59,7 @@ const SortBottomSheet = ({
       {/* overlay */}
       <div
         className={`
-          fixed inset-0 bg-black z-50
+          fixed inset-0 bg-black z-40
           transition-opacity duration-300
           ${isAnimatingOpen ? 'opacity-40' : 'opacity-0'}
         `}
@@ -61,7 +71,7 @@ const SortBottomSheet = ({
         className={`
           fixed bottom-0 left-1/2 -translate-x-1/2
           w-full bg-white rounded-t-[32px] pt-8 pb-10 px-6 shadow-2xl
-          z-60
+          z-[9999]
           transform transition-transform duration-300 ease-out
           ${isAnimatingOpen ? 'translate-y-0' : 'translate-y-full'}
         `}
