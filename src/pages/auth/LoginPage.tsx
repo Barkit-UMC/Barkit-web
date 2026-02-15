@@ -86,7 +86,7 @@ export default function LoginPage() {
                 <button
                     onClick={handleEmailLogin}
                     disabled={isLoading || !email || !password}
-                    className="w-full h-14 bg-[#00BCD4] text-white rounded-3xl font-bold text-lg hover:bg-[#00ACC1] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full h-14 bg-[#00C0E8] text-white rounded-3xl font-semibold text-base flex items-center justify-center"
                 >
                     {isLoading ? (
                         <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -96,7 +96,7 @@ export default function LoginPage() {
                 </button>
 
                 {/* 자동로그인 / 회원가입 - mt-2 (8px) */}
-                <div className="flex items-center justify-center gap-32 px-1 ">
+                <div className="flex items-center justify-center gap-40 px-1 ">
                     <label
                         className="flex items-center gap-2 cursor-pointer"
                         onClick={() => setAutoLogin(!autoLogin)}
@@ -116,11 +116,11 @@ export default function LoginPage() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <span className="text-sm text-gray-500 font-regular">자동 로그인</span>
+                        <span className="text-sm text-gray-300 font-regular">자동 로그인</span>
                     </label>
                     <button
                         onClick={() => navigate('/signup')}
-                        className="text-sm text-gray-500 hover:text-gray-800 font-regular"
+                        className="text-sm text-gray-300 hover:text-gray-500 font-regular"
                     >
                         회원가입
                     </button>
@@ -132,7 +132,7 @@ export default function LoginPage() {
                 {/* Divider - mb-6 (24px) */}
                 <div className="flex items-center gap-4 pb-4">
                     <div className="flex-1 h-[1px] bg-gray-200"></div>
-                    <span className="text-md text-gray-400"> 간편로그인 </span>
+                    <span className="text-md text-gray-300"> 간편로그인 </span>
                     <div className="flex-1 h-[1px] bg-gray-200"></div>
                 </div>
 

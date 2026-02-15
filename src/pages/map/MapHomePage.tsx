@@ -276,7 +276,7 @@ export default function MapHomePage() {
                     </div>
 
                     {/* 카테고리 칩 (가로 스크롤) */}
-                    <div className="flex gap-2 pl-5 pr-5 !overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-2 pl-5 pr-5 !overflow-x-auto pt-1 pb-2 scrollbar-hide">
                         {CATEGORIES.map((category) => (
                             <button
                                 key={category}
@@ -284,7 +284,7 @@ export default function MapHomePage() {
                                 className={`flex-shrink-0
                                     !px-5 !py-1.5 text-base rounded-full font-medium whitespace-nowrap transition-colors
                                     ${selectedCategory === category
-                                        ? 'bg-white text-gray-900 ring-1 ring-gray-200'
+                                        ? 'bg-white text-gray-900 ring-1 ring-[#00C0E8]'
                                         : 'bg-white text-gray-500 hover:bg-gray-50'}
                                 `}
                             >
