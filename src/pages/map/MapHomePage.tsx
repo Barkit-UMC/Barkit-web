@@ -284,8 +284,8 @@ export default function MapHomePage() {
                                 className={`flex-shrink-0
                                     !px-5 !py-1.5 text-base rounded-full font-medium whitespace-nowrap transition-colors
                                     ${selectedCategory === category
-                                        ? 'bg-white text-gray-900 ring-1 ring-gray-200'
-                                        : 'bg-white text-gray-500 hover:bg-gray-50'}
+                                        ? 'bg-white text-gray-900 ring-1 ring-[#00C0E8]'
+                                        : 'bg-white text-gray-500 hover:bg-gray-50 ring-[#00C0E8]'}
                                 `}
                             >
                                 {category}
