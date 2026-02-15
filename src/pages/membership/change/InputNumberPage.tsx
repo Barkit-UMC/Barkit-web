@@ -49,7 +49,7 @@ export default function InputNumberPage() {
     };
 
     return (
-        <div className="h-full bg-[#F5F5F5] flex flex-col">
+        <div className="h-full mx-auto bg-[#F5F5F5] flex flex-col relative">
             {/* Header */}
             <Header title="멤버십 번호 입력" showBackButton={true} />
 
