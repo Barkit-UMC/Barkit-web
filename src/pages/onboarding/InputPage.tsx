@@ -39,7 +39,7 @@ export default function InputPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F5F5F5] flex flex-col">
+        <div className="h-full mx-auto bg-[#F5F5F5] flex flex-col relative">
             {/* Header */}
             <Header title="멤버십 번호 입력" showBackButton={true} />
 
@@ -60,7 +60,7 @@ export default function InputPage() {
             </div>
 
             {/* Fixed Bottom Button */}
-            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] p-6 bg-[#F5F5F5]">
+            <div className="px-6 pb-8">
                 <Button
                     onClick={handleComplete}
                     disabled={!isComplete}

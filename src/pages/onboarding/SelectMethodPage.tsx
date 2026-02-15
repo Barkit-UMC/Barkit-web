@@ -81,7 +81,7 @@ export default function SelectMethodPage() {
             </div>
 
             {/* Bottom Button */}
-            <div className="absolute bottom-0 left-0 right-0 p-6">
+            <div className="px-6 pb-8">
                 <Button
                     onClick={handleNext}
                     disabled={!selectedMethod}

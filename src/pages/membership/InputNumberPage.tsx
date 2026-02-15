@@ -66,7 +66,7 @@ export default function InputNumberPage() {
                     </button>
                 </div>
 
-                <div className="pb-6">
+                <div className="px-6 pb-8">
                     <Button
                         onClick={handleSubmit}
                         disabled={!barcodeNumber}
