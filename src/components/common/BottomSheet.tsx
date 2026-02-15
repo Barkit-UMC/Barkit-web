@@ -98,11 +98,6 @@ const SortBottomSheet = ({
                   className={`w-6 h-6 transition-all ${
                     isSelected ? 'opacity-100' : 'grayscale opacity-30'
                   }`}
-                  style={
-                    isSelected
-                      ? { filter: 'drop-shadow(0px 0px 1px #00C0E8)' }
-                      : {}
-                  }
                 />
 
                 <span
