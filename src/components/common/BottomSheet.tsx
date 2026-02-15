@@ -77,6 +77,8 @@ const SortBottomSheet = ({
         `}
         style={{
           paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom))',
+          // iOS Safari에서 쌓임 맥락을 강제로 최상단으로 올리는 팁
+          WebkitTransform: isAnimatingOpen ? 'translate3d(-50%, 0, 9999px)' : 'translate3d(-50%, 100%, 9999px)',
         }}
       >
         <div className="flex flex-col mb-6">
@@ -119,7 +121,8 @@ const SortBottomSheet = ({
           취소
         </button>
       </div>
-    </>
+    </>,
+    document.body // body 바로 아래에 렌더링
   );
 };
 

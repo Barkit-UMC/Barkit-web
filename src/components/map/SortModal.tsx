@@ -20,7 +20,7 @@ const cancelIcon = IconCancel;
 
 const SortModal = ({ title, options, selectedValue, onSelect, onClose }: SortModalProps) => {
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50">
       {/* 모달 컨테이너 */}
       <div className="w-[320px] h-[200px] bg-white rounded-2xl shadow-xl overflow-hidden">
         
