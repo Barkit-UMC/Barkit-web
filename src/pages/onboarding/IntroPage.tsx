@@ -11,7 +11,7 @@ export default function IntroPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="flex flex-col w-full h-full mx-auto bg-white flex flex-col">
+        <div className="flex flex-col w-full h-full mx-auto bg-white">
             {/* 0. 애니메이션 스타일 주입 */}
             <style>{`
                 @keyframes float {
@@ -25,9 +25,9 @@ export default function IntroPage() {
             `}</style>
 
             {/* Content */}
-            <main className="flex-1 flex flex-col px-6 pb-8">
+            <main className="flex-1 flex flex-col pb-8">
                 {/* 1. Welcome Section (좌측 정렬 & 상단 배치) */}
-                <div className="mt-20 mb-8">
+                <div className="px-6 mt-20 mb-8">
                     <h1 className="text-2xl font-bold text-gray-900 mt-10 leading-tight">
                         어서오세요!<br />
                         첫 멤버십을 등록해볼까요?
@@ -35,7 +35,7 @@ export default function IntroPage() {
                 </div>
 
                 {/* 2. Illustration with Floating Icons */}
-                <div className="flex-1 relative flex items-center justify-center -mt-5">
+                <div className="px-6 flex-1 relative flex items-center justify-center -mt-5">
                     {/* Main Character (Barkit) - Center with shadow */}
                     <div className="flex flex-col items-center z-10">
                         <div className="w-45 h-45 flex items-center justify-center animate-float">
@@ -80,7 +80,7 @@ export default function IntroPage() {
                 </div>
 
                 {/* 3. Next Button -> Register 페이지로 이동 */}
-                <div className="w-full pb-4">
+                <div className="px-6 pb-8">
                     <Button
                         onClick={() => navigate('/onboarding/search')}
                         variant="cyan"
