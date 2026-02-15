@@ -276,7 +276,7 @@ export default function MapHomePage() {
                     </div>
 
                     {/* 카테고리 칩 (가로 스크롤) */}
-                    <div className="flex gap-2 pl-5 pr-5 !overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-2 pl-5 pr-5 !overflow-x-auto pt-1 pb-2 scrollbar-hide">
                         {CATEGORIES.map((category) => (
                             <button
                                 key={category}
