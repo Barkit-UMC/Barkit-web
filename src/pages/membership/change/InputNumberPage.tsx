@@ -70,7 +70,7 @@ export default function InputNumberPage() {
             </div>
 
             {/* Fixed Bottom Button */}
-            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] p-6 bg-[#F5F5F5]">
+            <div className="px-6 pb-8">
                 <Button
                     onClick={handleComplete}
                     disabled={!isComplete}
