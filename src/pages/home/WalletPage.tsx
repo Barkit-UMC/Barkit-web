@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import MembershipTitle from '../../components/membership/MembershipTitle';
-import FavoriteMembershipCard from '../../components/membership/FavoriteMembershipCard';
+import MembershipCard from '../../components/membership/MembershipCard';
 import searchIcon from '../../assets/icons/search/search_gray.svg';
 import emptyFavoriteImage from '../../assets/images/empty_favorite.svg';
 import { dashboardApi } from '../../api/dashboard';
@@ -27,7 +27,7 @@ const BRAND_META: Record<number, { icon: string; color: string }> = {
     4: { icon: lpointIcon, color: '#009BFA' },
     5: { icon: sktIcon, color: '#3617CE' },
     6: { icon: uplusIcon, color: '#FF2E98' },
-    7: { icon: ssgIcon, color: '#902CDF' },
+    7: { icon: ssgIcon, color: '#DA2027' },
     8: { icon: okcashbagIcon, color: '#FE0955' },
     9: { icon: naverIcon, color: '#1A033B' },
     10: { icon: kakaopayIcon, color: '#FFEB00' },
@@ -82,7 +82,7 @@ export default function WalletPage() {
 
     const handleTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
-        
+
         const distance = touchStart - touchEnd;
         const isLeftSwipe = distance > minSwipeDistance;
         const isRightSwipe = distance < -minSwipeDistance;
@@ -90,7 +90,7 @@ export default function WalletPage() {
         if (isLeftSwipe && currentSlide < 2) {
             setCurrentSlide(prev => prev + 1);
         }
-        
+
         if (isRightSwipe && currentSlide > 0) {
             setCurrentSlide(prev => prev - 1);
         }
@@ -110,10 +110,10 @@ export default function WalletPage() {
         <Layout showBottomNav>
             {/* 1. 전체 컨테이너: app-main 내부에서 스크롤이 가능하도록 설정 */}
             <div className="flex flex-col h-full bg-gray-50 overflow-y-auto scrollbar-hide pb-20">
-                
+
                 {/* 2. 섹션별 컨테이너: max-width를 주어 태블릿/PC에서도 적절한 너비 유지 */}
                 <div className="w-full max-w-[430px] mx-auto">
-                    
+
                     {/* 대표 멤버십 섹션 */}
                     <section className="px-6 pt-6">
                         <div className="flex items-center justify-between mb-4">
@@ -131,22 +131,23 @@ export default function WalletPage() {
                                 {/* 대표 멤버십 카드들 */}
                                 {mainMemberships.map((membership) => (
                                     <div key={membership.userMembershipBrandId} className="w-full flex-shrink-0">
-                                        <FavoriteMembershipCard
+                                        <MembershipCard
                                             brandName={membership.name}
                                             brandLogo={getBrandIcon(membership.membershipBrandId, membership.logoUrl)}
                                             brandColor={getBrandColor(membership.membershipBrandId)}
+                                            membershipNumber={membership.membershipNumber}
                                             onClick={() => navigate(`/membership/${membership.userMembershipBrandId}`)}
                                         />
                                     </div>
                                 ))}
-                                
+
                                 {/* 부족한 슬롯만큼 빈 카드 추가 */}
                                 {Array.from({ length: 3 - mainMemberships.length }).map((_, index) => (
                                     <div key={`empty-${index}`} className="w-full flex-shrink-0">
                                         <div className="w-full h-[208px] bg-gray-200 rounded-[10px] flex items-center justify-center overflow-hidden">
-                                            <img 
-                                                src={emptyFavoriteImage} 
-                                                alt="대표 멤버십 미설정" 
+                                            <img
+                                                src={emptyFavoriteImage}
+                                                alt="대표 멤버십 미설정"
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
@@ -158,11 +159,10 @@ export default function WalletPage() {
                         {/* 페이지 인디케이터 - 항상 3개 표시 */}
                         <div className="flex justify-center gap-2 mt-4">
                             {[0, 1, 2].map((index) => (
-                                <div 
+                                <div
                                     key={index}
-                                    className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                                        index === currentSlide ? 'bg-cyan-400' : 'bg-gray-300'
-                                    }`}
+                                    className={`w-1.5 h-1.5 rounded-full transition-colors ${index === currentSlide ? 'bg-cyan-400' : 'bg-gray-300'
+                                        }`}
                                 />
                             ))}
                         </div>
@@ -174,7 +174,7 @@ export default function WalletPage() {
                     <section className="px-6">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-gray-900">멤버십 리스트</h2>
-                            <button 
+                            <button
                                 onClick={() => navigate('/search')}
                                 className="p-1 active:scale-90 transition-transform"
                             >
