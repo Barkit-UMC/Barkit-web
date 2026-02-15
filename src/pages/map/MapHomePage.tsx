@@ -282,7 +282,7 @@ export default function MapHomePage() {
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`flex-shrink-0
-                                    !px-5 !py-1.5 text-base rounded-full font-medium whitespace-nowrap transition-colors
+                                    !px-5 !py-1.5 text-base rounded-full font-medium shadow-sm whitespace-nowrap transition-colors
                                     ${selectedCategory === category
                                         ? 'bg-white text-gray-900 ring-1 ring-[#00C0E8]'
                                         : 'bg-white text-gray-500 hover:bg-gray-50'}
@@ -351,6 +351,7 @@ export default function MapHomePage() {
                         src={isTracking ? iconLocOn : iconLoc}
                         alt="현재위치이동"
                         className="w-full h-full object-cover"
+                        style={{ imageRendering: '-webkit-optimize-contrast' }} // 선명도 보정
                     />
                 </button>
 
