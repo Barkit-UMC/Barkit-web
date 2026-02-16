@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import call from '../../assets/icons/map/call.svg'
 import navigation from '../../assets/icons/map/navigation.svg'
-import kt from '../../assets/icons/memberships/kt.svg'
-import oliveyoung from '../../assets/icons/memberships/cjone.svg'
 import { useNavigate } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { mapApi, SearchStoresRequest, StoreSummary } from '../../api/map';
@@ -77,8 +75,8 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
                   <button onClick={(e) => { e.stopPropagation(); window.location.href = `tel:${store.phone}` }}>
                     <img src={call} alt="전화" className="w-12 h-12 object-contain" />
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); window.open(store.directionUrl, '_blank') }}>
-                    <img src={navigation} alt="길찾기" className="w-12 h-12 object-contain shadow-sm rounded-full" />
+                  <button onClick={() => window.open(`https://map.kakao.com/link/to/${store.name},${store.location.lat},${store.location.lng}`)}>
+                    <img src={navigation} alt="길찾기" className="w-12 h-12 object-contain rounded-full" />
                   </button>
                 </div>
               </div>
