@@ -75,7 +75,7 @@ const SearchResultList = ({ results, fetchNextPage, hasNextPage, isFetchingNextP
                   <button onClick={(e) => { e.stopPropagation(); window.location.href = `tel:${store.phone}` }}>
                     <img src={call} alt="전화" className="w-12 h-12 object-contain" />
                   </button>
-                  <button onClick={() => window.open(`https://map.kakao.com/link/to/${store.name},${store.location.lat},${store.location.lng}`)}>
+                  <button onClick={(e) => { e.stopPropagation(); window.location.href =`https://map.kakao.com/link/to/${store.name},${store.location.lat},${store.location.lng}` }}>
                     <img src={navigation} alt="길찾기" className="w-12 h-12 object-contain rounded-full" />
                   </button>
                 </div>
