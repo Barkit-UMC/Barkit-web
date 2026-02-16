@@ -31,11 +31,13 @@ export default function MembershipCard({
                 <div className="w-full h-11 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         {brandLogo ? (
-                            <img 
-                                src={brandLogo} 
-                                alt={brandName} 
-                                className="w-11 h-11 rounded-lg border border-gray-200 bg-white object-contain" 
-                            />
+                            <div className="w-11 h-11 rounded-lg border border-gray-200 bg-white overflow-hidden flex items-center justify-center">
+                                <img 
+                                    src={brandLogo} 
+                                    alt={brandName} 
+                                    className="w-full h-full object-contain scale-105" 
+                                />
+                            </div>
                         ) : (
                             <div className="w-11 h-11 rounded-lg bg-white/20 flex items-center justify-center">
                                 <span className="text-white text-lg font-bold">
