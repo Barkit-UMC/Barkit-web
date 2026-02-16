@@ -4,12 +4,12 @@ import ErrorView from '../../components/common/ErrorView';
 export default function FailurePage() {
     const navigate = useNavigate();
 
-    const handleStep1 = () => {
-        navigate('/onboarding/search')
-    }
+    const handleRetry = () => {
+        navigate('/onboarding/search');
+    };
 
-    const handleStep2 = () => {
-        navigate('/onboarding/select-method');
+    const handleCancel = () => {
+        navigate('/home');
     };
 
     return (
@@ -21,10 +21,10 @@ export default function FailurePage() {
                     다시 해볼까요?
                 </>
             }
-            primaryButtonText="방식 선택하기"
-            onPrimaryClick={handleStep2}
+            primaryButtonText="취소"
+            onPrimaryClick={handleCancel}
             secondaryButtonText="다시하기"
-            onSecondaryClick={handleStep1}
+            onSecondaryClick={handleRetry}
         />
     );
 }
