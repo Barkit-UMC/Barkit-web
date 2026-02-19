@@ -136,6 +136,7 @@ export default function WalletPage() {
                                             brandLogo={getBrandIcon(membership.membershipBrandId, membership.logoUrl)}
                                             brandColor={getBrandColor(membership.membershipBrandId)}
                                             membershipNumber={membership.membershipNumber}
+                                            showArrow
                                             onClick={() => navigate(`/membership/${membership.userMembershipBrandId}`)}
                                         />
                                     </div>
